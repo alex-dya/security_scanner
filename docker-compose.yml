@@ -1,6 +1,8 @@
 version: "2.0"
 services:
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: dockers/WebDockerfile
     ports:
     - "5000:80"
