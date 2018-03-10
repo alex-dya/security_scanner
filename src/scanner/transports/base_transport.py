@@ -12,7 +12,7 @@ class BaseTransport(metaclass=TransportMeta):
     def connect(self):
         pass
 
-    @abc.abstractmethod
     @property
+    @abc.abstractmethod
     def is_connect(self):
         pass

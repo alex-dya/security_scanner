@@ -1,7 +1,8 @@
 from enum import Enum
 from typing import List
 
-from .ssh import SSHTransport, Answer
+from .ssh import SSHTransport, Answer, ExecResult
+from scanner.mappings import unameOS
 
 
 class RootLogonType(Enum):
@@ -27,9 +28,21 @@ class UnixTransport(SSHTransport):
             Answer(f'[sudo] password for {self._login}:', self._root_password)
         ])
 
-    def interactive_command(self, command: str, answers_list: List[Answer]=None):
+    def is_unix(self):
+        result = self.send_command('uname -o')
+        if result.Output:
+            try:
+                os = unameOS(result.Output)
+                return True
+            except KeyError as e:
+                self.logger.error(f'Uname error {e}')
+                pass
+        return False
+
+    def interactive_command(self, command: str,
+                            answers_list: List[Answer]=[]) -> ExecResult:
         command = f'LANG=C LC_CTYPE=C {command}'
         return super().interactive_command(command, answers_list)
 
-    def send_command(self, command: str):
+    def send_command(self, command: str) -> ExecResult:
         return self.interactive_command(command)

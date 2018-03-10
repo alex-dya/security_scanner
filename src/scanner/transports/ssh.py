@@ -21,7 +21,6 @@ class ExecResult(NamedTuple):
 
 
 class SSHTransport(BaseTransport):
-
     class StandartChannels(NamedTuple):
         stdin: io.RawIOBase
         stdout: io.RawIOBase
@@ -50,10 +49,10 @@ class SSHTransport(BaseTransport):
                 paramiko.MissingHostKeyPolicy())
             self._client.connect(
                 hostname=self._address,
+                port=self._port,
                 username=self._login,
                 password=self._password,
                 timeout=self._timeout
-
             )
             channel = self._client.invoke_shell()
             self._shell = self.StandartChannels(
@@ -91,7 +90,7 @@ class SSHTransport(BaseTransport):
             return False
         return True
 
-    def interactive_command(self, command: str, answers_list: List[Answer]=None):
+    def interactive_command(self, command: str, answers_list: List[Answer]=[]):
         command = command.strip('\n')
         self._shell.stdin.write(command + '\n')
         self.logger.debug(f'{command}')
@@ -105,19 +104,6 @@ class SSHTransport(BaseTransport):
         shell_error = []
         for line in map(str, self._shell.stdout):
             self.logger.debug(f'{line}')
-            for answer in answers_list:
-                if line.startswith(answer.prompt):
-                    self._shell.stdin.write(answer.answer + '\n')
-                    self.logger.debug(f'{answer.answer}')
-                    self._shell.stdin.flush()
-                else:
-                    raise WrongInteractiveAnswer(
-                        address=self._address,
-                        port=self._port,
-                        command=command,
-                        answer=answer
-                    )
-
             if line.startswith(command) or line.startswith(echo_cmd):
                 # up for now filled with shell junk from stdin
                 shell_out = []
@@ -132,10 +118,23 @@ class SSHTransport(BaseTransport):
                     # shell_out = []
                 break
             else:
+                for answer in answers_list:
+                    if line.startswith(answer.prompt):
+                        self._shell.stdin.write(answer.answer + '\n')
+                        self.logger.debug(f'{answer.answer}')
+                        self._shell.stdin.flush()
+                        line = self._shell.stdout.readline()
+                    else:
+                        raise WrongInteractiveAnswer(
+                            address=self._address,
+                            port=self._port,
+                            command=command,
+                            answer=answer
+                        )
                 # get rid of 'coloring and formatting' special characters
                 shell_out.append(
                     re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]').sub('', line).
-                    replace('\b', '').replace('\r', ''))
+                    replace('\b', '').replace('\r', '').strip())
 
         # first and last lines of shell_out/shell_error contain a prompt
         if shell_out and echo_cmd in shell_out[-1]:
@@ -149,6 +148,6 @@ class SSHTransport(BaseTransport):
 
         join_str = '\n'.join
 
-        return self.ExecResult(
+        return ExecResult(
             Output=join_str(shell_out),
             Error=join_str(shell_error))

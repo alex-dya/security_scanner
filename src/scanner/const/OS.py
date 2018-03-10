@@ -1,0 +1,7 @@
+UNIX = 'UNIX'
+LINUX = 'Linux'
+SOLARIS = 'Solaris'
+HPUX = 'HP-UX'
+AIX = 'AIX'
+FREEBSD = 'FreeBSD'
+WINDOWS = 'Windows'
