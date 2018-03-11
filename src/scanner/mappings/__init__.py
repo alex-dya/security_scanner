@@ -9,7 +9,7 @@ class Mapping(UserDict):
 
 unameOS = Mapping(
     {
-        'GNU/Linux': OS.LINUX,
+        'Linux': OS.LINUX,
         'SunOS': OS.SOLARIS,
         'HP-UX': OS.HPUX,
         'FreeBSD': OS.FREEBSD,

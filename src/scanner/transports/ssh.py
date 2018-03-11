@@ -3,6 +3,7 @@ import socket
 import io
 import re
 import uuid
+import time
 from typing import NamedTuple, AnyStr, List
 from .base_transport import BaseTransport
 from .exceptions import (
@@ -55,11 +56,13 @@ class SSHTransport(BaseTransport):
                 timeout=self._timeout
             )
             channel = self._client.invoke_shell()
+            channel.settimeout(2)
             self._shell = self.StandartChannels(
                 stdin=channel.makefile('wb'),
                 stdout=channel.makefile('r'),
                 stderr=channel.makefile_stderr('r')
             )
+            self.interactive_command('echo test')
         except paramiko.AuthenticationException:
             self.logger.debug(f'AuthenticationError {self._login}'
                               f' on {self._address}')
@@ -84,30 +87,36 @@ class SSHTransport(BaseTransport):
 
     @property
     def is_connect(self):
-        try:
-            self._client.exec_command('echo "test"', timeout=self._timeout)
-        except RuntimeError:
-            return False
-        return True
+        transport = self._client.get_transport() if self._client else None
+        return transport and transport.is_active()
 
     def interactive_command(self, command: str, answers_list: List[Answer]=[]):
         command = command.strip('\n')
-        self._shell.stdin.write(command + '\n')
-        self.logger.debug(f'{command}')
+        self.logger.info(f'Send command: {command}')
         finish = f'{uuid.uuid4()}'
         echo_cmd = 'echo {} $?'.format(finish)
-        self._shell.stdin.write(echo_cmd + '\n')
-        self.logger.debug(f'{echo_cmd}')
+        full_command = f'{command}; {echo_cmd}'
+        self._shell.stdin.write(f'{full_command} \n')
+        self.logger.debug(f'STDIN: {full_command}')
         self._shell.stdin.flush()
+
+        for answer in answers_list:
+            time.sleep(0.5)
+            self._shell.stdin.write(answer.answer + '\n')
+            self.logger.debug(f'STDIN: {answer.answer}')
+            self._shell.stdin.flush()
 
         shell_out = []
         shell_error = []
-        for line in map(str, self._shell.stdout):
-            self.logger.debug(f'{line}')
-            if line.startswith(command) or line.startswith(echo_cmd):
+        line_process = lambda line: re.sub(r'.\r', '', str(line).strip())
+        for line in map(line_process, self._shell.stdout):
+            self.logger.debug(f'STDOUT: {line!r}')
+            if full_command in line:
                 # up for now filled with shell junk from stdin
                 shell_out = []
-            elif line.startswith(finish):
+                continue
+
+            if line.startswith(finish):
                 # our finish command ends with the exit status
                 exit_status = int(line.rsplit(maxsplit=1)[1])
                 if exit_status:
@@ -118,19 +127,6 @@ class SSHTransport(BaseTransport):
                     # shell_out = []
                 break
             else:
-                for answer in answers_list:
-                    if line.startswith(answer.prompt):
-                        self._shell.stdin.write(answer.answer + '\n')
-                        self.logger.debug(f'{answer.answer}')
-                        self._shell.stdin.flush()
-                        line = self._shell.stdout.readline()
-                    else:
-                        raise WrongInteractiveAnswer(
-                            address=self._address,
-                            port=self._port,
-                            command=command,
-                            answer=answer
-                        )
                 # get rid of 'coloring and formatting' special characters
                 shell_out.append(
                     re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]').sub('', line).

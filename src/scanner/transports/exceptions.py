@@ -21,6 +21,10 @@ class CommandExecutionFailure(TransportException):
         self.command = command
 
 
+class RootLogonFailure(CommandExecutionFailure):
+    pass
+
+
 class WrongInteractiveAnswer(CommandExecutionFailure):
     def __init__(self, answer, *args, **kwargs):
         super().__init__(*args, **kwargs)
