@@ -9,10 +9,10 @@ class TransportMeta(AddLoggerMeta, abc.ABCMeta):
 
 class BaseTransport(metaclass=TransportMeta):
     @abc.abstractmethod
-    def connect(self):
+    def connect(self) -> None:
         pass
 
     @property
     @abc.abstractmethod
-    def is_connect(self):
+    def is_connect(self) -> bool:
         pass

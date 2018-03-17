@@ -1,10 +1,10 @@
 import time
 from enum import Enum
 from typing import List
+from functools import lru_cache
 
 
 from .ssh import SSHTransport, Answer, ExecResult
-from scanner.mappings import unameOS
 from scanner.transports.exceptions import RootLogonFailure
 
 
@@ -15,8 +15,8 @@ class RootLogonType(Enum):
 
 
 class UnixTransport(SSHTransport):
-    def __init__(self, *args,  root_password='',
-                 root_logon='NoLogon', **kwargs):
+    def __init__(self, *args,  root_password: str ='',
+                 root_logon: str ='NoLogon', **kwargs):
         super().__init__(*args, **kwargs)
         self._root_logon_type = RootLogonType[root_logon]
         self._root_password = root_password
@@ -28,7 +28,7 @@ class UnixTransport(SSHTransport):
             HISTFILE=None
         )
 
-    def connect(self):
+    def connect(self) -> None:
         super().connect()
         self.setting_envs()
         if self._root_logon_type == RootLogonType.SULogon:
@@ -36,25 +36,25 @@ class UnixTransport(SSHTransport):
         elif self._root_logon_type == RootLogonType.SudoLogon:
             self._sudo_logon()
 
-    def setting_envs(self):
+    def setting_envs(self) -> None:
         for key, value in self.envs.items():
             if value is None:
                 command = f'unset {key}'
             else:
                 command = f'export {key}={value}'
-            self.send_command(command)
+            self.interactive_command(command)
 
-    def _su_logon(self):
+    def _su_logon(self) -> None:
         self._root_logon('su - root', answers_list=[
             Answer('Password:', self._root_password)
         ])
 
-    def _sudo_logon(self):
+    def _sudo_logon(self) -> None:
         self._root_logon('sudo -i', answers_list=[
             Answer(f'[sudo] password for {self._login}:', self._password)
         ])
 
-    def _root_logon(self, command: str, answers_list: List[Answer]=[]):
+    def _root_logon(self, command: str, answers_list: List[Answer]=[]) -> None:
         command = command.strip('\n')
         self._shell.stdin.write(f'{command}\n')
         self.logger.debug(f'STDIN: {command}')
@@ -77,15 +77,6 @@ class UnixTransport(SSHTransport):
                 command=command
             )
 
-    def is_unix(self):
-        result = self.send_command('uname -s')
-        if not result.Output:
-            return False
-
-        if unameOS(result.Output) is not None:
-            return True
-
-        return False
-
+    @lru_cache(maxsize=2048)
     def send_command(self, command: str) -> ExecResult:
         return self.interactive_command(command)
