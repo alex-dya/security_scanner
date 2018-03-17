@@ -3,8 +3,11 @@ from scanner.const import OS
 
 
 class Mapping(UserDict):
-    def __call__(self, item):
-        return self.__getitem__(item)
+    def __call__(self, key):
+        return self.__getitem__(key)
+
+    def __missing__(self, key):
+        return None
 
 
 unameOS = Mapping(

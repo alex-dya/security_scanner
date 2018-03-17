@@ -15,10 +15,10 @@ class RootLogonType(Enum):
 
 
 class UnixTransport(SSHTransport):
-    def __init__(self, *args,  root_password,
-                 root_logon=RootLogonType.NoLogon, **kwargs):
+    def __init__(self, *args,  root_password='',
+                 root_logon='NoLogon', **kwargs):
         super().__init__(*args, **kwargs)
-        self._root_logon_type = root_logon
+        self._root_logon_type = RootLogonType[root_logon]
         self._root_password = root_password
         self.envs = dict(
             LANG='C',
@@ -51,7 +51,7 @@ class UnixTransport(SSHTransport):
 
     def _sudo_logon(self):
         self._root_logon('sudo -i', answers_list=[
-            Answer(f'[sudo] password for {self._login}:', self._root_password)
+            Answer(f'[sudo] password for {self._login}:', self._password)
         ])
 
     def _root_logon(self, command: str, answers_list: List[Answer]=[]):
@@ -79,18 +79,13 @@ class UnixTransport(SSHTransport):
 
     def is_unix(self):
         result = self.send_command('uname -s')
-        if result.Output:
-            try:
-                os = unameOS(result.Output)
-                return True
-            except KeyError as e:
-                self.logger.error(f'Uname error {e}')
-                pass
-        return False
+        if not result.Output:
+            return False
 
-    def interactive_command(self, command: str,
-                            answers_list: List[Answer]=[]) -> ExecResult:
-        return super().interactive_command(command, answers_list)
+        if unameOS(result.Output) is not None:
+            return True
+
+        return False
 
     def send_command(self, command: str) -> ExecResult:
         return self.interactive_command(command)
