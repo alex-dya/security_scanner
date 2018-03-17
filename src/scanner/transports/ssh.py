@@ -6,7 +6,7 @@ import uuid
 import time
 from typing import NamedTuple, AnyStr, List
 
-from .base_transport import BaseTransport
+from scanner.types import BaseTransport
 from .exceptions import (
     TransportException, AuthenticationFailure, HostNotResponsible,
     WrongInteractiveAnswer)

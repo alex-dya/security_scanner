@@ -1,6 +1,6 @@
 from scanner.transports import get_transport
 from scanner.const import OS, LINUX
-from scanner.detect.functions import BaseDetector, os_detect, is_os_detect
+from scanner.types import BaseDetector
 
 
 class DebianDetector(BaseDetector):

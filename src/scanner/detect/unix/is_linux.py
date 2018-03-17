@@ -1,7 +1,7 @@
 from scanner.transports import get_transport
 from scanner.mappings import unameOS
 from scanner.const import OS
-from scanner.detect.functions import BaseDetector
+from scanner.types import BaseDetector
 from .linux import detectors
 
 
