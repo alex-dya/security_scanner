@@ -19,14 +19,13 @@ class Answer(NamedTuple):
 
 class ExecResult(NamedTuple):
     Output: AnyStr
-    Error: AnyStr
+    ExitStatus: int
 
 
 class SSHTransport(BaseTransport):
     class StandartChannels(NamedTuple):
         stdin: io.RawIOBase
         stdout: io.RawIOBase
-        stderr: io.RawIOBase
 
     def __init__(self, login, password, address, *args,
                  port=22, timeout=30, **kwargs):
@@ -57,11 +56,11 @@ class SSHTransport(BaseTransport):
                 timeout=self._timeout
             )
             channel = self._client.invoke_shell()
+            channel.set_combine_stderr(False)
             channel.settimeout(2)
             self._shell = self.StandartChannels(
                 stdin=channel.makefile('wb'),
                 stdout=channel.makefile('r'),
-                stderr=channel.makefile_stderr('r')
             )
             self.interactive_command('echo test')
         except paramiko.AuthenticationException:
@@ -120,12 +119,6 @@ class SSHTransport(BaseTransport):
             if line.startswith(finish):
                 # our finish command ends with the exit status
                 exit_status = int(line.rsplit(maxsplit=1)[1])
-                if exit_status:
-                    # stderr is combined with stdout.
-                    # thus, swap shell_error with shell_out in a case of failure.
-                    shell_error = self._shell.stderr.read()
-                    self.logger.debug(f'STDERR: {shell_error}')
-                    # shell_out = []
                 break
             else:
                 # get rid of 'coloring and formatting' special characters
@@ -147,4 +140,4 @@ class SSHTransport(BaseTransport):
 
         return ExecResult(
             Output=join_str(shell_out),
-            Error=join_str(shell_error))
+            ExitStatus=exit_status)

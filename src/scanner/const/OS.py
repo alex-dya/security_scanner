@@ -1,6 +1,6 @@
 UNIX = 'UNIX'
 LINUX = 'Linux'
-SOLARIS = 'Solaris'
+SOLARIS = 'SunOS'
 HPUX = 'HP-UX'
 AIX = 'AIX'
 FREEBSD = 'FreeBSD'

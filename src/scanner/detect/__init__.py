@@ -10,6 +10,7 @@ _detectors = [
 
 LOGGER = logging.getLogger(__name__)
 
+
 def detect():
     queue = deque(_detectors)
     while queue:

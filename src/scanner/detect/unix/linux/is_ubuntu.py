@@ -4,9 +4,9 @@ from scanner.types import BaseDetector
 from scanner.functions.parsers import KeyValueParser
 
 
-class DebianDetector(BaseDetector):
+class UbuntuDetector(BaseDetector):
     requisites = OS.LINUX
-    detection_os = LINUX.DEBIAN
+    detection_os = LINUX.UBUNTU
     detectors = []
 
     def detect(self):
@@ -20,6 +20,6 @@ class DebianDetector(BaseDetector):
 
         if result.Output:
             os_release = KeyValueParser().parse(result.Output)
-            return os_release.get('ID', '') == LINUX_ID.DEBIAN
+            return os_release.get('ID', '') == LINUX_ID.UBUNTU
 
         return False
