@@ -109,6 +109,7 @@ class SSHTransport(BaseTransport):
         shell_out = []
         shell_error = []
         line_process = lambda line: re.sub(r'.\r', '', str(line).strip())
+        exit_status = 0
         for line in map(line_process, self._shell.stdout):
             self.logger.debug(f'STDOUT: {line!r}')
             if full_command in line:
@@ -123,7 +124,7 @@ class SSHTransport(BaseTransport):
             else:
                 # get rid of 'coloring and formatting' special characters
                 shell_out.append(
-                    re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]').sub('', line).
+                    re.compile(r'(\x9B|\x1B\[)[0-9]*[ -/]*[@-~]').sub('', line).
                     replace('\b', '').replace('\r', '').strip())
 
         # first and last lines of shell_out/shell_error contain a prompt
