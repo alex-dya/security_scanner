@@ -4,7 +4,6 @@ from enum import Enum
 from typing import Union, List
 
 from utility import AddLoggerMeta
-from scanner import controls
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +95,7 @@ class ControlResult:
 
     def __new__(cls, number, *args, **kwargs):
         if number not in cls.controls:
-            cls.controls[number] = super().__new__(cls, number=number)
+            cls.controls[number] = super(ControlResult, cls).__new__(cls, *args, **kwargs)
 
         return cls.controls[number]
 
@@ -123,10 +122,11 @@ class ControlResult:
 
 
 class BaseContol(metaclass=BaseControlMeta):
+    _control_list = []
     def __init_subclass__(cls, control_number, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.control = ControlResult(number=control_number)
-        controls.control_list = cls
+        cls._control_list.append(cls)
 
     @abc.abstractmethod
     def prerequisite(self) -> bool:

@@ -3,7 +3,7 @@ from scanner.types import BaseContol, is_os_detect
 from scanner.transports import get_transport
 
 
-class Control(BaseContol, number=1):
+class Control(BaseContol, control_number=1):
     def prerequisite(self):
         return is_os_detect(OS.LINUX)
 
