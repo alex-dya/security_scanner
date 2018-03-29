@@ -1,9 +1,16 @@
 import re
 import logging
+import abc
+import re
 from typing import Dict, AnyStr
+from utility import AddLoggerMeta
 
 
 LOGGER = logging.getLogger(__name__)
+
+
+class FinditerBaseMeta(abc.ABCMeta, AddLoggerMeta):
+    pass
 
 
 class KeyValueParser:
@@ -33,3 +40,35 @@ class KeyValueParser:
             else:
                 self.result[key] = value
         return self.result
+
+
+class FinditerMatchObject(metaclass=AddLoggerMeta):
+    def __init__(self, match_object: re.match):
+        self.match = match_object
+        self.dict = match_object.groupdict()
+
+    def __getattr__(self, item):
+        if item in self.dict:
+            return self.dict[item]
+        else:
+            raise AttributeError
+
+    def __str__(self):
+        return f'{self.dict}'
+
+
+class FinditerBase(metaclass=FinditerBaseMeta):
+    @property
+    @abc.abstractmethod
+    def pattern(self):
+        pass
+
+    flags = 0
+
+    def __init__(self):
+        self.re_compile = re.compile(pattern=self.pattern, flags=self.flags)
+
+    def __call__(self, text: str):
+        for match in self.re_compile.finditer(string=text):
+            yield FinditerMatchObject(match_object=match)
+

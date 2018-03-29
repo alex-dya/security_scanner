@@ -23,7 +23,8 @@ class TransportMeta(AddLoggerMeta, abc.ABCMeta):
 
 
 class BaseControlMeta(abc.ABCMeta, AddLoggerMeta):
-    pass
+    def __str__(self):
+        return f'{self.__module__}.{self.__name__}({self.control})'
 
 
 class BaseDetectorMeta(abc.ABCMeta, AddLoggerMeta):
@@ -119,6 +120,12 @@ class ControlResult:
     def error(self, result: str) -> None:
         self.status = ControlStatus.Error
         self.result = result
+
+    def __repr__(self):
+        return f'ControlResult(number={self.number})'
+
+    def __str__(self):
+        return f'number={self.number} status={self.status}'
 
 
 class BaseContol(metaclass=BaseControlMeta):
