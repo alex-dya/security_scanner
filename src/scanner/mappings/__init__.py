@@ -1,5 +1,5 @@
 from collections import UserDict
-from scanner.const import OS
+from scanner.const import os
 
 
 class Mapping(UserDict):
@@ -12,11 +12,11 @@ class Mapping(UserDict):
 
 unameOS = Mapping(
     {
-        'Linux': OS.LINUX,
-        'SunOS': OS.SOLARIS,
-        'HP-UX': OS.HPUX,
-        'FreeBSD': OS.FREEBSD,
-        'AIX': OS.AIX
+        'Linux': os.LINUX,
+        'SunOS': os.SOLARIS,
+        'HP-UX': os.HPUX,
+        'FreeBSD': os.FREEBSD,
+        'AIX': os.AIX
     }
 )
 

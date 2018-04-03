@@ -1,6 +1,6 @@
 from scanner.transports import get_transport, exceptions
 from scanner.mappings import unameOS
-from scanner.const import OS
+from scanner.const import os
 
 from scanner.types import BaseDetector
 from .unix import detectors
@@ -8,7 +8,7 @@ from .unix import detectors
 
 class UnixDetector(BaseDetector):
     requisites = None
-    detection_os = OS.UNIX
+    detection_os = os.UNIX
     detectors = detectors
 
     def detect(self):

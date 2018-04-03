@@ -1,12 +1,12 @@
 from scanner.transports import get_transport
-from scanner.const import OS, LINUX, LINUX_ID
+from scanner.const import os, linux, linux_id
 from scanner.types import BaseDetector
 from scanner.functions.parsers import KeyValueParser
 
 
 class DebianDetector(BaseDetector):
-    requisites = OS.LINUX
-    detection_os = LINUX.DEBIAN
+    requisites = os.LINUX
+    detection_os = linux.DEBIAN
     detectors = []
 
     def detect(self):
@@ -20,6 +20,6 @@ class DebianDetector(BaseDetector):
 
         if result.Output:
             os_release = KeyValueParser().parse(result.Output)
-            return os_release.get('ID', '') == LINUX_ID.DEBIAN
+            return os_release.get('ID', '') == linux_id.DEBIAN
 
         return False

@@ -1,12 +1,12 @@
 from scanner.transports import get_transport
 from scanner.mappings import unameOS
-from scanner.const import OS
+from scanner.const import os
 from scanner.types import BaseDetector
 
 
 class FreebsdDetector(BaseDetector):
-    requisites = OS.UNIX
-    detection_os = OS.FREEBSD
+    requisites = os.UNIX
+    detection_os = os.FREEBSD
     detectors = []
 
     def detect(self):
@@ -18,7 +18,7 @@ class FreebsdDetector(BaseDetector):
             self.logger.error(f'Wrong execution {command!r}: {result.Output}')
             return False
 
-        if result.Output and unameOS(result.Output) == OS.FREEBSD:
+        if result.Output and unameOS(result.Output) == os.FREEBSD:
             return True
 
         return False

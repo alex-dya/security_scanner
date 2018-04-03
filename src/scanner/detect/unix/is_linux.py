@@ -1,13 +1,13 @@
 from scanner.transports import get_transport
 from scanner.mappings import unameOS
-from scanner.const import OS
+from scanner.const import os
 from scanner.types import BaseDetector
 from .linux import detectors
 
 
 class LinuxDetector(BaseDetector):
-    requisites = OS.UNIX
-    detection_os = OS.LINUX
+    requisites = os.UNIX
+    detection_os = os.LINUX
     detectors = detectors
 
     def detect(self):
@@ -19,7 +19,7 @@ class LinuxDetector(BaseDetector):
             self.logger.error(f'Wrong execution {command!r}: {result.Output}')
             return False
 
-        if result.Output and unameOS(result.Output) == OS.LINUX:
+        if result.Output and unameOS(result.Output) == os.LINUX:
             return True
 
         return False

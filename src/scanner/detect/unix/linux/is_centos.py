@@ -1,12 +1,12 @@
 from scanner.transports import get_transport
-from scanner.const import OS, LINUX, LINUX_ID
+from scanner.const import os, linux, linux_id
 from scanner.types import BaseDetector
 from scanner.functions.parsers import KeyValueParser
 
 
 class CentosDetector(BaseDetector):
-    requisites = OS.LINUX
-    detection_os = LINUX.CENTOS
+    requisites = os.LINUX
+    detection_os = linux.CENTOS
     detectors = []
 
     def detect(self):
@@ -20,6 +20,6 @@ class CentosDetector(BaseDetector):
 
         if result.Output:
             os_release = KeyValueParser().parse(result.Output)
-            return os_release.get('ID', '') == LINUX_ID.CENTOS
+            return os_release.get('ID', '') == linux_id.CENTOS
 
         return False
