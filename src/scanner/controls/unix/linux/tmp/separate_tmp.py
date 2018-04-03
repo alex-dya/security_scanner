@@ -10,9 +10,16 @@ class Control(BaseContol, control_number=1):
 
     def check(self):
         transport = get_transport('unix')
-        result = transport.send_command('mount | grep /tmp')
+        result = transport.send_command('mount')
         for item in MountFinditer(text=result.Output):
-            self.control.compliance(result=f'/tmp has been mount on {item.Device}')
+            if item.Path != '/tmp':
+                continue
+
+            self.control.compliance(
+                result=f'/tmp has been mounted on {item.Device}'
+            )
             break
         else:
-            self.control.not_compliance(result=f'/tmp has not separate partition')
+            self.control.not_compliance(
+                result='/tmp has not been mounted on separated partition'
+            )
