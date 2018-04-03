@@ -21,7 +21,7 @@ def run_controls():
     for control in BaseContol._control_list:
         LOGGER.debug(f'Execute control: {control}')
 
-        control().run()
+        control.run()
 
 
 def result():

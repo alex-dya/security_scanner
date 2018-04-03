@@ -11,7 +11,7 @@ class Control(BaseContol, control_number=1):
     def check(self):
         transport = get_transport('unix')
         result = transport.send_command('mount | grep /tmp')
-        for item in MountFinditer()(text=result.Output):
+        for item in MountFinditer(text=result.Output):
             self.control.compliance(result=f'/tmp has been mount on {item.Device}')
             break
         else:

@@ -65,10 +65,13 @@ class FinditerBase(metaclass=FinditerBaseMeta):
 
     flags = 0
 
-    def __init__(self):
+    def __init__(self, text):
         self.re_compile = re.compile(pattern=self.pattern, flags=self.flags)
+        self.text = text
 
-    def __call__(self, text: str):
-        for match in self.re_compile.finditer(string=text):
-            yield FinditerMatchObject(match_object=match)
+    def __iter__(self):
+        self._iter = self.re_compile.finditer(string=self.text)
+        return self
 
+    def __next__(self):
+        return FinditerMatchObject(match_object=next(self._iter))

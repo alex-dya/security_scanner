@@ -133,7 +133,7 @@ class BaseContol(metaclass=BaseControlMeta):
     def __init_subclass__(cls, control_number, **kwargs):
         super().__init_subclass__(**kwargs)
         cls.control = ControlResult(number=control_number)
-        cls._control_list.append(cls)
+        cls._control_list.append(cls())
 
     @abc.abstractmethod
     def prerequisite(self) -> bool:
@@ -142,6 +142,13 @@ class BaseContol(metaclass=BaseControlMeta):
     @abc.abstractmethod
     def check(self) -> None:
         pass
+
+    @property
+    def result(self):
+        return self.control.result
+
+    def __str__(self):
+        return f'{self.__class__.__module__}.{self.__class__.__name__}({self.control})'
 
     def run(self):
         if self.prerequisite():
