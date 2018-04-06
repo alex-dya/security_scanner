@@ -61,12 +61,12 @@ class UnixTransport(SSHTransport):
         self._shell.stdin.flush()
 
         for answer in answers_list:
-            time.sleep(2)
+            time.sleep(0.1)
             self._shell.stdin.write(answer.answer + '\n')
             self.logger.debug(f'STDIN: {answer.answer}')
             self._shell.stdin.flush()
 
-        time.sleep(2)
+        time.sleep(0.1)
         result = self.interactive_command('id -u')
 
         self.setting_envs()

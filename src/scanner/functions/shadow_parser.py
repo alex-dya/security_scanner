@@ -1,8 +1,7 @@
-from typing import NamedTuple
-from datetime import date, timedelta
+from datetime import date
 
 
-class ShadowRecord(NamedTuple):
+class ShadowRecord:
     Name: str
     Password: str
     PasswordChange: date
@@ -13,9 +12,25 @@ class ShadowRecord(NamedTuple):
     AccountExpired: int
     ReservedField: str
 
-    def __init__(self, name, password, change, *args, **kwargs):
-        change = date(1970, 1, 1) + timedelta(days=int(change))
-        super().__init__(name, password, change, *args, **kwargs)
+    def __init__(self, line):
+        super().__init__()
+        (
+            name, passwd, change,
+            minpass, maxpass, passwarn,
+            passexp, accexp, reserved
+        ) = line.split(':')
+        self.Name = name
+        self.Password = passwd
+        self.PasswordChange = date.fromtimestamp(int(change) * 86400)
+        self.MinPasswordAge = minpass and int(minpass) or 0
+        self.MaxPasswordAge = maxpass and int(maxpass) or 99999
+        self.PasswordWarn = passwarn and int(passwarn) or 0
+        self.PasswordExpired = passexp and int(passexp) or 99999
+        self.AccountExpired = accexp and int(accexp) or 99999
+        self.ReservedField = reserved
+
+    def __repr__(self):
+        return f'ShadowRecord({self.Name}, {self.Password})'
 
 
 class ShadowParser:
@@ -27,5 +42,4 @@ class ShadowParser:
         return self
 
     def __next__(self):
-        record = ShadowRecord(*next(self._iter).split(':'))
-        return record
+        return ShadowRecord(next(self._iter))

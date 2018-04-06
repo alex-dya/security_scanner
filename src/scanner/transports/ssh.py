@@ -101,7 +101,7 @@ class SSHTransport(BaseTransport):
         self._shell.stdin.flush()
 
         for answer in answers_list:
-            time.sleep(0.5)
+            time.sleep(0.1)
             self._shell.stdin.write(answer.answer + '\n')
             self.logger.debug(f'STDIN: {answer.answer}')
             self._shell.stdin.flush()
