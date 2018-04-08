@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Iterator, AnyStr
 
 
 class ShadowRecord:
@@ -12,13 +13,9 @@ class ShadowRecord:
     AccountExpired: int
     ReservedField: str
 
-    def __init__(self, line):
+    def __init__(self, name, passwd, change, minpass, maxpass,
+                 passwarn, passexp, accexp, reserved):
         super().__init__()
-        (
-            name, passwd, change,
-            minpass, maxpass, passwarn,
-            passexp, accexp, reserved
-        ) = line.split(':')
         self.Name = name
         self.Password = passwd
         self.PasswordChange = date.fromtimestamp(int(change) * 86400)
@@ -29,7 +26,7 @@ class ShadowRecord:
         self.AccountExpired = accexp and int(accexp) or 99999
         self.ReservedField = reserved
 
-    def __repr__(self):
+    def __repr__(self) -> AnyStr:
         return f'ShadowRecord({self.Name}, {self.Password})'
 
 
@@ -37,9 +34,13 @@ class ShadowParser:
     def __init__(self, content: str):
         self.content = content
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         self._iter = iter(self.content.splitlines())
         return self
 
-    def __next__(self):
-        return ShadowRecord(next(self._iter))
+    def __next__(self) -> ShadowRecord:
+        line = next(self._iter)
+        while not line.strip():
+            line = next(self._iter)
+
+        return ShadowRecord(*line.split(':'))

@@ -1,11 +1,7 @@
-import logging
 import abc
 import re
-from typing import Dict, AnyStr
+from typing import AnyStr, Iterator
 from utility import AddLoggerMeta
-
-
-LOGGER = logging.getLogger(__name__)
 
 
 class FinditerBaseMeta(abc.ABCMeta, AddLoggerMeta):
@@ -15,18 +11,19 @@ class FinditerBaseMeta(abc.ABCMeta, AddLoggerMeta):
 class KeyValueParser:
     double_quotes = re.compile(r'^".+"$')
 
-    def __init__(self, delimiter: str = '='):
+    def __init__(self, text: str, delimiter: str = '='):
+        self.text = text
         self.delimiter = delimiter
         self.result = dict()
-        self.logger = LOGGER.getChild('KeyValueParser')
+        self.__process()
 
-    def parse(self, data: str) -> Dict[AnyStr, AnyStr]:
-        for line in data.splitlines():
+    def __process(self) -> None:
+        for line in self.text.splitlines():
 
             if not line.strip():
                 continue
 
-            key, value = map(str.strip, line.split(self.delimiter))
+            key, _, value = map(str.strip, line.partition(self.delimiter))
 
             if self.double_quotes.match(value):
                 value = value[1:-1]
@@ -38,7 +35,12 @@ class KeyValueParser:
                     self.result[key] = [self.result[key]] + [value]
             else:
                 self.result[key] = value
-        return self.result
+
+    def __getattr__(self, item: str) -> AnyStr:
+        if item in self.result:
+            return self.result[item]
+        else:
+            raise AttributeError
 
 
 class FinditerMatchObject(metaclass=AddLoggerMeta):
@@ -46,31 +48,31 @@ class FinditerMatchObject(metaclass=AddLoggerMeta):
         self.match = match_object
         self.dict = match_object.groupdict()
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str) -> AnyStr:
         if item in self.dict:
             return self.dict[item]
         else:
             raise AttributeError
 
-    def __str__(self):
+    def __str__(self) -> AnyStr:
         return f'{self.dict}'
 
 
 class FinditerBase(metaclass=FinditerBaseMeta):
     @property
     @abc.abstractmethod
-    def pattern(self):
+    def pattern(self) -> AnyStr:
         pass
 
     flags = 0
 
-    def __init__(self, text):
+    def __init__(self, text: str):
         self.re_compile = re.compile(pattern=self.pattern, flags=self.flags)
         self.text = text
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         self._iter = self.re_compile.finditer(string=self.text)
         return self
 
-    def __next__(self):
+    def __next__(self) -> FinditerMatchObject:
         return FinditerMatchObject(match_object=next(self._iter))

@@ -19,7 +19,7 @@ class CentosDetector(BaseDetector):
             return False
 
         if result.Output:
-            os_release = KeyValueParser().parse(result.Output)
-            return os_release.get('ID', '') == linux_id.CENTOS
+            os_release = KeyValueParser(text=result.Output)
+            return os_release.ID == linux_id.CENTOS
 
         return False

@@ -1,3 +1,6 @@
+from typing import AnyStr, Iterator
+
+
 class PasswdRecord:
     Name: str
     Password: str
@@ -7,13 +10,9 @@ class PasswdRecord:
     HomeDirectory: str
     Shell: str
 
-    def __init__(self, line):
+    def __init__(self, name, passwd, uid, gid, gecos, home_dir, shell):
         super().__init__()
-        (
-            name, passwd, uid,
-            gid, gecos, home_dir,
-            shell
-        ) = line.split(':')
+
         self.Name = name
         self.Password = passwd
         self.UID = int(uid)
@@ -22,7 +21,7 @@ class PasswdRecord:
         self.HomeDirectory = home_dir
         self.Shell = shell
 
-    def __repr__(self):
+    def __repr__(self) -> AnyStr:
         return f'PasswdRecord({self.Name}, {self.UID})'
 
 
@@ -30,9 +29,12 @@ class PasswdParser:
     def __init__(self, content: str):
         self.content = content
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         self._iter = iter(self.content.splitlines())
         return self
 
-    def __next__(self):
-        return PasswdRecord(next(self._iter))
+    def __next__(self) -> PasswdRecord:
+        line = next(self._iter)
+        while not line.strip():
+            line = next(self._iter)
+        return PasswdRecord(*line.split(':'))

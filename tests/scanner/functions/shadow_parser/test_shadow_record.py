@@ -1,11 +1,12 @@
+import pytest
+
 from scanner.functions.shadow_parser import ShadowRecord
 from datetime import date
 
 
 def test_simple_case():
     line = 'speech-dispatcher:!:17536:0:99999:7:::'
-    print(line.split(':'))
-    result = ShadowRecord(line)
+    result = ShadowRecord(*line.split(':'))
     assert result is not None
     assert result.Name == 'speech-dispatcher'
     assert result.Password == '!'
@@ -18,5 +19,7 @@ def test_simple_case():
     assert result.ReservedField == ''
 
 
-
-
+def test_empty_case():
+    line = ''
+    with pytest.raises(TypeError):
+        ShadowRecord(*line.split(':'))

@@ -1,7 +1,7 @@
 import abc
 import logging
 from enum import Enum
-from typing import Union, List
+from typing import Union, List, AnyStr
 
 from utility import AddLoggerMeta
 
@@ -130,8 +130,9 @@ class ControlResult:
 
 class BaseContol(metaclass=BaseControlMeta):
     _control_list = []
-    def __init_subclass__(cls, control_number, **kwargs):
-        super().__init_subclass__(**kwargs)
+
+    def __init_subclass__(cls, control_number):
+        super().__init_subclass__()
         cls.control = ControlResult(number=control_number)
         cls._control_list.append(cls())
 
@@ -144,13 +145,13 @@ class BaseContol(metaclass=BaseControlMeta):
         pass
 
     @property
-    def result(self):
+    def result(self) -> AnyStr:
         return self.control.result
 
-    def __str__(self):
+    def __str__(self) -> AnyStr:
         return f'{self.__class__.__module__}.{self.__class__.__name__}({self.control})'
 
-    def run(self):
+    def run(self) -> None:
         if self.prerequisite():
             try:
                 self.check()
