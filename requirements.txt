@@ -6,3 +6,4 @@ MarkupSafe
 Werkzeug
 paramiko
 pytest
+attrs

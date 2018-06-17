@@ -1,33 +1,36 @@
 from datetime import date
 from typing import Iterator, AnyStr
+from functools import partial
+
+import attr
 
 
+MAX = 99999
+
+
+def int_or(x: AnyStr, default: int) -> int:
+    if x:
+        return int(x)
+    return default
+
+
+int_or_max=partial(int_or, default=MAX)
+int_or_zero=partial(int_or, default=0)
+
+
+@attr.s
 class ShadowRecord:
-    Name: str
-    Password: str
-    PasswordChange: date
-    MinPasswordAge: int
-    MaxPasswordAge: int
-    PasswordWarn: int
-    PasswordExpired: int
-    AccountExpired: int
-    ReservedField: str
-
-    def __init__(self, name, passwd, change, minpass, maxpass,
-                 passwarn, passexp, accexp, reserved):
-        super().__init__()
-        self.Name = name
-        self.Password = passwd
-        self.PasswordChange = date.fromtimestamp(int(change) * 86400)
-        self.MinPasswordAge = minpass and int(minpass) or 0
-        self.MaxPasswordAge = maxpass and int(maxpass) or 99999
-        self.PasswordWarn = passwarn and int(passwarn) or 0
-        self.PasswordExpired = passexp and int(passexp) or 99999
-        self.AccountExpired = accexp and int(accexp) or 99999
-        self.ReservedField = reserved
-
-    def __repr__(self) -> AnyStr:
-        return f'ShadowRecord({self.Name}, {self.Password})'
+    Name: str = attr.ib()
+    Password: str = attr.ib()
+    PasswordChange: date = attr.ib(
+        converter=lambda x: date.fromtimestamp(int(x) * 86400)
+    )
+    MinPasswordAge: int = attr.ib(converter=int_or_zero)
+    MaxPasswordAge: int = attr.ib(converter=int_or_max)
+    PasswordWarn: int = attr.ib(converter=int_or_zero)
+    PasswordExpired: int = attr.ib(converter=int_or_max)
+    AccountExpired: int = attr.ib(converter=int_or_max)
+    ReservedField: str = attr.ib()
 
 
 class ShadowParser:
