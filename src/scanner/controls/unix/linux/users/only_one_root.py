@@ -21,7 +21,8 @@ class Control(BaseContol, control_number=6):
             self.control.not_compliance(
                 result=f'There are {len(root_list)} roots: {root_list}'
             )
-        else:
-            self.control.compliance(
-                result=f'There is only one root'
-            )
+            return
+
+        self.control.compliance(
+            result=f'There is only one root'
+        )

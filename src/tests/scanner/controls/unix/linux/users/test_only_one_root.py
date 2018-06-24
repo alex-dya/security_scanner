@@ -2,28 +2,8 @@ from functools import partial
 
 import pytest
 
-from scanner.types import BaseTransport, ControlStatus
+from scanner.types import ControlStatus
 from scanner.controls.unix.linux.users import only_one_root
-from scanner.transports.ssh import ExecResult
-
-
-class DummyUnixTransport(BaseTransport):
-    def __init__(self, text: str, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self._text = text
-
-    def connect(self) -> None:
-        pass
-
-    def is_connect(self) -> bool:
-        return True
-
-    def send_command(self, text: str) -> str:
-        return ExecResult(Output=self._text, ExitStatus=0)
-
-
-def get_transport(name: str, text: str) -> BaseTransport:
-    return DummyUnixTransport(text=text)
 
 
 test_cases = [
@@ -52,17 +32,17 @@ test_cases = [
 
 
 @pytest.mark.parametrize('text,result', test_cases)
-def test_cases(monkeypatch, text, result):
+def test_cases(monkeypatch, text, result, get_transport_patch):
     monkeypatch.setattr(
-        only_one_root, 'get_transport', partial(get_transport, text=text))
+        only_one_root, 'get_transport', partial(get_transport_patch, text=text))
     control = only_one_root.Control()
-    monkeypatch.setattr(control, 'prerequisite', lambda: True)
+    monkeypatch.setattr(only_one_root, 'is_os_detect', lambda x: True)
     control.run()
     assert control.control.status == result
 
 
 def test_not_applicable(monkeypatch):
     control = only_one_root.Control()
-    monkeypatch.setattr(control, 'prerequisite', lambda: False)
+    monkeypatch.setattr(only_one_root, 'is_os_detect', lambda x: False)
     control.run()
     assert control.control.status == ControlStatus.NotApplicable
