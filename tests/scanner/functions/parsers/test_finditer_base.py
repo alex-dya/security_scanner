@@ -26,4 +26,3 @@ def test_empty_case():
     text = ''
     result = IDParser(text=text)
     assert len(list(iter(result))) == 0
-

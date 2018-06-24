@@ -1,5 +1,14 @@
 import re
-from .parsers import FinditerBase
+from .parsers import FinditerBase, FinditerMatchObject
+
+
+class MountMatchObject(FinditerMatchObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.dict['Options'] = [
+                opt.strip()
+                for opt in self.Options.split(',')
+            ]
 
 
 class MountFinditer(FinditerBase):
@@ -15,3 +24,6 @@ class MountFinditer(FinditerBase):
     '''
 
     flags = re.MULTILINE | re.VERBOSE
+
+    def __next__(self) -> MountMatchObject:
+        return MountMatchObject(match_object=next(self._iter))
