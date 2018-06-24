@@ -14,6 +14,7 @@ class MountMatchObject(FinditerMatchObject):
 class MountFinditer(FinditerBase):
     pattern = r'''
         ^
+        \s*
         (?P<Device>\S+)\s+
         on \s+
         (?P<Path>\S+)\s+
