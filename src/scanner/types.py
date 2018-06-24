@@ -105,9 +105,9 @@ class ControlResult:
         self.result = None
         self.status = ControlStatus.NotChecked
 
-    def not_applicable(self, reason: str) -> None:
+    def not_applicable(self) -> None:
         self.status = ControlStatus.NotApplicable
-        self.result = reason
+        self.result = None
 
     def compliance(self, result: str) -> None:
         self.status = ControlStatus.Compliance
@@ -152,10 +152,11 @@ class BaseContol(metaclass=BaseControlMeta):
         return f'{self.__class__.__module__}.{self.__class__.__name__}({self.control})'
 
     def run(self) -> None:
-        if self.prerequisite():
-            try:
-                self.check()
-            except RuntimeError as e:
-                self.control.error(f'{e}')
+        if not self.prerequisite():
+            self.control.not_applicable()
+            return
 
-
+        try:
+            self.check()
+        except RuntimeError as e:
+            self.control.error(f'{e}')

@@ -8,8 +8,7 @@ from typing import NamedTuple, AnyStr, List
 
 from scanner.types import BaseTransport
 from .exceptions import (
-    TransportException, AuthenticationFailure, HostNotResponsible,
-    WrongInteractiveAnswer)
+    TransportException, AuthenticationFailure, HostNotResponsible)
 
 
 class Answer(NamedTuple):

@@ -16,20 +16,15 @@ class Control(BaseContol, control_number=2):
 
     def check(self):
         transport = get_transport('unix')
-        result = transport.send_command('mount | grep /tmp')
+        result = transport.send_command('mount')
         for item in MountFinditer(text=result.Output):
             if item.Path != '/tmp':
                 continue
 
-            options = [
-                opt.strip()
-                for opt in item.Options.split(',')
-            ]
-
             missing_options = ','.join(
                 opt
                 for opt in self.needed_options
-                if opt not in options
+                if opt not in item.Options
             )
 
             needed_options = ','.join(self.needed_options)
