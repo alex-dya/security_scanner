@@ -7,9 +7,9 @@ from scanner.functions.mount_parser import MountFinditer
 class Control(BaseContol, control_number=4):
     partitions = {
         '/var/tmp': (
+            mount.NODEV,
             mount.NOSUID,
             mount.NOEXEC,
-            mount.NODEV
         ),
         '/home': (
             mount.NODEV,
@@ -17,7 +17,7 @@ class Control(BaseContol, control_number=4):
         '/dev/shm': (
             mount.NODEV,
             mount.NOSUID,
-            mount.NOEXEC
+            mount.NOEXEC,
         )
     }
 
@@ -29,7 +29,7 @@ class Control(BaseContol, control_number=4):
         result = transport.send_command('mount')
 
         separated = {
-            item.Path: list(map(str.strip, item.Options.split(',')))
+            item.Path: item.Options
             for item in MountFinditer(text=result.Output)
             if item.Path in self.partitions
         }

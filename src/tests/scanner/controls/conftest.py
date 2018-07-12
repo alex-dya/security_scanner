@@ -38,10 +38,10 @@ def pytest_generate_tests(metafunc):
     idlist = []
     argnames = ['text', 'status', 'result']
     argvalues = []
-    for i, scenario in enumerate(metafunc.cls.case_list):
+    for i, scenario in enumerate(metafunc.cls.case_list, 1):
         idlist.append(f'Test case {i}')
         text, status, result = scenario
-        argvalues.append((dedent(text), status, result))
+        argvalues.append((dedent(text), status, dedent(result).strip()))
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
 
