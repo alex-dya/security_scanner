@@ -34,6 +34,17 @@ def get_transport_patch() -> Callable:
     return get_transport
 
 
+def pytest_generate_tests(metafunc):
+    idlist = []
+    argnames = ['text', 'status', 'result']
+    argvalues = []
+    for i, scenario in enumerate(metafunc.cls.case_list):
+        idlist.append(f'Test case {i}')
+        text, status, result = scenario
+        argvalues.append((dedent(text), status, result))
+    metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
+
+
 class BaseUnixTest(ABC):
     @property
     @abstractmethod
@@ -45,16 +56,10 @@ class BaseUnixTest(ABC):
     def origin(self):
         pass
 
-    def test_cases(self, monkeypatch, get_transport_patch):
-        for item in self.case_list:
-            text, status, result = item
-            text = dedent(text)
-            self.execute(monkeypatch, text, status, result, get_transport_patch)
-
     def not_applicable_prerequisite(self):
         return False
 
-    def execute(self, monkeypatch, text, status, result, get_transport_patch):
+    def test_case(self, monkeypatch, text, status, result, get_transport_patch):
         monkeypatch.setattr(
             self.origin,
             'get_transport',
