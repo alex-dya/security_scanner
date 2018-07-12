@@ -12,7 +12,7 @@ class Control(BaseContol, control_number=6):
         transport = get_transport('unix')
         result = transport.send_command('cat /etc/passwd')
         root_list = [
-            item
+            item.Name
             for item in PasswdParser(content=result.Output)
             if item.UID == 0
         ]
