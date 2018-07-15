@@ -80,3 +80,7 @@ class UnixTransport(SSHTransport):
     @lru_cache(maxsize=2048)
     def send_command(self, command: str) -> ExecResult:
         return self.interactive_command(command)
+
+    def stat_file(self, file_name: str) -> ExecResult:
+        return self.send_command(
+            f"LANG=C stat -c '%F|%a|%U|%G|%s|%Y|%n' {file_name}")
