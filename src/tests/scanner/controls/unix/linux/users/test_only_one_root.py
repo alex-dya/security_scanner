@@ -3,7 +3,7 @@ from scanner.controls.unix.linux.users import only_one_root
 from tests.scanner.controls.conftest import BaseUnixTest
 
 
-class TestCase(BaseUnixTest):
+class TestOnlyOneRoot(BaseUnixTest):
     origin = only_one_root
     case_list = [
         (

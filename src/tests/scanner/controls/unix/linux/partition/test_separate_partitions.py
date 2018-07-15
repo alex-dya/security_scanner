@@ -3,7 +3,7 @@ from scanner.controls.unix.linux.partitions import separate_partitions
 from tests.scanner.controls.conftest import BaseUnixTest
 
 
-class TestCase(BaseUnixTest):
+class TestSeparatePartitions(BaseUnixTest):
     origin = separate_partitions
     case_list = [
         (

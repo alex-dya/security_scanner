@@ -9,10 +9,14 @@ from scanner.types import BaseTransport, ControlStatus
 from scanner.transports.ssh import ExecResult
 
 
+class ExpectedCommandError(Exception):
+    pass
+
+
 class DummyUnixTransport(BaseTransport):
     def __init__(self, text: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._text = text
+        self._text = iter(text)
 
     def connect(self) -> None:
         pass
@@ -21,7 +25,10 @@ class DummyUnixTransport(BaseTransport):
         return True
 
     def send_command(self, text: str) -> ExecResult:
-        return ExecResult(Output=self._text, ExitStatus=0)
+        try:
+            return ExecResult(Output=next(self._text), ExitStatus=0)
+        except StopIteration:
+            raise ExpectedCommandError(f'Expected send_command({text})')
 
 
 def get_transport(name, **kwargs) -> BaseTransport:
@@ -44,11 +51,15 @@ def pytest_generate_tests(metafunc):
     ]
 
     argnames = ['text', 'status', 'result']
+    argvalues = []
 
-    argvalues = [
-        (dedent(scenario[0]), scenario[1], dedent(scenario[2]).strip())
-        for scenario in metafunc.cls.case_list
-    ]
+    for text, status, result in metafunc.cls.case_list:
+        if isinstance(text, str):
+            text = (dedent(text),)
+        else:
+            text = tuple(dedent(item) for item in text)
+
+        argvalues.append((text, status, dedent(result).strip()))
 
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
