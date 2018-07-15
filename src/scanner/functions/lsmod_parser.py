@@ -19,7 +19,7 @@ class LsmodRecord(FinditerMatchObject):
 
 class LsmodParser(FinditerBase):
     pattern = r'''
-        ^
+        ^\s*
         (?P<Name>\w+)\s+
         (?P<Size>\d+)\s+
         (?P<Number>\d+)
