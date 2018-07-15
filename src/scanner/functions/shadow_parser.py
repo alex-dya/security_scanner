@@ -4,6 +4,7 @@ from functools import partial
 
 import attr
 
+from .parsers import SplitLinesParserBase
 
 MAX = 99999
 
@@ -33,17 +34,8 @@ class ShadowRecord:
     ReservedField: str = attr.ib()
 
 
-class ShadowParser:
-    def __init__(self, content: str):
-        self.content = content
+class ShadowParser(SplitLinesParserBase):
+    TypeRecord = ShadowRecord
 
-    def __iter__(self) -> Iterator:
-        self._iter = iter(self.content.splitlines())
-        return self
-
-    def __next__(self) -> ShadowRecord:
-        line = next(self._iter)
-        while not line.strip():
-            line = next(self._iter)
-
-        return ShadowRecord(*line.split(':'))
+    def process_line(self, line):
+        return line.split(';')

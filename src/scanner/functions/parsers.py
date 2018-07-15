@@ -1,6 +1,6 @@
 import abc
 import re
-from typing import AnyStr, Iterator
+from typing import AnyStr, Iterator, Type, Iterable
 from utility import AddLoggerMeta
 
 
@@ -82,3 +82,27 @@ class FinditerBase(metaclass=FinditerBaseMeta):
 
     def __next__(self) -> FinditerMatchObject:
         return FinditerMatchObject(match_object=next(self._iter))
+
+
+class SplitLinesParserBase(metaclass=abc.ABCMeta):
+    def __init__(self, content: str):
+        self.content = content
+
+    def __iter__(self) -> Iterator:
+        self._iter = iter(self.content.splitlines())
+        return self
+
+    def __next__(self):
+        line = next(self._iter)
+        while not line.strip():
+            line = next(self._iter)
+        return self.TypeRecord(*self.process_line(line))
+
+    @property
+    @abc.abstractmethod
+    def TypeRecord(self) -> Type:
+        pass
+
+    @abc.abstractmethod
+    def process_line(self, line) -> Iterable:
+        pass
