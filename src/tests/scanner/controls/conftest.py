@@ -35,13 +35,21 @@ def get_transport_patch() -> Callable:
 
 
 def pytest_generate_tests(metafunc):
-    idlist = []
+    if metafunc.function.__name__ != 'test_case':
+        return metafunc
+
+    idlist = [
+        f'Test case {i+1}'
+        for i in range(len(metafunc.cls.case_list))
+    ]
+
     argnames = ['text', 'status', 'result']
-    argvalues = []
-    for i, scenario in enumerate(metafunc.cls.case_list, 1):
-        idlist.append(f'Test case {i}')
-        text, status, result = scenario
-        argvalues.append((dedent(text), status, dedent(result).strip()))
+
+    argvalues = [
+        (dedent(scenario[0]), scenario[1], dedent(scenario[2]).strip())
+        for scenario in metafunc.cls.case_list
+    ]
+
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
 
@@ -72,7 +80,7 @@ class BaseUnixTest(ABC):
         assert control.control.status == status
         assert control.result == result
 
-    def execute_not_applicable(self, monkeypatch):
+    def test_execute_not_applicable(self, monkeypatch):
         control = self.origin.Control()
         monkeypatch.setattr(
             control, 'prerequisite', self.not_applicable_prerequisite)

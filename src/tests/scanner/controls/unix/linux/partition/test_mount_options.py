@@ -3,7 +3,7 @@ from scanner.controls.unix.linux.partitions import mount_options
 from tests.scanner.controls.conftest import BaseUnixTest
 
 
-class TestCase(BaseUnixTest):
+class TestMountOptions(BaseUnixTest):
     origin = mount_options
     case_list = [
         (
@@ -17,6 +17,7 @@ class TestCase(BaseUnixTest):
             /var/tmp has not been mounted on separated partition
             /home has not been mounted on separated partition
             /dev/shm has not been mounted on separated partition
+            /tmp has been mounted with options "nodev,nosuid,noexec"
             '''
         ),
         (
@@ -24,12 +25,14 @@ class TestCase(BaseUnixTest):
             /dev/sda2 on /home type ext4 (rw,relatime,nodev,space_cache,subvolid=262,subvol=/@/home)
             /dev/sda3 on /var/tmp type ext4 (rw,relatime,nodev,nosuid,noexec,space_cache)
             /dev/sda3 on /dev/shm type ext4 (rw,relatime,nodev,nosuid,noexec,space_cache)
+            tmpfs on /tmp type tmpfs (rw,nosuid,nodev,noexec,relatime)
             ''',
             ControlStatus.Compliance,
             '''
             /var/tmp has been mounted with options "nodev,nosuid,noexec"
             /home has been mounted with options "nodev"
             /dev/shm has been mounted with options "nodev,nosuid,noexec"
+            /tmp has been mounted with options "nodev,nosuid,noexec"
             '''
         ),
         (
@@ -43,6 +46,7 @@ class TestCase(BaseUnixTest):
             /var/tmp has been mounted without options "nodev,nosuid,noexec"
             /home has been mounted without options "nodev"
             /dev/shm has been mounted without options "nodev,nosuid,noexec"
+            /tmp has not been mounted on separated partition
             '''
         ),
     ]

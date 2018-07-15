@@ -11,6 +11,7 @@ class Control(BaseContol, control_number=3):
         '/var/log',
         '/var/log/audit',
         '/home',
+        '/tmp'
     )
 
     def prerequisite(self):
@@ -33,10 +34,10 @@ class Control(BaseContol, control_number=3):
         ]
 
         results = []
-        for path, device in separated.items():
-            results.append(f'{path} has been mounted on {separated[path]}')
+        for path, device in sorted(separated.items()):
+            results.append(f'{path} has been mounted on {device}')
 
-        for path in missed_paths:
+        for path in sorted(missed_paths):
             results.append(f'{path} has not been mounted on separate partition')
 
         result = '\n'.join(results)

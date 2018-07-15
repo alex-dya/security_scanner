@@ -18,7 +18,13 @@ class Control(BaseContol, control_number=4):
             mount.NODEV,
             mount.NOSUID,
             mount.NOEXEC,
+        ),
+        '/tmp': (
+            mount.NODEV,
+            mount.NOSUID,
+            mount.NOEXEC,
         )
+
     }
 
     def prerequisite(self):
