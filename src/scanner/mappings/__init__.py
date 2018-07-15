@@ -1,5 +1,5 @@
 from collections import UserDict
-from scanner.const import os
+from scanner.const import os, file_type
 
 
 class Mapping(UserDict):
@@ -20,3 +20,16 @@ unameOS = Mapping(
     }
 )
 
+
+UnixFileTypeMapping = Mapping(
+    {
+        'regular file': file_type.FILE,
+        'regular empty file': file_type.FILE,
+        'character special file': file_type.CHARACTER_DEVICE,
+        'directory': file_type.DIRECTORY,
+        'symbolic link': file_type.SYMLINK,
+        'block special file': file_type.BLOCK_DEVICE,
+        'fifo': file_type.FIFO,
+        'socket': file_type.SOCKET
+    }
+)

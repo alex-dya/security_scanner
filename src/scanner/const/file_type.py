@@ -1,0 +1,7 @@
+FILE = 'file'
+DIRECTORY = 'directory'
+BLOCK_DEVICE = 'block device'
+CHARACTER_DEVICE = 'character device'
+SYMLINK = 'symbolic link'
+SOCKET = 'socket'
+FIFO = 'fifo'
