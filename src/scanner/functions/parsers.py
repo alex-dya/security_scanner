@@ -54,6 +54,12 @@ class FinditerMatchObject(metaclass=AddLoggerMeta):
         else:
             raise AttributeError
 
+    def __setattr__(self, key, value):
+        if key not in ('match', 'dict'):
+            raise RuntimeError('It is immutable object')
+
+        self.__dict__[key] = value
+
     def __str__(self) -> AnyStr:
         return f'{self.dict}'
 
