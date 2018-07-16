@@ -92,16 +92,21 @@ class SplitLinesParserBase(metaclass=abc.ABCMeta):
         self._iter = iter(self.content.splitlines())
         return self
 
-    def __next__(self):
-        line = next(self._iter)
-        while not line.strip():
-            line = next(self._iter)
-        return self.TypeRecord(*self.process_line(line))
+    errors = [
+        'No such file or directory',
+    ]
 
     @property
     @abc.abstractmethod
     def TypeRecord(self) -> Type:
         pass
+
+    def __next__(self) -> TypeRecord:
+        line = next(self._iter)
+        while not line.strip() or any(e in line for e in self.errors):
+            line = next(self._iter)
+
+        return self.TypeRecord(*self.process_line(line))
 
     @abc.abstractmethod
     def process_line(self, line) -> Iterable:

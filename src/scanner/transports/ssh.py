@@ -25,6 +25,7 @@ class SSHTransport(BaseTransport):
     class StandartChannels(NamedTuple):
         stdin: io.RawIOBase
         stdout: io.RawIOBase
+        stderr: io.RawIOBase
 
     def __init__(self, login, password, address, *args,
                  port=22, timeout=30, **kwargs):
@@ -60,6 +61,7 @@ class SSHTransport(BaseTransport):
             self._shell = self.StandartChannels(
                 stdin=channel.makefile('wb'),
                 stdout=channel.makefile('r'),
+                stderr=channel.makefile_stderr('r')
             )
             self.interactive_command('echo test')
         except paramiko.AuthenticationException:
@@ -72,7 +74,7 @@ class SSHTransport(BaseTransport):
                 port=self._port
             )
         except socket.timeout:
-            self.logger.debug(f'Host {self_address} is not available')
+            self.logger.debug(f'Host {self._address} is not available')
             raise HostNotResponsible(
                 address=self._address,
                 port=self._port
@@ -89,7 +91,10 @@ class SSHTransport(BaseTransport):
         transport = self._client.get_transport() if self._client else None
         return transport and transport.is_active()
 
-    def interactive_command(self, command: str, answers_list: List[Answer]=[]):
+    def interactive_command(self, command: str, answers_list: List[Answer]=None):
+        if answers_list is None:
+            answers_list = []
+
         command = command.strip('\n')
         self.logger.info(f'Send command: {command}')
         finish = f'{uuid.uuid4()}'
