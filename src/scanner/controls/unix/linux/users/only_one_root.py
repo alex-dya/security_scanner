@@ -10,7 +10,7 @@ class Control(BaseContol, control_number=6):
 
     def check(self):
         transport = get_transport('unix')
-        result = transport.send_command('cat /etc/passwd')
+        result = transport.get_file_content('/etc/passwd')
         root_list = [
             item.Name
             for item in PasswdParser(content=result.Output)

@@ -81,6 +81,9 @@ class UnixTransport(SSHTransport):
     def send_command(self, command: str) -> ExecResult:
         return self.interactive_command(command)
 
-    def stat_file(self, file_name: str) -> ExecResult:
+    def stat_file(self, filename: str) -> ExecResult:
         return self.send_command(
-            f"LANG=C stat -c '%F|%a|%U|%G|%s|%Y|%n' {file_name}")
+            f"stat -c '%F|%a|%U|%G|%s|%Y|%n' {filename}")
+
+    def get_file_content(self, filename: str) -> ExecResult:
+        return self.send_command(f'cat {filename}')

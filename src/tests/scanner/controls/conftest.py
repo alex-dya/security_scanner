@@ -30,6 +30,13 @@ class DummyUnixTransport(BaseTransport):
         except StopIteration:
             raise ExpectedCommandError(f'Expected send_command({text})')
 
+    def get_file_content(self, filename: str) -> ExecResult:
+        return self.send_command(f'cat {filename}')
+
+    def stat_file(self, filename: str) -> ExecResult:
+        return self.send_command(
+            f"stat -c '%F|%a|%U|%G|%s|%Y|%n' {filename}")
+
 
 def get_transport(name, **kwargs) -> BaseTransport:
     if name == 'unix':
