@@ -26,7 +26,7 @@ class DummyUnixTransport(BaseTransport):
 
     def send_command(self, text: str) -> ExecResult:
         try:
-            return ExecResult(Output=next(self._text), ExitStatus=0)
+            return ExecResult(Output=next(self._text), Error='', ExitStatus=0)
         except StopIteration:
             raise ExpectedCommandError(f'Expected send_command({text})')
 

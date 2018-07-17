@@ -3,6 +3,8 @@ import re
 from typing import AnyStr, Iterator, Type, Iterable
 from utility import AddLoggerMeta
 
+import attr
+
 
 class FinditerBaseMeta(abc.ABCMeta, AddLoggerMeta):
     pass
@@ -92,10 +94,6 @@ class SplitLinesParserBase(metaclass=abc.ABCMeta):
         self._iter = iter(self.content.splitlines())
         return self
 
-    errors = [
-        'No such file or directory',
-    ]
-
     @property
     @abc.abstractmethod
     def TypeRecord(self) -> Type:
@@ -103,10 +101,15 @@ class SplitLinesParserBase(metaclass=abc.ABCMeta):
 
     def __next__(self) -> TypeRecord:
         line = next(self._iter)
-        while not line.strip() or any(e in line for e in self.errors):
+        while not line.strip():
             line = next(self._iter)
 
-        return self.TypeRecord(*self.process_line(line))
+        result = self.process_line(line)
+
+        if len(attr.fields(self.TypeRecord)) != len(result):
+            return self.__next__()
+
+        return self.TypeRecord(*result)
 
     @abc.abstractmethod
     def process_line(self, line) -> Iterable:

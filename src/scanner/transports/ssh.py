@@ -18,10 +18,15 @@ class Answer(NamedTuple):
 
 class ExecResult(NamedTuple):
     Output: AnyStr
+    Error: AnyStr
     ExitStatus: int
 
 
 class SSHTransport(BaseTransport):
+    errors = [
+        'No such file or directory',
+    ]
+
     class StandartChannels(NamedTuple):
         stdin: io.RawIOBase
         stdout: io.RawIOBase
@@ -115,6 +120,11 @@ class SSHTransport(BaseTransport):
         line_process = lambda line: re.sub(r'.\r', '', str(line).strip())
         exit_status = 0
         for line in map(line_process, self._shell.stdout):
+            if any(e in line for e in self.errors):
+                self.logger.debug(f'STDERR: {line!r}')
+                shell_error.append(line)
+                continue
+
             self.logger.debug(f'STDOUT: {line!r}')
             if full_command in line:
                 # up for now filled with shell junk from stdin
@@ -127,9 +137,10 @@ class SSHTransport(BaseTransport):
                 break
             else:
                 # get rid of 'coloring and formatting' special characters
-                shell_out.append(
-                    re.compile(r'(\x9B|\x1B\[)[0-9]*[ -/]*[@-~]').sub('', line).
-                    replace('\b', '').replace('\r', '').strip())
+                line = re.compile(r'(\x9B|\x1B\[)[0-9]*[ -/]*[@-~]').\
+                    sub('', line).replace('\b', '').replace('\r', '').strip()
+
+                shell_out.append(line)
 
         # first and last lines of shell_out/shell_error contain a prompt
         if shell_out and echo_cmd in shell_out[-1]:
@@ -145,4 +156,5 @@ class SSHTransport(BaseTransport):
 
         return ExecResult(
             Output=join_str(shell_out),
+            Error=join_str(shell_error),
             ExitStatus=exit_status)
