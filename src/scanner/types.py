@@ -136,6 +136,9 @@ class BaseContol(metaclass=BaseControlMeta):
         cls.control = ControlResult(number=control_number)
         cls._control_list.append(cls())
 
+    def __init__(self):
+        self.control.status = ControlStatus.NotChecked
+
     @abc.abstractmethod
     def prerequisite(self) -> bool:
         pass
@@ -153,7 +156,6 @@ class BaseContol(metaclass=BaseControlMeta):
 
     def run(self) -> None:
         if not self.prerequisite():
-            self.control.not_applicable()
             return
 
         try:

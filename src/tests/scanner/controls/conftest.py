@@ -66,7 +66,7 @@ def pytest_generate_tests(metafunc):
         else:
             text = tuple(dedent(item) for item in text)
 
-        argvalues.append((text, status, dedent(result).strip()))
+        argvalues.append((text, status, result and dedent(result).strip()))
 
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
@@ -82,7 +82,7 @@ class BaseUnixTest(ABC):
     def origin(self):
         pass
 
-    def not_applicable_prerequisite(self):
+    def not_passed_prerequisite(self):
         return False
 
     def test_case(self, monkeypatch, text, status, result, get_transport_patch):
@@ -98,9 +98,9 @@ class BaseUnixTest(ABC):
         assert control.control.status == status
         assert control.result == result
 
-    def test_execute_not_applicable(self, monkeypatch):
+    def test_execute_not_checked(self, monkeypatch):
         control = self.origin.Control()
         monkeypatch.setattr(
-            control, 'prerequisite', self.not_applicable_prerequisite)
+            control, 'prerequisite', self.not_passed_prerequisite)
         control.run()
-        assert control.control.status == ControlStatus.NotApplicable
+        assert control.control.status == ControlStatus.NotChecked
