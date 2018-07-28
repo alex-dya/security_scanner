@@ -2,7 +2,7 @@ from shlex import quote
 from operator import attrgetter
 
 from scanner.const import os, file_type
-from scanner.types import BaseContol, is_os_detect
+from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
 from scanner.functions.stats_parser import StatsParser
 
@@ -19,7 +19,7 @@ class Control(BaseContol, control_number=2):
     ]
 
     def prerequisite(self):
-        return is_os_detect(os.LINUX)
+        return is_item_detected(os.LINUX)
 
     def check(self):
         transport = get_transport('unix')

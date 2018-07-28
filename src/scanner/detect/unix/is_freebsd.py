@@ -6,7 +6,7 @@ from scanner.types import BaseDetector
 
 class FreebsdDetector(BaseDetector):
     requisites = os.UNIX
-    detection_os = os.FREEBSD
+    detection_items = os.FREEBSD
     detectors = []
 
     def detect(self):

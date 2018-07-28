@@ -1,5 +1,5 @@
 from scanner.const import os, mount
-from scanner.types import BaseContol, is_os_detect, ControlStatus
+from scanner.types import BaseContol, is_item_detected, ControlStatus
 from scanner.transports import get_transport
 from scanner.functions.mount_parser import MountFinditer
 
@@ -28,7 +28,7 @@ class Control(BaseContol, control_number=4):
     }
 
     def prerequisite(self):
-        return is_os_detect(os.LINUX)
+        return is_item_detected(os.LINUX)
 
     def check(self):
         transport = get_transport('unix')

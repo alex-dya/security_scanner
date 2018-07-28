@@ -1,5 +1,5 @@
 from scanner.const import os
-from scanner.types import BaseContol, is_os_detect
+from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
 
 
@@ -20,7 +20,7 @@ class Control(BaseContol, control_number=7):
     )
 
     def prerequisite(self):
-        return is_os_detect(os.LINUX)
+        return is_item_detected(os.LINUX)
 
     def check(self):
         transport = get_transport('unix')

@@ -6,7 +6,7 @@ from scanner.types import BaseDetector
 
 class SolarisDetector(BaseDetector):
     requisites = os.UNIX
-    detection_os = os.SOLARIS
+    detection_items = os.SOLARIS
     detectors = []
 
     def detect(self):

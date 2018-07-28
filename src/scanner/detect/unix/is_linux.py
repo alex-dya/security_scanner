@@ -7,7 +7,7 @@ from .linux import detectors
 
 class LinuxDetector(BaseDetector):
     requisites = os.UNIX
-    detection_os = os.LINUX
+    detection_items = os.LINUX
     detectors = detectors
 
     def detect(self):

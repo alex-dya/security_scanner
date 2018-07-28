@@ -5,7 +5,7 @@ from .is_unix import UnixDetector
 
 
 _detectors = [
-    UnixDetector()
+    UnixDetector
 ]
 
 LOGGER = logging.getLogger(__name__)
@@ -17,7 +17,7 @@ def detect():
         detector = queue.popleft()
         LOGGER.debug(f'Run detector {detector!r}')
 
-        result = detector.run()
+        result = detector().run()
         LOGGER.debug(f'Result: {result}')
 
         for new_detector in result:

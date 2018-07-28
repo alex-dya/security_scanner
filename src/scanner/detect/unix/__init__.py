@@ -4,7 +4,7 @@ from .is_freebsd import FreebsdDetector
 
 
 detectors = [
-    LinuxDetector(),
-    SolarisDetector(),
-    FreebsdDetector()
+    LinuxDetector,
+    SolarisDetector,
+    FreebsdDetector
 ]

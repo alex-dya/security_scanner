@@ -1,7 +1,7 @@
 import abc
 import logging
 from enum import Enum
-from typing import Union, List, AnyStr
+from typing import Union, List, Iterable, AnyStr
 
 from utility import AddLoggerMeta
 
@@ -31,14 +31,14 @@ class BaseDetectorMeta(abc.ABCMeta, AddLoggerMeta):
     pass
 
 
-def os_detect(os: str) -> None:
-    logger.info(f'OS: {os} has been detected')
-    _detected.add(os)
+def detect_item(name: str) -> None:
+    logger.info(f'Item {name} has been detected')
+    _detected.add(name)
 
 
-def is_os_detect(os: str) -> bool:
-    result = os in _detected
-    logger.debug(f'Is_os_detected: {os} is {result}')
+def is_item_detected(item: str) -> bool:
+    result = item in _detected
+    logger.debug(f'Is_item_detected: {item} is {result}')
     return result
 
 
@@ -61,7 +61,7 @@ class BaseDetector(metaclass=BaseDetectorMeta):
 
     @property
     @abc.abstractmethod
-    def detection_os(self) -> str:
+    def detection_items(self) -> str:
         pass
 
     @property
@@ -72,9 +72,11 @@ class BaseDetector(metaclass=BaseDetectorMeta):
     @property
     def requirements(self) -> bool:
         if self.requisites:
-            if isinstance(self.requisites, List):
-                return all(map(is_os_detect, self.requisites))
-            return is_os_detect(self.requisites)
+            if isinstance(self.requisites, str):
+                return is_item_detected(self.requisites)
+
+            if isinstance(self.requisites, Iterable):
+                return all(map(is_item_detected, self.requisites))
         return True
 
     @abc.abstractmethod
@@ -83,7 +85,7 @@ class BaseDetector(metaclass=BaseDetectorMeta):
 
     def run(self) -> List:
         if self.requirements and self.detect():
-            os_detect(self.detection_os)
+            detect_item(self.detection_items)
             return self.detectors
         return []
 

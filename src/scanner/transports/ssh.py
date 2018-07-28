@@ -25,6 +25,7 @@ class ExecResult(NamedTuple):
 class SSHTransport(BaseTransport):
     errors = [
         'No such file or directory',
+        'command not found'
     ]
 
     class StandartChannels(NamedTuple):
