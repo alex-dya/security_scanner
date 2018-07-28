@@ -1,9 +1,9 @@
 from scanner.types import ControlStatus
 from scanner.controls.unix.linux.partitions import separate_partitions
-from tests.scanner.controls.conftest import BaseUnixTest
+from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
-class TestSeparatePartitions(BaseUnixTest):
+class TestSeparatePartitions(BaseUnixControlTest):
     origin = separate_partitions
     case_list = [
         (

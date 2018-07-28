@@ -1,9 +1,9 @@
 from scanner.types import ControlStatus
 from scanner.controls.unix.linux.filesystem import mounting_is_disabled
-from tests.scanner.controls.conftest import BaseUnixTest
+from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
-class TestMountingIsDisabled(BaseUnixTest):
+class TestMountingIsDisabled(BaseUnixControlTest):
     origin = mounting_is_disabled
     case_list = [
         (

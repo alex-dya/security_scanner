@@ -1,10 +1,10 @@
 from scanner.types import ControlStatus
 from scanner.controls.unix.linux.boot_settings \
     import permissions_on_bootloader_config
-from tests.scanner.controls.conftest import BaseUnixTest
+from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
-class TestPermissionsOnBootloaderConfig(BaseUnixTest):
+class TestPermissionsOnBootloaderConfig(BaseUnixControlTest):
     origin = permissions_on_bootloader_config
     case_list = [
         (

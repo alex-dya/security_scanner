@@ -1,9 +1,9 @@
 from scanner.types import ControlStatus
 from scanner.controls.unix.linux.users import only_one_root
-from tests.scanner.controls.conftest import BaseUnixTest
+from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
-class TestOnlyOneRoot(BaseUnixTest):
+class TestOnlyOneRoot(BaseUnixControlTest):
     origin = only_one_root
     case_list = [
         (

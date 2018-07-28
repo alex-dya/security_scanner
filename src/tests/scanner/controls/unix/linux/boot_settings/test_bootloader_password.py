@@ -1,9 +1,9 @@
 from scanner.types import ControlStatus
 from scanner.controls.unix.linux.boot_settings import bootloader_password
-from tests.scanner.controls.conftest import BaseUnixTest
+from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
-class TestBootloaderPassword(BaseUnixTest):
+class TestBootloaderPassword(BaseUnixControlTest):
     origin = bootloader_password
     case_list = [
         (

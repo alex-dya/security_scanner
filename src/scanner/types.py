@@ -71,23 +71,30 @@ class BaseDetector(metaclass=BaseDetectorMeta):
 
     @property
     def requirements(self) -> bool:
-        if self.requisites:
-            if isinstance(self.requisites, str):
-                return is_item_detected(self.requisites)
+        if not self.requisites:
+            return True
 
-            if isinstance(self.requisites, Iterable):
-                return all(map(is_item_detected, self.requisites))
-        return True
+        if isinstance(self.requisites, str):
+            return is_item_detected(self.requisites)
+
+        if isinstance(self.requisites, Iterable):
+            return all(map(is_item_detected, self.requisites))
+
+        raise ValueError('Detector.requirements must be str or iterable')
 
     @abc.abstractmethod
     def detect(self) -> List:
         pass
 
     def run(self) -> List:
-        if self.requirements and self.detect():
-            detect_item(self.detection_items)
-            return self.detectors
-        return []
+        if not self.requirements:
+            return []
+
+        if not self.detect():
+            return []
+
+        detect_item(self.detection_items)
+        return self.detectors
 
     def __repr__(self):
         return f'{self.__class__.__qualname__}()'
@@ -96,11 +103,13 @@ class BaseDetector(metaclass=BaseDetectorMeta):
 class ControlResult:
     controls = {}
 
-    def __new__(cls, number, *args, **kwargs):
-        if number not in cls.controls:
-            cls.controls[number] = super(ControlResult, cls).__new__(cls, *args, **kwargs)
+    def __new__(cls, number: int, *args, **kwargs) -> 'ControlResult':
+        if number in cls.controls:
+            return cls.controls[number]
 
-        return cls.controls[number]
+        control = super(ControlResult, cls).__new__(cls, *args, **kwargs)
+        cls.controls[number] = control
+        return control
 
     def __init__(self, number: int):
         self.number = number
@@ -123,10 +132,10 @@ class ControlResult:
         self.status = ControlStatus.Error
         self.result = result
 
-    def __repr__(self):
+    def __repr__(self) -> AnyStr:
         return f'ControlResult(number={self.number})'
 
-    def __str__(self):
+    def __str__(self) -> AnyStr:
         return f'number={self.number} status={self.status}'
 
 
@@ -154,7 +163,8 @@ class BaseContol(metaclass=BaseControlMeta):
         return self.control.result
 
     def __str__(self) -> AnyStr:
-        return f'{self.__class__.__module__}.{self.__class__.__name__}({self.control})'
+        return f'{self.__class__.__module__}.{self.__class__.__name__}' \
+               f'({self.control})'
 
     def run(self) -> None:
         if not self.prerequisite():

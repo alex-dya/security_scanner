@@ -1,51 +1,8 @@
 from abc import ABC, abstractmethod
 from functools import partial
-from typing import Callable
 from textwrap import dedent
 
-import pytest
-
-from scanner.types import BaseTransport, ControlStatus
-from scanner.transports.ssh import ExecResult
-
-
-class ExpectedCommandError(Exception):
-    pass
-
-
-class DummyUnixTransport(BaseTransport):
-    def __init__(self, text: str, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self._text = iter(text)
-
-    def connect(self) -> None:
-        pass
-
-    def is_connect(self) -> bool:
-        return True
-
-    def send_command(self, text: str) -> ExecResult:
-        try:
-            return ExecResult(Output=next(self._text), Error='', ExitStatus=0)
-        except StopIteration:
-            raise ExpectedCommandError(f'Expected send_command({text})')
-
-    def get_file_content(self, filename: str) -> ExecResult:
-        return self.send_command(f'cat {filename}')
-
-    def stat_file(self, filename: str) -> ExecResult:
-        return self.send_command(
-            f"stat -c '%F|%a|%U|%G|%s|%Y|%n' {filename}")
-
-
-def get_transport(name, **kwargs) -> BaseTransport:
-    if name == 'unix':
-        return DummyUnixTransport(**kwargs)
-
-
-@pytest.fixture(scope='module')
-def get_transport_patch() -> Callable:
-    return get_transport
+from scanner.types import ControlStatus
 
 
 def pytest_generate_tests(metafunc):
@@ -71,7 +28,7 @@ def pytest_generate_tests(metafunc):
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
 
-class BaseUnixTest(ABC):
+class BaseUnixControlTest(ABC):
     @property
     @abstractmethod
     def case_list(self):
@@ -82,7 +39,8 @@ class BaseUnixTest(ABC):
     def origin(self):
         pass
 
-    def not_passed_prerequisite(self):
+    @staticmethod
+    def not_passed_prerequisite():
         return False
 
     def test_case(self, monkeypatch, text, status, result, get_transport_patch):
