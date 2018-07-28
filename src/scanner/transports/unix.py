@@ -2,6 +2,7 @@ import time
 from enum import Enum
 from typing import List
 from functools import lru_cache
+from shlex import quote
 
 
 from .ssh import SSHTransport, Answer, ExecResult
@@ -86,4 +87,4 @@ class UnixTransport(SSHTransport):
             f"stat -c '%F|%a|%U|%G|%s|%Y|%n' {filename}")
 
     def get_file_content(self, filename: str) -> ExecResult:
-        return self.send_command(f'cat {filename}')
+        return self.send_command(f'cat {quote(filename)}')
