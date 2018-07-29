@@ -38,4 +38,4 @@ class ShadowParser(SplitLinesParserBase):
     TypeRecord = ShadowRecord
 
     def process_line(self, line):
-        return line.split(';')
+        return line.split(':')
