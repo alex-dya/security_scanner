@@ -54,3 +54,14 @@ def test_duplcated_options():
             ExecStart=['-/lib/systemd/systemd-sulogin-shell emergency']
         )
     )
+
+
+def test_wrong_unit_files():
+    data = '''
+
+    fasdfsadf
+    fdaf
+    '''
+    parser = SystemdUnitParser(dedent(data.strip()))
+    result = parser.get_dict()
+    assert result == dict()
