@@ -1,4 +1,4 @@
-from scanner.functions.lsmod_parser import LsmodParser
+from scanner.functions.unix.lsmod_parser import LsmodParser
 
 
 def test_simple_case():

@@ -1,5 +1,5 @@
 import re
-from .parsers import FinditerBase, FinditerMatchObject
+from scanner.functions.parsers import FinditerBase, FinditerMatchObject
 
 
 class MountMatchObject(FinditerMatchObject):

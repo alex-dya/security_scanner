@@ -4,7 +4,7 @@ from operator import attrgetter
 from scanner.const import os, file_type
 from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
-from scanner.functions.stats_parser import StatsParser
+from scanner.functions.unix.stats_parser import StatsParser
 
 
 class Control(BaseContol, control_number=2):

@@ -1,6 +1,6 @@
 import attr
 
-from .parsers import SplitLinesParserBase
+from scanner.functions.parsers import SplitLinesParserBase
 
 @attr.s
 class PasswdRecord:

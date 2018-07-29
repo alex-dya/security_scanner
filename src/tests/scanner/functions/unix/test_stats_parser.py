@@ -3,7 +3,7 @@ from textwrap import dedent
 
 import pytest
 
-from scanner.functions.stats_parser import StatsParser
+from scanner.functions.unix.stats_parser import StatsParser
 from scanner.const import file_type
 
 

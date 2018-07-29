@@ -1,7 +1,7 @@
 from scanner.const import os
 from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
-from scanner.functions.lsmod_parser import LsmodParser
+from scanner.functions.unix.lsmod_parser import LsmodParser
 
 
 class Control(BaseContol, control_number=1):

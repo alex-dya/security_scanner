@@ -1,6 +1,6 @@
 import pytest
 
-from scanner.functions.shadow_parser import ShadowRecord
+from scanner.functions.unix.shadow_parser import ShadowRecord
 from datetime import date
 
 

@@ -1,6 +1,6 @@
 import pytest
 
-from scanner.functions.passwd_parser import PasswdRecord
+from scanner.functions.unix.passwd_parser import PasswdRecord
 
 
 def test_simple_case():

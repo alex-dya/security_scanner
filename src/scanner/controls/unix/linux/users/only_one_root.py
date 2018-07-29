@@ -1,7 +1,7 @@
 from scanner.const import os
 from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
-from scanner.functions.passwd_parser import PasswdParser
+from scanner.functions.unix.passwd_parser import PasswdParser
 
 
 class Control(BaseContol, control_number=6):

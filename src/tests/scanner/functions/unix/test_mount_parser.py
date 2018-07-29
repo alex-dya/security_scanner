@@ -1,4 +1,4 @@
-from scanner.functions.mount_parser import MountFinditer
+from scanner.functions.unix.mount_parser import MountFinditer
 
 
 def test_simple_case():

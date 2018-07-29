@@ -1,7 +1,7 @@
 from scanner.const import os
 from scanner.types import BaseContol, is_item_detected
 from scanner.transports import get_transport
-from scanner.functions.mount_parser import MountFinditer
+from scanner.functions.unix.mount_parser import MountFinditer
 
 
 class Control(BaseContol, control_number=3):

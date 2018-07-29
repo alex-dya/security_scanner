@@ -2,7 +2,7 @@ from datetime import datetime
 
 import attr
 
-from .parsers import SplitLinesParserBase
+from scanner.functions.parsers import SplitLinesParserBase
 from scanner.mappings import UnixFileTypeMapping
 
 

@@ -4,7 +4,7 @@ from functools import partial
 
 import attr
 
-from .parsers import SplitLinesParserBase
+from scanner.functions.parsers import SplitLinesParserBase
 
 MAX = 99999
 

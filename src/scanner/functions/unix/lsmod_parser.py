@@ -3,7 +3,7 @@ from typing import Tuple
 
 import attr
 
-from .parsers import FinditerMatchObject, FinditerBase
+from scanner.functions.parsers import FinditerMatchObject, FinditerBase
 from scanner.functions.common import split_and_strip
 
 
