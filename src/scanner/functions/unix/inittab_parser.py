@@ -4,6 +4,7 @@ from typing import AnyStr, Iterable
 import attr
 
 from scanner.functions.parsers import SplitLinesParserBase
+from scanner.functions.common import delete_comments
 
 
 @attr.s
@@ -17,8 +18,9 @@ class InittabRecord:
 class InittabParser(SplitLinesParserBase):
     TypeRecord = InittabRecord
 
-    def process_line(self, line: AnyStr) -> Iterable:
-        if line.strip().startswith('#'):
-            return []
+    @staticmethod
+    def preprocess_content(content):
+        return delete_comments(content)
 
+    def process_line(self, line: AnyStr) -> Iterable:
         return line.split(':')

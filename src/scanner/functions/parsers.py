@@ -91,7 +91,11 @@ class FinditerBase(metaclass=FinditerBaseMeta):
 
 class SplitLinesParserBase(metaclass=abc.ABCMeta):
     def __init__(self, content: str):
-        self.content = content
+        self.content = self.preprocess_content(content)
+
+    @staticmethod
+    def preprocess_content(content):
+        return content
 
     def __iter__(self) -> Iterator:
         self._iter = iter(self.content.splitlines())
