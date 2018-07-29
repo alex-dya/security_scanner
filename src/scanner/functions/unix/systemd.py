@@ -33,7 +33,7 @@ class SystemdUnitParser:
                 self.config.items(section, raw=True)
             )
 
-    def get_dict(self):
+    def get_dict(self) -> dict:
         if self.result_dict is None:
             self._create_dict()
 
