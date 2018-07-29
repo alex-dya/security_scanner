@@ -1,6 +1,6 @@
 import abc
 import re
-from typing import AnyStr, Iterator, Type, Iterable
+from typing import AnyStr, Iterator, Type, Iterable, Dict
 from utility import AddLoggerMeta
 
 import attr
@@ -16,12 +16,11 @@ class KeyValueParser:
     def __init__(self, text: str, delimiter: str = '='):
         self.text = text
         self.delimiter = delimiter
-        self.result = dict()
-        self.__process()
+        self.result = self.__process()
 
-    def __process(self) -> None:
+    def __process(self) -> Dict[str, str]:
+        result = {}
         for line in self.text.splitlines():
-
             if not line.strip():
                 continue
 
@@ -30,19 +29,23 @@ class KeyValueParser:
             if self.double_quotes.match(value):
                 value = value[1:-1]
 
-            if key in self.result:
-                if isinstance(self.result[key], list):
-                    self.result[key] = self.result[key] + [value]
-                else:
-                    self.result[key] = [self.result[key]] + [value]
-            else:
-                self.result[key] = value
+            if key in result:
+                if isinstance(result[key], list):
+                    result[key] = result[key] + [value]
+                    continue
+
+                result[key] = [result[key]] + [value]
+                continue
+
+            result[key] = value
+
+        return result
 
     def __getattr__(self, item: str) -> AnyStr:
-        if item in self.result:
-            return self.result[item]
-        else:
+        if item not in self.result:
             raise AttributeError
+
+        return self.result[item]
 
 
 class FinditerMatchObject(metaclass=AddLoggerMeta):
