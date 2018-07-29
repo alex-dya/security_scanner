@@ -26,7 +26,10 @@ class UnixTransport(SSHTransport):
             LC_CTYPE='C',
             HISTFILESIZE='0',
             HISTSIZE='0',
-            HISTFILE=None
+            HISTFILE=None,
+            TERM='xterm',
+            LC_COLORS=None,
+            SYSTEMD_COLORS=0
         )
 
     def connect(self) -> None:
