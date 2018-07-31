@@ -8,6 +8,13 @@ logging.basicConfig(level=logging.DEBUG)
 LOGGER = logging.getLogger(__name__)
 
 
+def scan(config: dict) -> list:
+    transports.config = config
+    detect()
+    controls.run_controls()
+    return controls.result()
+
+
 def main():
     transports.config = dict(
         unix=dict(

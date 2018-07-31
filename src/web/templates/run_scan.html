@@ -1,0 +1,56 @@
+{% extends "main_interface.html" %}
+{% block content %}
+<h1>Run task</h1>
+<form action="{{ url_for('run_scan') }}" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username }}
+    </p>
+    <p>
+        {{ form.password.label }}<br>
+        {{ form.password }}
+    </p>
+    <p>
+        {{ form.hostname.label }}<br>
+        {{ form.hostname }}
+    </p>
+    <p>
+        {{ form.port.label }}<br>
+        {{ form.port }}
+    </p>
+    <p>
+        {{ form.root_logon.label }}<br>
+        {{ form.root_logon }}
+    </p>
+    <p>
+        {{ form.root_password.label }}<br>
+        {{ form.root_password }}
+    </p>
+    <p>
+        {{ form.username.label }}<br>
+        {{ form.username }}
+    </p>
+    <p>
+        {{ form.submit }}
+    </p>
+</form>
+
+{% if result_list %}
+<table width="100%">
+    <tr>
+        <th>Номер контроля</th>
+        <th>Статус</th>
+        <th>Результат</th>
+    </tr>
+    {% for item in result_list %}
+    <tr>
+        <td width="15%">{{ item.control.number }}</td>
+        <td width="15%">{{ item.control.status }}</td>
+        <td>{{ item.result | replace('\n', '<br>') | safe }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% endblock %}

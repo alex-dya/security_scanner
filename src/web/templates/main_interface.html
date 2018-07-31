@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block body %}
+<div align="center">
+    <table width="800">
+        <tr>
+            <td><a href="{{ url_for('run_scan') }}">Сканирование</a></td>
+        </tr>
+        <tr>
+            <td>
+            {% block content %} {% endblock %}
+            </td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
