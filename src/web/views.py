@@ -7,14 +7,13 @@ from test_ssh import scan
 @app.route('/')
 @app.route('/index')
 def index():
-    title = app.config.get('TITLE')
-    return render_template('main_interface.html',
-                           title=title)
+    return render_template('main_interface.html')
 
 
 @app.route('/run_scan', methods=['GET', 'POST'])
 def run_scan():
     form = forms.StartTaskForm()
+    result = None
     if form.validate_on_submit():
         config = dict(
             unix=dict(
@@ -27,5 +26,5 @@ def run_scan():
             )
         )
         result = scan(config=config)
-        return render_template('run_scan.html', title='TITLE', form=form, result_list=result)
-    return render_template('run_scan.html', title='TITLE', form=form)
+
+    return render_template('run_scan.html', form=form, result_list=result)
