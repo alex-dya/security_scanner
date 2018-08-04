@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
-from web import db, login
+from web import db, login_manager
 
 
 class AccountCredential(db.Model):
@@ -29,6 +29,6 @@ class User(UserMixin, db.Model):
         return f'User({self.username})'
 
 
-@login.user_loader
+@login_manager.user_loader
 def load_user(id_: str):
     return User.query.get(int(id_))
