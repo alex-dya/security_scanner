@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import (
     StringField, PasswordField, SubmitField, SelectField, IntegerField,
-    BooleanField)
+    BooleanField, HiddenField)
 from wtforms.validators import (
     DataRequired, IPAddress, NumberRange,  ValidationError, EqualTo, Email)
 
@@ -67,3 +67,12 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+
+class EditCredentialForm(FlaskForm):
+    id = HiddenField('Id')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Add')

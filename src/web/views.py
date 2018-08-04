@@ -1,11 +1,11 @@
-from flask import render_template, url_for, redirect, request, flash, session
+from flask import render_template, url_for, redirect, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from web import app, forms, db, login_manager
 from test_ssh import scan
 from web.forms import RegistrationForm, LoginForm
-from web.models import User
+from web.models import User, AccountCredential
 
 
 @app.route('/')
@@ -83,6 +83,82 @@ def run_scan():
         result = scan(config=config)
 
     return render_template('run_scan.html', form=form, result_list=result)
+
+
+@app.route('/credentials')
+@login_required
+def credentials():
+    return render_template(
+        'credentials.html',
+        credential_list=current_user.credentials
+    )
+
+
+@app.route('/create_credential', methods=['GET', 'POST'])
+@login_required
+def create_credential():
+    form = forms.EditCredentialForm()
+
+    if not form.validate_on_submit():
+        return render_template(
+            'edit_credential.html',
+            form=form,
+            action='Create'
+        )
+
+    cred = AccountCredential(
+        username=form.username.data,
+        password=form.password.data,
+        owner_id=current_user.get_id()
+    )
+    db.session.add(cred)
+    db.session.commit()
+    flash(message='New account credential was created')
+    return redirect(url_for('credentials'))
+
+
+@app.route('/edit_credential/<int:cred_id>', methods=['GET', 'POST'])
+@login_required
+def edit_credential(cred_id):
+    if not cred_id:
+        return redirect(url_for('credentials'))
+
+    form = forms.EditCredentialForm()
+    cred = AccountCredential.query.filter_by(id=cred_id).first()
+
+    if not cred:
+        flash('The credential id does not exist')
+        return redirect(url_for('credentials'))
+
+    if not form.validate_on_submit():
+        form.username.data = cred.username
+        form.id.data = cred_id
+        form.submit.label.text = 'Edit'
+
+        return render_template(
+            'edit_credential.html',
+            form=form,
+            action='Edit'
+        )
+
+    cred.username = form.username.data
+    cred.password = form.password.data
+    db.session.commit()
+    return redirect(url_for('credentials'))
+
+
+@app.route('/delete_credential', methods=['POST'])
+@login_required
+def delete_credential():
+    creds = request.form.getlist('cred_ids[]')
+    if not creds:
+        return redirect(url_for('credentials'))
+
+    AccountCredential.query.filter_by(
+        owner_id=current_user.get_id()
+    ).filter(AccountCredential.id.in_(creds)).delete(synchronize_session=False)
+    db.session.commit()
+    return redirect(url_for('credentials'))
 
 
 @login_manager.unauthorized_handler

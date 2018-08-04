@@ -5,9 +5,19 @@
         <div class="col-md">
             <a href="{{ url_for('run_scan') }}">Сканирование</a>
         </div>
+        <div class="col-md">
+            <a href="{{ url_for('credentials') }}">Учетные записи</a>
+        </div>
         <div class="col-sm">
             <a href="{{ url_for('logout') }}">Выход</a>
         </div>
+    </div>
+    <div class="row">
+    {% with messages = get_flashed_messages() %}
+        {% for error in messages %}
+        <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    {% endwith %}
     </div>
     <div class="row">
         <div class="col-sm">
