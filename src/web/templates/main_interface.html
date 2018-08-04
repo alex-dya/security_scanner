@@ -1,15 +1,18 @@
 {% extends "base.html" %}
 {% block body %}
-<div align="center">
-    <table width="800">
-        <tr>
-            <td><a href="{{ url_for('run_scan') }}">Сканирование</a></td>
-        </tr>
-        <tr>
-            <td>
-            {% block content %} {% endblock %}
-            </td>
-        </tr>
-    </table>
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-md">
+            <a href="{{ url_for('run_scan') }}">Сканирование</a>
+        </div>
+        <div class="col-sm">
+            <a href="{{ url_for('logout') }}">Выход</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+        {% block content %} {% endblock %}
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -9,7 +9,7 @@ class Config:
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        f'sqlite:///{Path(Path.cwd(), "app.db")}'
+        f'sqlite:///{Path(Path(__file__).parent, "app.db")}'
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
