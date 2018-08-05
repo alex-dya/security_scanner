@@ -15,4 +15,4 @@ login_manager = LoginManager(app)
 bootstrap = Bootstrap(app)
 
 
-from web import views, models, credentials, profiles
+from web import views, models, credentials, profiles, tasks

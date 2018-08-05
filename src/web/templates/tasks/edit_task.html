@@ -1,0 +1,50 @@
+{% extends "main_interface.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+<form action="" method="POST">
+
+<h1>{{ action }} task</h1>
+    {% if form.id.data != '' %}
+        {{ form.id()  }}
+    {% endif %}
+    {{ form.hidden_tag() }}
+    <input type="hidden" name="profiles" value="{{ profiles }}">
+     {{ wtf.form_field(form.name) }}
+
+<table class="table" id="settings">
+    <thead>
+        <tr class="header">
+            <th scope="row">#</th>
+            <th scope="row">Hostname</th>
+            <th scope="row">Profile</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for item in form.settings %}
+    <tr id="task_setting">
+        <th>{{ loop.index }}</th>
+        <td>{{ item.hostname(class='form-control') }}</td>
+        <td>{{ item.profile(class='form-control') }}</td>
+        <td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="5" style="text-align: left;">
+                <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+            </td>
+        </tr>
+        <tr>
+        </tr>
+    </tfoot>
+</table>
+    {{ form.submit(class='btn btn-primary') }}
+
+</form>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='task.js') }}"></script>
+{% endblock %}

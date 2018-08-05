@@ -1,3 +1,6 @@
+from collections import defaultdict
+from typing import Dict, List
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
@@ -5,6 +8,14 @@ from web import db, login_manager
 
 
 class ProfileSetting(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint(
+            'transport',
+            'setting',
+            'profile_id',
+            name='profile_setting_uniq'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     transport = db.Column(db.String, nullable=False)
     setting = db.Column(db.String, nullable=False)
@@ -20,11 +31,9 @@ class ProfileSetting(db.Model):
         index=True
     )
 
-    db.UniqueConstraint('transport', 'setting', 'profile_id', name='uix_1')
-
     def __repr__(self):
         return f'ProfileSetting(transport={self.transport}, ' \
-               f'setting={self.setting}'
+               f'setting={self.setting})'
 
 
 class AccountCredential(db.Model):
@@ -43,6 +52,10 @@ class AccountCredential(db.Model):
 
 
 class ScanProfile(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('name', 'owner_id', name='scan_profile_uniq'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     owner_id = db.Column(
@@ -61,10 +74,15 @@ class ScanProfile(db.Model):
         cascade="save-update, delete"
     )
 
-    db.UniqueConstraint('name', 'owner_id', name='uix_1')
-
     def __repr__(self) -> str:
         return f'ScanProfile(name={self.name})'
+
+    def to_dict(self) -> Dict[str, Dict[str, str]]:
+        result = defaultdict(dict)
+        for item in self.settings:
+            result[item.transport][item.setting] = item.value
+
+        return result
 
 
 class User(UserMixin, db.Model):
@@ -77,6 +95,8 @@ class User(UserMixin, db.Model):
         'AccountCredential', backref='owner', lazy='dynamic')
     scan_profiles = db.relationship(
         'ScanProfile', backref='owner', lazy='dynamic')
+    tasks = db.relationship(
+        'Task', backref='owner', lazy='dynamic')
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -91,3 +111,72 @@ class User(UserMixin, db.Model):
 @login_manager.user_loader
 def load_user(id_: str):
     return User.query.get(int(id_))
+
+
+class TaskSetting(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint(
+            'hostname',
+            'profile_id',
+            'task_id',
+            name='task_setting_uniq'),
+    )
+
+    id = db.Column(db.Integer, primary_key=True)
+    hostname = db.Column(db.String(128))
+    profile_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'scan_profile.id',
+            name='task_setting_fk',
+            ondelete='SET NULL'
+        ),
+        nullable=False
+    )
+    task_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'task.id',
+            name='task_setting_fk2',
+            ondelete='CASCADE'
+        ),
+        nullable=False
+    )
+    profile = db.relationship('ScanProfile')
+
+    def __repr__(self):
+        return f'TaskSetting(hostname={self.hostname}, ' \
+               f'profile_id={self.profile_id})'
+
+
+class Task(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('name', 'owner_id', name='task_uniq'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True)
+    owner_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.id',
+            name='task_fk',
+            ondelete='CASCADE'
+        ),
+        nullable=False
+    )
+
+    settings = db.relationship(
+        'TaskSetting', backref='task', lazy='dynamic')
+
+    def to_list(self) -> List:
+        return [
+            dict(
+                address=item.hostname,
+                **item.profile.to_dict()
+            )
+            for item in self.settings
+        ]
+
+    def __repr__(self):
+        return f'Task(name={self.name})'
+
