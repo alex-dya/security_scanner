@@ -1,0 +1,81 @@
+from flask import render_template, flash, redirect, url_for, request
+from flask_login import login_required, current_user
+
+from web.credentials import forms
+from web import app, db
+from web.models import AccountCredential
+
+
+@app.route('/credentials')
+@login_required
+def credentials():
+    return render_template(
+        'credentials/credential_list.html',
+        credential_list=current_user.credentials
+    )
+
+
+@app.route('/create_credential', methods=['GET', 'POST'])
+@login_required
+def create_credential():
+    form = forms.EditCredentialForm()
+
+    if not form.validate_on_submit():
+        return render_template(
+            'credentials/edit_credential.html',
+            form=form,
+            action='Create'
+        )
+
+    cred = AccountCredential(
+        username=form.username.data,
+        password=form.password.data,
+        owner_id=current_user.get_id()
+    )
+    db.session.add(cred)
+    db.session.commit()
+    flash(message='New account credential was created')
+    return redirect(url_for('credentials'))
+
+
+@app.route('/edit_credential/<int:cred_id>', methods=['GET', 'POST'])
+@login_required
+def edit_credential(cred_id):
+    if not cred_id:
+        return redirect(url_for('credentials'))
+
+    form = forms.EditCredentialForm()
+    cred = AccountCredential.query.filter_by(id=cred_id).first()
+
+    if not cred:
+        flash('The credential id does not exist')
+        return redirect(url_for('credentials'))
+
+    if not form.validate_on_submit():
+        form.username.data = cred.username
+        form.id.data = cred_id
+
+        return render_template(
+            'credentials/edit_credential.html',
+            form=form,
+            action='Edit'
+        )
+
+    cred.username = form.username.data
+    cred.password = form.password.data
+    db.session.commit()
+    return redirect(url_for('credentials'))
+
+
+@app.route('/delete_credential', methods=['POST'])
+@login_required
+def delete_credential():
+    creds = request.form.getlist('cred_ids[]')
+    if not creds:
+        return redirect(url_for('credentials'))
+
+    AccountCredential.query.filter_by(
+        owner_id=current_user.get_id()
+    ).filter(AccountCredential.id.in_(creds)).delete(synchronize_session=False)
+    db.session.commit()
+    return redirect(url_for('credentials'))

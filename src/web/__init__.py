@@ -13,4 +13,4 @@ migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 
 
-from web import views, models
+from web import views, models, credentials, profiles
