@@ -1,0 +1,39 @@
+{% extends "main_interface.html" %}
+{% block content %}
+    <h1>{{ action }} profile</h1>
+    <form action="" method="post">
+        {% if form.id.data != '' %}
+            {{ form.id() }}
+        {% endif %}
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name(size=32) }}<br>
+            {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <div class="container">
+        <h3>Настройки транспортов</h3>
+            <div class="row">
+                <div class="col-3">
+                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                      <a class="nav-link active" id="v-pills-ssh-tab" data-toggle="pill" href="#v-pills-ssh" role="tab" aria-controls="v-pills-home" aria-selected="true">SSH</a>
+                      <a class="nav-link" id="v-pills-unix-tab" data-toggle="pill" href="#v-pills-unix" role="tab" aria-controls="v-pills-profile" aria-selected="false">Unix</a>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="tab-content" id="v-pills-tabContent">
+                      <div class="tab-pane fade show active" id="v-pills-ssh" role="tabpanel" aria-labelledby="v-pills-ssh-tab">
+                          {{ form.ssh_settings() }}
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-unix" role="tabpanel" aria-labelledby="v-pills-unix-tab">
+                          {{ form.unix_settings() }}
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p>{{ form.submit(class="btn btn-primary") }}</p>
+    </form>
+{% endblock %}

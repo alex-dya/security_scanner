@@ -2,10 +2,10 @@ from flask import render_template, url_for, redirect, request, flash
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from web import app, forms, db, login_manager
 from test_ssh import scan
+from web import app, forms, db, login_manager
 from web.forms import RegistrationForm, LoginForm
-from web.models import User, AccountCredential
+from web.models import User, AccountCredential, ScanProfile
 
 
 @app.route('/')
@@ -159,6 +159,76 @@ def delete_credential():
     ).filter(AccountCredential.id.in_(creds)).delete(synchronize_session=False)
     db.session.commit()
     return redirect(url_for('credentials'))
+
+
+@app.route('/scan_profiles')
+@login_required
+def scan_profiles():
+    return render_template(
+        'scan_profiles.html',
+        scan_profiles=current_user.scan_profiles
+    )
+
+
+@app.route('/create_scan_profile', methods=['GET', 'POST'])
+@login_required
+def create_scan_profile():
+    form = forms.ScanProfileForm()
+
+    if not form.validate_on_submit():
+        return render_template(
+            'edit_profile.html',
+            form=form,
+            action='Create',
+        )
+
+    profile = ScanProfile(
+        owner_id=current_user.get_id()
+    )
+    form.populate_obj(profile)
+    db.session.add(profile)
+    db.session.commit()
+    flash(message='Profile was created')
+    return redirect(url_for('scan_profiles'))
+
+
+@app.route('/edit_scan_profile/<int:profile_id>', methods=['GET', 'POST'])
+@login_required
+def edit_scan_profile(profile_id):
+    profile = current_user.scan_profiles.filter_by(id=profile_id).first()
+
+    if not profile:
+        return redirect(url_for('scan_profiles'))
+
+    form = forms.ScanProfileForm()
+
+    if not form.validate_on_submit():
+        form.populate(profile)
+        return render_template(
+            'edit_profile.html',
+            form=form,
+            action='Edit',
+        )
+
+    form.populate_obj(profile)
+
+    db.session.commit()
+    flash(message='Profile was edited')
+    return redirect(url_for('scan_profiles'))
+
+
+@app.route('/delete_scan_profile', methods=['POST'])
+@login_required
+def delete_scan_profile():
+    profiles = request.form.getlist('profile_ids[]')
+    if not profiles:
+        return redirect(url_for('scan_profiles'))
+
+    current_user.scan_profiles.filter(
+        ScanProfile.id.in_(profiles)
+    ).delete(synchronize_session=False)
+    db.session.commit()
+    return redirect(url_for('scan_profiles'))
 
 
 @login_manager.unauthorized_handler

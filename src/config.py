@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 
 class Config:
@@ -9,7 +8,7 @@ class Config:
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        f'sqlite:///{Path(Path(__file__).parent, "app.db")}'
+        f'postgresql://postgres:P@ssw0rd@localhost:5432/scanner'
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False

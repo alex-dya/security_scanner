@@ -3,7 +3,7 @@ from .ssh import SSHTransport
 from .unix import UnixTransport
 
 
-_tranports_classes = {
+transports_classes = {
     'ssh': SSHTransport,
     'unix': UnixTransport
 }
@@ -18,7 +18,7 @@ def get_transport(name):
     if name in _transports:
         return _transports[name]
 
-    transport_class = _tranports_classes.get(name, None)
+    transport_class = transports_classes.get(name, None)
 
     if transport_class is None:
         return
