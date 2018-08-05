@@ -1,15 +1,6 @@
 {% extends "base.html" %}
 
-{% block body %}
-    <div class="row">
-        <div class="col-md">
-    {% with messages = get_flashed_messages() %}
-        {% for error in messages %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    {% endwith %}
-        </div>
-    </div>
+{% block app_content %}
     <h1>Sign In</h1>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -17,14 +8,14 @@
             {{ form.username.label }}<br>
             {{ form.username(size=32) }}<br>
             {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <div class="alert alert-info" role="alert">{{ error }}</div>
             {% endfor %}
         </p>
         <p>
             {{ form.password.label }}<br>
             {{ form.password(size=32) }}<br>
             {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
+            <div class="alert alert-info" role="alert">{{ error }}</div>
             {% endfor %}
         </p>
         <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>

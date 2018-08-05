@@ -1,12 +1,11 @@
 {% extends "main_interface.html" %}
-{% block content %}
+{% block app_content %}
+
 <form action="{{ url_for('delete_scan_profile') }}" method="POST">
-<div class="row">
-    <div class="col">
+<div class="row row-horizont">
+    <div class="input-group">
         <a href="{{ url_for('create_scan_profile') }}" class="btn btn-primary">Create</a>
-    </div>
-    <div class="col">
-        <input type="submit" class="btn btn-primary" value="Delete">
+        <input type="submit" class="btn btn-danger" value="Delete">
     </div>
 </div>
 <table class="table table-striped">

@@ -1,31 +1,32 @@
-{% extends "base.html" %}
-{% block body %}
-<div class="container">
-    <div class="row justify-content-between">
-        <div class="col-md">
-            <a href="{{ url_for('run_scan') }}">Сканирование</a>
+{% extends 'base.html' %}
+{% block navbar %}
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">{{ config.TITLE }}</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="{{ url_for('run_scan') }}">Сканирование</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('credentials') }}">Учетные записи</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('scan_profiles') }}">Профили сканирования</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="{{ url_for('logout') }}">Выход</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="col-md">
-            <a href="{{ url_for('credentials') }}">Учетные записи</a>
-        </div>
-        <div class="col-md">
-            <a href="{{ url_for('scan_profiles') }}">Профили сканирования</a>
-        </div>
-        <div class="col-sm">
-            <a href="{{ url_for('logout') }}">Выход</a>
-        </div>
-    </div>
-    <div class="row">
-    {% with messages = get_flashed_messages() %}
-        {% for error in messages %}
-        <span style="color: red;">[{{ error }}]</span>
-        {% endfor %}
-    {% endwith %}
-    </div>
-    <div class="row">
-        <div class="col-sm">
-        {% block content %} {% endblock %}
-        </div>
-    </div>
-</div>
+    </nav>
 {% endblock %}
