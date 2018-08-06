@@ -12,7 +12,7 @@ from web.models import User
 @app.route('/index')
 @login_required
 def index():
-    return render_template('main_interface.html')
+    return redirect(url_for('tasks'))
 
 
 @app.route('/login', methods=['GET', 'POST'])

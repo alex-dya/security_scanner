@@ -64,6 +64,7 @@ class ScanProfileForm(FlaskForm):
     submit = SubmitField('Save')
 
     def populate(self, profile: ScanProfile = None) -> None:
+        self.id.data = profile.id
         self.name.data = profile.name
         settings = defaultdict(dict)
 

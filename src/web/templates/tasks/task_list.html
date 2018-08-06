@@ -1,13 +1,13 @@
-{% extends "main_interface.html" %}
+{% extends "base.html" %}
 {% block app_content %}
 
 <form action="{{ url_for('delete_tasks') }}" method="POST">
-<div class="row row-horizont">
-    <div class="input-group">
-        <a href="{{ url_for('create_task') }}" class="btn btn-primary">Create</a>
-        <input type="submit" class="btn btn-danger" value="Delete">
+    <div class="row row-horizont">
+        <div class="input-group">
+            <a href="{{ url_for('create_task') }}" class="btn btn-primary">Create</a>
+            <input type="submit" class="btn btn-danger" value="Delete">
+        </div>
     </div>
-</div>
 <table class="table table-striped">
     <thead>
     <tr>
