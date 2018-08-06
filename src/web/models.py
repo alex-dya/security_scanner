@@ -1,10 +1,17 @@
 from collections import defaultdict
+from enum import Enum, auto
 from typing import Dict, List
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 from web import db, login_manager
+
+
+class TaskStatus(Enum):
+    Idle = auto()
+    Wait = auto()
+    Running = auto()
 
 
 class ProfileSetting(db.Model):
@@ -160,6 +167,12 @@ class Task(db.Model):
     )
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
+    status = db.Column(
+        db.Enum(TaskStatus),
+        default=TaskStatus.Idle,
+        server_default=TaskStatus.Idle.name,
+        nullable=False,
+    )
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey(
@@ -184,4 +197,3 @@ class Task(db.Model):
 
     def __repr__(self):
         return f'Task(name={self.name})'
-

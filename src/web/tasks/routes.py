@@ -1,10 +1,8 @@
-import json
-
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 
 from web import app, db
-from web.models import Task, TaskSetting
+from web.models import Task, TaskSetting, TaskStatus
 from web.tasks.forms import TaskForm
 
 
@@ -26,7 +24,7 @@ def create_task():
             'tasks/edit_task.html',
             form=form,
             action='Create',
-            profiles=json.dumps([
+            profiles=jsonify([
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
@@ -66,7 +64,7 @@ def edit_task(task_id):
         return render_template(
             'tasks/edit_task.html',
             form=form,
-            profiles=json.dumps([
+            profiles=jsonify([
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
@@ -75,8 +73,7 @@ def edit_task(task_id):
 
     task.name = form.name.data
     all_settings = {
-        (item.hostname, item.profile_id): item
-        for item in task.settings
+        (item.hostname, item.profile_id): item for item in task.settings
     }
 
     for item in form.settings:
@@ -111,3 +108,34 @@ def delete_tasks():
     ).delete(synchronize_session=False)
     db.session.commit()
     return redirect(url_for('tasks'))
+
+
+@app.route('/task_execute/<int:task_id>', methods=['GET', 'PUT'])
+@login_required
+def task_execute(task_id):
+    task = Task.query.get(task_id)
+    if not task:
+        return jsonify(dict(error='Wrong task_id')), 404
+
+    if request.method == 'GET':
+        return jsonify(dict(
+            task_id=task.id,
+            status=task.status.name
+        ))
+    data = request.get_json()
+
+    status = data.get('status')
+    if not status:
+        return jsonify(dict(error='Argument "status" is required')), 404
+
+    try:
+        task.status = TaskStatus[status]
+    except KeyError:
+        return (
+            jsonify(dict(
+                error=f'Argument "status" might have value '
+                      f'only {[item.name for item in TaskStatus]}')),
+            404
+        )
+    db.session.commit()
+    return jsonify(dict(result='ok'))

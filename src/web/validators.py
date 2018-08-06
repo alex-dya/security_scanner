@@ -1,5 +1,4 @@
 from flask_login import current_user
-from wtforms import ValidationError
 from wtforms.validators import ValidationError, HostnameValidation
 
 from web import db
