@@ -9,7 +9,9 @@ from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, NumberRange
 
 from scanner.transports.unix import RootLogonType
+from web import models
 from web.models import AccountCredential, ScanProfile, ProfileSetting
+from web.validators import UniqueRequired
 
 
 def get_credentials():
@@ -24,7 +26,7 @@ class SSHSettings(FlaskForm):
     )
     credential = QuerySelectField(
         'Credentials',
-        get_label='username',
+        get_label='name',
         query_factory=get_credentials
     )
 
@@ -51,7 +53,12 @@ class UnixSettings(FlaskForm):
 
 class ScanProfileForm(FlaskForm):
     id = HiddenField('Id')
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField(
+        'Name',
+        validators=[
+            DataRequired(),
+            UniqueRequired(models.ScanProfile, 'name')
+        ])
     ssh_settings = FormField(SSHSettings)
     unix_settings = FormField(UnixSettings)
     submit = SubmitField('Save')

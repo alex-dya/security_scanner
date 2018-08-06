@@ -23,9 +23,17 @@
     <tbody>
     {% for item in form.settings %}
     <tr id="task_setting">
+    {% set hostname_error = item.errors.get('hostname') %}
+    {% set profile_error = item.errors.get('profile') %}
         <th>{{ loop.index }}</th>
-        <td>{{ item.hostname(class='form-control') }}</td>
-        <td>{{ item.profile(class='form-control') }}</td>
+        <td>
+            {{ item.hostname(class='form-control') }}
+            {% if hostname_error %}<div class="alert alert-warning">{{ hostname_error | join('<br>') }}</div>{% endif %}
+        </td>
+        <td>
+            {{ item.profile(class='form-control') }}
+            {% if profile_error %}<div class="alert alert-warning">{{ profile_error }}</div>{% endif %}
+        </td>
         <td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
     </tr>
     {% endfor %}

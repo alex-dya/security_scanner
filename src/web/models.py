@@ -37,8 +37,13 @@ class ProfileSetting(db.Model):
 
 
 class AccountCredential(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('name', 'owner_id', name='account_cred_uniq'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
+    name = db.Column(db.String(64), index=True)
+    username = db.Column(db.String(64), index=True)
     password = db.Column(db.String(128))
     owner_id = db.Column(
         db.Integer,
@@ -48,7 +53,7 @@ class AccountCredential(db.Model):
     )
 
     def __repr__(self) -> str:
-        return f'AccountCredential({self.username})'
+        return f'AccountCredential({self.name})'
 
 
 class ScanProfile(db.Model):

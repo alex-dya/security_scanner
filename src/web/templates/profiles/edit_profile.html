@@ -20,10 +20,12 @@
                 </ul>
                 <div class="tab-content col-md-9">
                   <div id="ssh" class="tab-pane fade in active">
+                      {{ form.ssh_settings.hidden_tag() }}
                       {{ wtf.form_field(form.ssh_settings.port) }}
                       {{ wtf.form_field(form.ssh_settings.credential) }}
                   </div>
                   <div id="unix" class="tab-pane fade">
+                      {{ form.unix_settings.hidden_tag() }}
                       {{ wtf.form_field(form.unix_settings.privilege_escalation) }}
                       {{ wtf.form_field(form.unix_settings.root_password) }}
                   </div>

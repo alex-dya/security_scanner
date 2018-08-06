@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
+from sqlalchemy.exc import IntegrityError
 
 from web.credentials import forms
 from web import app, db
@@ -28,10 +29,12 @@ def create_credential():
         )
 
     cred = AccountCredential(
+        name=form.name.data,
         username=form.username.data,
         password=form.password.data,
         owner_id=current_user.get_id()
     )
+
     db.session.add(cred)
     db.session.commit()
     flash(message='New account credential was created')
@@ -52,6 +55,7 @@ def edit_credential(cred_id):
         return redirect(url_for('credentials'))
 
     if not form.validate_on_submit():
+        form.name.data = cred.name
         form.username.data = cred.username
         form.id.data = cred_id
 
@@ -61,6 +65,7 @@ def edit_credential(cred_id):
             action='Edit'
         )
 
+    cred.name = form.name.data
     cred.username = form.username.data
     cred.password = form.password.data
     db.session.commit()

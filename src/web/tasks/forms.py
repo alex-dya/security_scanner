@@ -2,32 +2,19 @@ from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, FieldList, FormField, HiddenField, SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import DataRequired, HostnameValidation, ValidationError
+from wtforms.validators import DataRequired
+
+from web import models
+from web.validators import UniqueRequired, HostnameRequired
 
 
 def get_profiles():
     return current_user.scan_profiles
 
 
-class HostnameRequired:
-    def __init__(self, message: str = None):
-        self.message = (
-                message or 'This field must contain hostname or IP address')
-        self.validator = HostnameValidation()
-
-    def __call__(self, form, field):
-        if not field.data:
-            raise ValidationError(self.message)
-
-        if not isinstance(field.data, str):
-            raise ValidationError(self.message)
-
-        if not self.validator(field.data):
-            raise ValidationError(self.message)
-
-
 class TaskSettingForm(FlaskForm):
-    hostname = StringField('Hostname', validators=[HostnameRequired()])
+    hostname = StringField('Hostname',
+                           validators=[HostnameRequired(allow_ip=True)])
     profile = QuerySelectField(
         'Profile',
         get_label='name',
@@ -40,7 +27,12 @@ class TaskSettingForm(FlaskForm):
 
 class TaskForm(FlaskForm):
     id = HiddenField('Id')
-    name = StringField('Name', validators=[DataRequired()])
+    name = StringField(
+        'Name',
+        validators=[
+            DataRequired(),
+            UniqueRequired(models.Task, 'name')
+        ])
     settings = FieldList(FormField(TaskSettingForm))
     submit = SubmitField('Save')
 
