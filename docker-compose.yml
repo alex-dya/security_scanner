@@ -1,8 +1,24 @@
 version: "2.0"
 services:
-  web:
-    build:
-      context: .
-      dockerfile: dockers/WebDockerfile
+#  web:
+#    build:
+#      context: .
+#      dockerfile: dockers/WebDockerfile
+#    ports:
+#    - "5000:80"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB: scanner
     ports:
-    - "5000:80"
+    - "5432:5432"
+  broker:
+    image: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_VHOST: scanner
+      RABBITMQ_DEFAULT_USER: scanner
+      RABBITMQ_DEFAULT_PASS: P@ssw0rd
+    ports:
+    - "5672:5672"
+

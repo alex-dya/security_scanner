@@ -1,5 +1,21 @@
 {% extends "base.html" %}
 
+{% block styles %}
+{{ super() }}
+<style>
+.progress {
+    position: relative;
+}
+.progress span {
+    position: absolute;
+    display: block;
+    width: 100%;
+    color: black;
+ }
+</style>
+
+{% endblock %}
+
 {% block app_content %}
 
 <form action="{{ url_for('delete_tasks') }}" method="POST">
@@ -15,6 +31,7 @@
         <th></th>
         <th scope="col">#</th>
         <th scope="col">Name</th>
+        <th scope="col">Status</th>
         <th scope="col"></th>
     </tr>
     </thead>
@@ -23,7 +40,8 @@
     <tr>
         <td class="col-md-1"><input type="checkbox" name="tasks_ids[]" value="{{ task.id }}"></td>
         <th class="col-md-1" scope="row">{{ loop.index }}</th>
-        <td class="col-md-8"><a href="{{ url_for('edit_task', task_id=task.id) }}">{{ task.name }}</a></td>
+        <td class="col-md-5"><a href="{{ url_for('edit_task', task_id=task.id) }}">{{ task.name }}</a></td>
+        <td class="col-md-3" id="progressbar-{{ task.id }}"></td>
         <td class="col-md-2">
             {% if task.status.name=='Idle' %}
                 <button id="{{ task.id }}" class="btn startbtn btn-info" type="button">Run</button>

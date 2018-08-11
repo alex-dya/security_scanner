@@ -173,6 +173,7 @@ class Task(db.Model):
         server_default=TaskStatus.Idle.name,
         nullable=False,
     )
+    uid = db.Column(db.String(128))
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey(

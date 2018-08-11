@@ -12,3 +12,4 @@ class Config:
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    CELERY_BROKER_URL = 'amqp://scanner:P@ssw0rd@localhost:5672/scanner'

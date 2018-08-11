@@ -1,9 +1,14 @@
+from typing import Mapping
+
 from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
+from celery.result import AsyncResult
+from celery.app.control import Control
 
-from web import app, db
+from web import app, db, celery
 from web.models import Task, TaskSetting, TaskStatus
 from web.tasks.forms import TaskForm
+from web.functions import summ
 
 
 @app.route('/tasks')
@@ -11,7 +16,7 @@ from web.tasks.forms import TaskForm
 def tasks():
     return render_template(
         'tasks/task_list.html',
-        tasks=current_user.tasks
+        tasks=current_user.tasks.order_by('name')
     )
 
 
@@ -118,9 +123,20 @@ def task_execute(task_id):
         return jsonify(dict(error='Wrong task_id')), 404
 
     if request.method == 'GET':
+        result = {}
+        if task.status == TaskStatus.Running:
+            result = task.uid and AsyncResult(task.uid, app=celery)
+            if not result:
+                result = {}
+            elif not isinstance(result.info, Mapping):
+                result = result.info.args or {}
+            else:
+                result = result.info
+
         return jsonify(dict(
             task_id=task.id,
-            status=task.status.name
+            status=task.status.name,
+            progress=result
         ))
     data = request.get_json()
 
@@ -129,7 +145,7 @@ def task_execute(task_id):
         return jsonify(dict(error='Argument "status" is required')), 404
 
     try:
-        task.status = TaskStatus[status]
+        new_status = TaskStatus[status]
     except KeyError:
         return (
             jsonify(dict(
@@ -137,5 +153,29 @@ def task_execute(task_id):
                       f'only {[item.name for item in TaskStatus]}')),
             404
         )
+
+    def update_task(task, new_status):
+        if new_status == TaskStatus.Wait:
+            if task.status != TaskStatus.Idle:
+                return
+
+            task.status = TaskStatus.Wait
+            summ.delay(task.id)
+        elif new_status == TaskStatus.Idle:
+            if task.uid is None:
+                task.status = TaskStatus.Idle
+                return
+
+            if task.status == TaskStatus.Idle:
+                return
+
+            task.status = TaskStatus.Idle
+            celery_task = AsyncResult(task.uid)
+            if celery_task:
+                Control(celery).revoke(task.uid, terminate=True)
+
+    update_task(task, new_status)
+
     db.session.commit()
+
     return jsonify(dict(result='ok'))

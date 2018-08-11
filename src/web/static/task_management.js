@@ -13,6 +13,24 @@ $(document).ready(function () {
         obj.unbind('click').click(start_function);
     }
 
+    function update_progressbar(id, progress) {
+        var td_progress = $("#progressbar-" + id).first();
+        var percents = Math.floor((progress.current / progress.total) * 100);
+        var message = `<span>${progress.current} of ${progress.total}</span>`;
+        td_progress.html(
+            "<div class=\"progress\">\n" +
+            "  <div class=\"progress-bar bg-info\" role=\"progressbar\" style=\"width: "
+            + percents + "%\" aria-valuenow=\"" + progress.current
+            + "\" aria-valuemin=\"0\" aria-valuemax=\"" + progress.total + "\">"
+            + message + "</div>\n</div>"
+        )
+    }
+
+    function delete_progessbar(id) {
+        var td_progress = $("#progressbar-" + id).first();
+        td_progress.html("")
+    }
+
     var start_function = function () {
         var obj = $(this);
         $.ajax({
@@ -20,7 +38,7 @@ $(document).ready(function () {
             url: '/task_execute/' + this.id,
             contentType: "application/json",
             dataType: 'json',
-            data: JSON.stringify({"status": "Running"})
+            data: JSON.stringify({"status": "Wait"})
         }).done(function (data) {
             start_to_stop(obj);
         }).fail(function (data) {
@@ -47,26 +65,20 @@ $(document).ready(function () {
     $(".startbtn").click(start_function);
     $(".stopbtn").click(stop_function);
     setInterval(function () {
-        $('.startbtn').each(function () {
-            var obj = $(this);
-            $.getJSON('/task_execute/' + this.id).done(
-                function (data) {
-                    if (data.status !== 'Idle') {
-                        start_to_stop(obj);
-                    }
-                }
-            );
-        });
         $('.stopbtn').each(function () {
             var obj = $(this);
             $.getJSON('/task_execute/' + this.id).done(
                 function (data) {
+                    console.log(data);
                     if (data.status === 'Idle') {
                         stop_to_start(obj);
+                        delete_progessbar(data.task_id);
+                    }
+                    else if (data.status === 'Running') {
+                        update_progressbar(data.task_id, data.progress);
                     }
                 }
             );
         })
-
-    }, 5000)
+    }, 1000)
 });
