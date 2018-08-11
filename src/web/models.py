@@ -236,6 +236,9 @@ class TaskResult(db.Model):
     def finish(self):
         self.finished = datetime.utcnow()
 
+    def __repr__(self):
+        return f'TaskResult(started="{self.started.isoformat()}")'
+
 
 class ControlResult(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -248,6 +251,7 @@ class ControlResult(db.Model):
         ),
         nullable=False
     )
+    control_number = db.Column(db.Integer, nullable=False)
     status = db.Column(
         db.Enum(ControlStatus),
         nullable=False,
@@ -255,3 +259,15 @@ class ControlResult(db.Model):
     name = db.Column(db.String(128), nullable=False)
     description = db.Column(db.String(2048), nullable=False)
     result = db.Column(db.String)
+
+    def __repr__(self):
+        return f'ControlResult(number={self.control_number})'
+
+
+class Control(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), nullable=False)
+    description = db.Column(db.String(2048), nullable=False)
+
+    def __repr__(self):
+        return f'Control(number={self.id})'
