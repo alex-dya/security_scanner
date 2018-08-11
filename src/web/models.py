@@ -1,11 +1,14 @@
 from collections import defaultdict
+from datetime import datetime
 from enum import Enum, auto
-from typing import Dict, List
+from typing import Dict, List, Optional
 
+from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
 from web import db, login_manager
+from scanner.types import ControlStatus
 
 
 class TaskStatus(Enum):
@@ -186,6 +189,8 @@ class Task(db.Model):
 
     settings = db.relationship(
         'TaskSetting', backref='task', lazy='dynamic')
+    results = db.relationship(
+        'TaskResult', backref='task', lazy='dynamic')
 
     def to_list(self) -> List:
         return [
@@ -198,3 +203,55 @@ class Task(db.Model):
 
     def __repr__(self):
         return f'Task(name={self.name})'
+
+
+class TaskResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'task.id',
+            name='task_result_fk',
+            ondelete='CASCADE'
+        ),
+        nullable=False
+    )
+    started = db.Column(
+        db.DateTime,
+        default=datetime.utcnow(),
+        server_default=func.now()
+    )
+    finished = db.Column(db.DateTime)
+
+    controls = db.relationship(
+        'ControlResult', backref='task', lazy='dynamic')
+
+    @property
+    def duration(self) -> Optional[datetime]:
+        if self.finished is None:
+            return
+
+        return self.finished - self.started
+
+    def finish(self):
+        self.finished = datetime.utcnow()
+
+
+class ControlResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'task_result.id',
+            name='control_result_fk',
+            ondelete='CASCADE'
+        ),
+        nullable=False
+    )
+    status = db.Column(
+        db.Enum(ControlStatus),
+        nullable=False,
+    )
+    name = db.Column(db.String(128), nullable=False)
+    description = db.Column(db.String(2048), nullable=False)
+    result = db.Column(db.String)
