@@ -266,8 +266,10 @@ class ControlResult(db.Model):
 
 class Control(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    number = db.Column(db.Integer, index=True)
+    language = db.Column(db.String(4), server_default='en', index=True)
     name = db.Column(db.String(128), nullable=False)
     description = db.Column(db.String(2048), nullable=False)
 
     def __repr__(self):
-        return f'Control(number={self.id})'
+        return f'Control(number={self.id}, lang={self.language})'
