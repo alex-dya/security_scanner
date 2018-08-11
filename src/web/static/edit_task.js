@@ -1,14 +1,14 @@
 $(document).ready(function () {
     var counter = 1;
-    $('#task_setting').each(function () {
-        counter++;
+    $('.task-setting').each(function (index) {
+        ++counter;
     });
 
     var json = $('input[name="profiles"]').first().val();
     var profile_list = JSON.parse(json);
 
     $("#addrow").on("click", function () {
-        var newRow = $("<tr>");
+        var newRow = $("<tr class='task-setting'>");
         var cols = "";
         var rowName = 'settings-' + counter + '-';
 

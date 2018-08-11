@@ -22,7 +22,7 @@
     </thead>
     <tbody>
     {% for item in form.settings %}
-    <tr id="task_setting">
+    <tr class="task-setting">
     {% set hostname_error = item.errors.get('hostname') %}
     {% set profile_error = item.errors.get('profile') %}
         <th>{{ loop.index }}</th>

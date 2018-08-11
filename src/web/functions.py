@@ -19,9 +19,13 @@ def postprocess_task(task_id):
 
 @celery.task(bind=True)
 def summ(self, task_id):
+    total = 15
+    self.update_state(
+        state='PROGRESS',
+        meta={'current': 0, 'total': total}
+    )
     prepare_task(self, task_id)
 
-    total = 15
     result = 0
     for i in range(total):
         sleep(1)
@@ -30,7 +34,7 @@ def summ(self, task_id):
             app.logger.debug('UPDATE porgress')
             self.update_state(
                 state='PROGRESS',
-                meta={'current': i, 'total': total}
+                meta={'current': i+1, 'total': total}
             )
 
     postprocess_task(task_id)

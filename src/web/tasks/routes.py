@@ -1,6 +1,6 @@
 from typing import Mapping
 
-from flask import render_template, redirect, url_for, request, jsonify
+from flask import render_template, redirect, url_for, request, jsonify, json
 from flask_login import login_required, current_user
 from celery.result import AsyncResult
 from celery.app.control import Control
@@ -29,7 +29,7 @@ def create_task():
             'tasks/edit_task.html',
             form=form,
             action='Create',
-            profiles=jsonify([
+            profiles=json.dumps([
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
@@ -69,7 +69,7 @@ def edit_task(task_id):
         return render_template(
             'tasks/edit_task.html',
             form=form,
-            profiles=jsonify([
+            profiles=json.dumps([
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
@@ -126,10 +126,10 @@ def task_execute(task_id):
         result = {}
         if task.status == TaskStatus.Running:
             result = task.uid and AsyncResult(task.uid, app=celery)
-            if not result:
+            if not result or result.info is None:
                 result = {}
             elif not isinstance(result.info, Mapping):
-                result = result.info.args or {}
+                result = getattr(result.info, 'args', {})
             else:
                 result = result.info
 
