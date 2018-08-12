@@ -142,7 +142,7 @@ def task_execute(task_id):
 
     status = data.get('status')
     if not status:
-        return jsonify(dict(error='Argument "status" is required')), 404
+        return jsonify(dict(error='Argument "status" is required')), 400
 
     try:
         new_status = TaskStatus[status]
@@ -151,7 +151,7 @@ def task_execute(task_id):
             jsonify(dict(
                 error=f'Argument "status" might have value '
                       f'only {[item.name for item in TaskStatus]}')),
-            404
+            400
         )
 
     def update_task(task, new_status):
@@ -160,7 +160,7 @@ def task_execute(task_id):
                 return
 
             task.status = TaskStatus.Wait
-            summ.delay(task.id)
+            summ.apply_async((task.id, current_user.id), ignore_result=True, countdown=1)
         elif new_status == TaskStatus.Idle:
             if task.uid is None:
                 task.status = TaskStatus.Idle

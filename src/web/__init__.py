@@ -33,4 +33,4 @@ login_manager = LoginManager(app)
 bootstrap = Bootstrap(app)
 celery = make_celery(app)
 
-from web import views, models, credentials, profiles, tasks
+from web import views, models, credentials, profiles, tasks, results, filters

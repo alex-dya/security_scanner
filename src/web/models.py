@@ -112,6 +112,12 @@ class User(UserMixin, db.Model):
         'ScanProfile', backref='owner', lazy='dynamic')
     tasks = db.relationship(
         'Task', backref='owner', lazy='dynamic')
+    results = db.relationship(
+        'TaskResult',
+        backref='owner',
+        lazy='dynamic',
+        order_by='TaskResult.started'
+    )
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -190,7 +196,11 @@ class Task(db.Model):
     settings = db.relationship(
         'TaskSetting', backref='task', lazy='dynamic')
     results = db.relationship(
-        'TaskResult', backref='task', lazy='dynamic')
+        'TaskResult',
+        backref='task',
+        lazy='dynamic',
+        order_by='TaskResult.started'
+    )
 
     def to_list(self) -> List:
         return [
@@ -212,13 +222,21 @@ class TaskResult(db.Model):
         db.ForeignKey(
             'task.id',
             name='task_result_fk',
+            ondelete='SET NULL'
+        ),
+        nullable=False
+    )
+    owner_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'user.id',
+            name='task_fk',
             ondelete='CASCADE'
         ),
         nullable=False
     )
     started = db.Column(
         db.DateTime,
-        default=datetime.utcnow(),
         server_default=func.now()
     )
     finished = db.Column(db.DateTime)
@@ -256,8 +274,6 @@ class ControlResult(db.Model):
         db.Enum(ControlStatus),
         nullable=False,
     )
-    name = db.Column(db.String(128), nullable=False)
-    description = db.Column(db.String(2048), nullable=False)
     result = db.Column(db.String)
 
     def __repr__(self):
