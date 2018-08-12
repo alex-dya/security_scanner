@@ -4,7 +4,7 @@ import io
 import re
 import uuid
 import time
-from typing import NamedTuple, AnyStr, List
+from typing import NamedTuple, AnyStr, List, Dict, Any
 
 from scanner.types import BaseTransport
 from .exceptions import (
@@ -33,13 +33,13 @@ class SSHTransport(BaseTransport):
         stdout: io.RawIOBase
         stderr: io.RawIOBase
 
-    def __init__(self, login, password, address, *args,
-                 port=22, timeout=30, **kwargs):
+    def __init__(self, config: Dict[str, Any], *args, timeout=30, **kwargs):
         super().__init__(*args, **kwargs)
-        self._login = login
-        self._password = password
-        self._address = address
-        self._port = port
+        ssh_config = config.get('ssh', dict())
+        self._login = ssh_config.get('username', '')
+        self._password = ssh_config.get('password', '')
+        self._address = config['hostname']
+        self._port = int(ssh_config.get('port', '22'))
         self._client = paramiko.SSHClient()
         self._timeout = timeout
         self._shell = None

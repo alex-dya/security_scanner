@@ -8,7 +8,7 @@ from celery.app.control import Control
 from web import app, db, celery
 from web.models import Task, TaskSetting, TaskStatus
 from web.tasks.forms import TaskForm
-from web.functions import summ
+from web.functions import summ, run_scan
 
 
 @app.route('/tasks')
@@ -160,7 +160,7 @@ def task_execute(task_id):
                 return
 
             task.status = TaskStatus.Wait
-            summ.apply_async((task.id, current_user.id), ignore_result=True, countdown=1)
+            run_scan.apply_async((task.id, current_user.id), ignore_result=True, countdown=1)
         elif new_status == TaskStatus.Idle:
             if task.uid is None:
                 task.status = TaskStatus.Idle

@@ -23,7 +23,7 @@ def get_transport(name):
     if transport_class is None:
         return
 
-    transport = transport_class(**config[name])
+    transport = transport_class(config)
     transport.connect()
 
     _transports[name] = transport

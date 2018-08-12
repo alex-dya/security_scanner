@@ -3,6 +3,7 @@ from pathlib import Path
 from os import sep
 import logging
 from operator import attrgetter
+from typing import Iterable
 
 from scanner.types import BaseContol
 
@@ -28,7 +29,7 @@ def run_controls():
         control.run()
 
 
-def result():
+def iter_controls() -> Iterable[BaseContol]:
     for control in sorted(BaseContol._control_list,
                           key=attrgetter('control.number')):
         yield control

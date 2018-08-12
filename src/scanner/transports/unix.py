@@ -1,6 +1,6 @@
 import time
 from enum import Enum
-from typing import List
+from typing import List, Dict, Any
 from functools import lru_cache
 from shlex import quote
 
@@ -16,11 +16,12 @@ class RootLogonType(Enum):
 
 
 class UnixTransport(SSHTransport):
-    def __init__(self, *args,  root_password: str ='',
-                 root_logon: str ='NoLogon', **kwargs):
-        super().__init__(*args, **kwargs)
-        self._root_logon_type = RootLogonType[root_logon]
-        self._root_password = root_password
+    def __init__(self, config: Dict[str, Any], *args, **kwargs):
+        super().__init__(config, *args, **kwargs)
+        unix_config = config.get('unix', dict())
+        self._root_logon_type = RootLogonType[
+            (unix_config.get('privilege_escalation', 'NoLogon'))]
+        self._root_password = unix_config.get('root_password', '')
         self.envs = dict(
             LANG='C',
             LC_CTYPE='C',

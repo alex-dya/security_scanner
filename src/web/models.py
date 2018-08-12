@@ -95,6 +95,14 @@ class ScanProfile(db.Model):
     def to_dict(self) -> Dict[str, Dict[str, str]]:
         result = defaultdict(dict)
         for item in self.settings:
+            if item.setting == 'credential':
+                credential = AccountCredential.query.get(item.value)
+                result[item.transport].update(dict(
+                    username=credential.username,
+                    password=credential.password
+                ))
+                continue
+
             result[item.transport][item.setting] = item.value
 
         return result
@@ -116,7 +124,7 @@ class User(UserMixin, db.Model):
         'TaskResult',
         backref='owner',
         lazy='dynamic',
-        order_by='TaskResult.started'
+        order_by='desc(TaskResult.started)'
     )
 
     def set_password(self, password: str) -> None:
@@ -240,9 +248,9 @@ class TaskResult(db.Model):
         server_default=func.now()
     )
     finished = db.Column(db.DateTime)
+    host_results = db.relationship(
+        'HostResult', backref='task', lazy='dynamic')
 
-    controls = db.relationship(
-        'ControlResult', backref='task', lazy='dynamic')
 
     @property
     def duration(self) -> Optional[datetime]:
@@ -258,12 +266,37 @@ class TaskResult(db.Model):
         return f'TaskResult(started="{self.started.isoformat()}")'
 
 
-class ControlResult(db.Model):
+class HostResult(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(
         db.Integer,
         db.ForeignKey(
             'task_result.id',
+            name='host_result_fk',
+            ondelete='CASCADE'
+        ),
+        nullable=False
+    )
+    config = db.Column(db.String)
+    hostname = db.Column(db.String)
+
+    controls = db.relationship(
+        'ControlResult',
+        backref='host_result',
+        lazy='dynamic',
+        order_by='ControlResult.control_number'
+    )
+
+    def __repr__(self):
+        return f'HostResult(hostname={self.hostname})'
+
+
+class ControlResult(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    host_result_id = db.Column(
+        db.Integer,
+        db.ForeignKey(
+            'host_result.id',
             name='control_result_fk',
             ondelete='CASCADE'
         ),
