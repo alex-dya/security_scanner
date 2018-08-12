@@ -1,0 +1,17 @@
+number: 6
+content:
+- language: en
+  name: Ensure root is the only UID 0 account
+  description: >-
+    Any account with UID 0 has superuser privileges on the system. This access
+    must be limited to only the default root account and only from the system
+    console. Administrative access must be through an unprivileged account using
+    an approved mechanism. Ensure access to the su command is restricted.
+- language: ru
+  name: Пользователь root должен быть единственным пользователем с UID 0
+  description: >-
+    Любой аккаунт с UID 0 имеет права суперпользователя на системе. Этот доступ
+    должен быть ограничен единственным пользователем root в системе и только из
+    системной консоли. Административный доступ для непривилегированных аккаунтов
+    должен осуществляться только через надежные механизмы поднятия привелегий.
+    Доступ для выполнения команды su должен быть ограничен

@@ -1,8 +1,10 @@
+from pathlib import Path
+
 from flask.cli import AppGroup
+import yaml
 
 from web import app, db
 from web.models import User, ScanProfile, ProfileSetting, Task, Control
-from control_list import control_list
 
 
 @app.shell_context_processor
@@ -22,11 +24,18 @@ control_cli = AppGroup('control')
 @control_cli.command('init')
 def init_controls():
     Control.query.delete()
-    for control in control_list:
-        for item in control.data:
+    control_path = Path(__file__).parent.joinpath('control_list')
+    for file in control_path.glob('*.yaml'):
+        if file.name == '__blank__.yaml':
+            continue
+
+        with file.open('r') as f:
+            control = yaml.load(f)
+
+        for item in control['content']:
             db.session.add(
                 Control(
-                    number=control.number,
+                    number=control['number'],
                     language=item['language'],
                     name=item['name'],
                     description=item['description']
