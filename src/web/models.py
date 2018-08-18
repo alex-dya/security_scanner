@@ -251,7 +251,6 @@ class TaskResult(db.Model):
     host_results = db.relationship(
         'HostResult', backref='task', lazy='dynamic')
 
-
     @property
     def duration(self) -> Optional[datetime]:
         if self.finished is None:
@@ -321,4 +320,4 @@ class Control(db.Model):
     description = db.Column(db.String(2048), nullable=False)
 
     def __repr__(self):
-        return f'Control(number={self.id}, lang={self.language})'
+        return f'Control(number={self.number}, lang={self.language})'

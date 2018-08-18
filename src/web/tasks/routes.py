@@ -11,7 +11,7 @@ from web.tasks.forms import TaskForm
 from web.functions import summ, run_scan
 
 
-@app.route('/tasks')
+@app.route('/task')
 @login_required
 def tasks():
     return render_template(
@@ -20,7 +20,7 @@ def tasks():
     )
 
 
-@app.route('/create_task', methods=['GET', 'POST'])
+@app.route('/task/create', methods=['GET', 'POST'])
 @login_required
 def create_task():
     form = TaskForm()
@@ -51,7 +51,7 @@ def create_task():
     return redirect(url_for('tasks'))
 
 
-@app.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
+@app.route('/task/edit/<int:task_id>', methods=['GET', 'POST'])
 @login_required
 def edit_task(task_id):
     if not task_id:
@@ -101,7 +101,7 @@ def edit_task(task_id):
     return redirect(url_for('tasks'))
 
 
-@app.route('/delete_tasks', methods=['POST'])
+@app.route('/task/delete', methods=['POST'])
 @login_required
 def delete_tasks():
     tasks = request.form.getlist('tasks_ids[]')
@@ -115,7 +115,7 @@ def delete_tasks():
     return redirect(url_for('tasks'))
 
 
-@app.route('/task_execute/<int:task_id>', methods=['GET', 'PUT'])
+@app.route('/task/execute/<int:task_id>', methods=['GET', 'PUT'])
 @login_required
 def task_execute(task_id):
     task = Task.query.get(task_id)

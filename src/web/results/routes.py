@@ -1,8 +1,8 @@
-from flask import render_template, jsonify
+from flask import render_template, jsonify, abort
 from flask_login import login_required, current_user
 
 from web import app, db
-from web.models import TaskResult
+from web.models import TaskResult, Control
 
 
 @app.route('/results', methods=['GET', 'POST'])
@@ -30,3 +30,28 @@ def delete_results(result_id):
 
     return jsonify(
         {'Message': f'The result with id {result_id} has been removed'})
+
+
+@app.route('/results/show/<int:result_id>', methods=['GET'])
+@login_required
+def results_show(result_id):
+    result = TaskResult.query.get(result_id)
+
+    if not result:
+        abort(404)
+
+    if result.owner_id != current_user.id:
+        abort(404)
+
+    controls = {
+        item.number: item
+        for item in Control.query.filter_by(language='en')
+    }
+    return render_template(
+        'results/show.html',
+        result=result,
+        all_controls=controls
+
+    )
+
+

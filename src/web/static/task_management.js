@@ -35,7 +35,7 @@ $(document).ready(function () {
         var obj = $(this);
         $.ajax({
             type: "PUT",
-            url: '/task_execute/' + this.id,
+            url: '/task/execute/' + this.id,
             contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify({"status": "Wait"})
@@ -50,7 +50,7 @@ $(document).ready(function () {
         var obj = $(this);
         $.ajax({
             type: "PUT",
-            url: '/task_execute/' + this.id,
+            url: '/task/execute/' + this.id,
             contentType: "application/json",
             dataType: 'json',
             data: JSON.stringify({"status": "Idle"})
@@ -67,7 +67,7 @@ $(document).ready(function () {
     setInterval(function () {
         $('.stopbtn').each(function () {
             var obj = $(this);
-            $.getJSON('/task_execute/' + this.id).done(
+            $.getJSON('/task/execute/' + this.id).done(
                 function (data) {
                     console.log(data);
                     if (data.status === 'Idle') {
