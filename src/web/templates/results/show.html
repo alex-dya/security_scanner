@@ -7,6 +7,26 @@
 {%- endif -%}
 {%- endmacro %}
 
+{% set
+    status_to_text = {
+        0: 'Not checked',
+        1: 'Compliant',
+        2: 'Not compliant',
+        3: 'Not applicable',
+        4: 'Error'
+    }
+%}
+
+{% set
+    status_to_icon = {
+        0: 'glyphicon-ban-circle',
+        1: 'glyphicon-ok-sign',
+        2: 'glyphicon-remove-sign',
+        3: 'glyphicon-info-sign',
+        4: 'glyphicon-question-sign'
+    }
+%}
+
 {% block app_content %}
     <div class="container">
         <div class="row">
@@ -33,7 +53,8 @@
                             {% else %}
                             <li>
                             {% endif %}
-                                <a data-toggle="tab" class="text-truncate" href="#control-{{ control.id }}">
+                                <a data-toggle="tab" href="#control-{{ control.id }}">
+                                    <i class="glyphicon {{ status_to_icon[control.status.value] }}"></i>
                                     {{ control.control_number }}:
                                     {{ all_controls[control.control_number].name }}
                                 </a>
@@ -47,6 +68,10 @@
                         <div id="control-{{ control.id }}" class="tab-pane fade {{ active_status(loop) }}" align="left">
                             <h3>{{ all_controls[control.control_number].name }}</h3>
                             <br>
+                            <div class="panel panel-default">
+                                <div class="panel-heading">Status</div>
+                                <div class="panel-body">{{ status_to_text[control.status.value] }}</div>
+                            </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">Descriptrion</div>
                                 <div class="panel-body">{{ all_controls[control.control_number].description }}</div>

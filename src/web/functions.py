@@ -78,7 +78,12 @@ def run_scan(self, task_id, owner_id):
                 meta={'current': idx, 'total': total}
             )
 
+        controls_is_getting = set()
         for control in controls.iter_controls():
+            if control.control.number in controls_is_getting:
+                continue
+
+            controls_is_getting.add(control.control.number)
             control_result = models.ControlResult(
                 control_number=control.control.number,
                 status=control.control.status,
