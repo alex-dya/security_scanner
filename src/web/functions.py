@@ -72,7 +72,6 @@ def run_scan(self, task_id, owner_id):
         transports.config = config
         detect()
         for idx, control in enumerate(controls.iter_controls(), 1):
-            sleep(0.5)
             control.run()
             self.update_state(
                 state='PROGRESS',
@@ -86,5 +85,7 @@ def run_scan(self, task_id, owner_id):
                 result=control.result
             )
             host_result.controls.append(control_result)
+
+        transports.reset_transports()
 
     postprocess_task(task_id, result)

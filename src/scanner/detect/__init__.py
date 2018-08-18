@@ -2,6 +2,7 @@ import logging
 from collections import deque
 
 from .is_unix import UnixDetector
+from scanner.types import reset_detect
 
 
 _detectors = [
@@ -12,6 +13,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def detect():
+    reset_detect()
     queue = deque(_detectors)
     while queue:
         detector = queue.popleft()

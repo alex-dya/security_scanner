@@ -92,6 +92,10 @@ class SSHTransport(BaseTransport):
                 port=self._port
             )
 
+    def disconnect(self) -> None:
+        if self._client:
+            self._client.close()
+
     @property
     def is_connect(self):
         transport = self._client.get_transport() if self._client else None
