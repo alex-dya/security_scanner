@@ -65,26 +65,9 @@
                     </div>
                     <div class="tab-content col-md-9">
                         {% for control in host.controls %}
+                        {% set ctrl = all_controls[control.control_number] %}
                         <div id="control-{{ control.id }}" class="tab-pane fade {{ active_status(loop) }}" align="left">
-                            <h3>{{ all_controls[control.control_number].name }}</h3>
-                            <br>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Status</div>
-                                <div class="panel-body">{{ status_to_text[control.status.value] }}</div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Descriptrion</div>
-                                <div class="panel-body">{{ all_controls[control.control_number].description }}</div>
-                            </div>
-                            <div class="panel panel-default">
-                                <div class="panel-heading">Result</div>
-                                <div class="panel-body">
-                                    {% autoescape false %}
-                                    {{ control.result | replace('\n', '<br>') }}
-                                    {% endautoescape %}
-                                </div>
-
-                            </div>
+                            {% include 'results/_control.html' %}
                         </div>
                         {% endfor %}
                     </div>

@@ -20,7 +20,10 @@
         <td class="col-md-2">{{ result.started.strftime('%H:%M:%S %d.%m.%Y') }}</td>
         <td class="col-md-2">{{ result.finished.strftime('%H:%M:%S %d.%m.%Y') }}</td>
         <td class="col-md-2">{{ result.duration | timedelta_format }}</td>
-        <td class="col-md-2"><button id="{{result.id}}" type="button" class="btn btn-delete btn-danger">Delete</button></td>
+        <td class="col-md-2">
+            <a href="{{ url_for('result_export', result_id=result.id) }}" class="btn btn-success">Export</a>
+            <button id="{{result.id}}" type="button" class="btn btn-delete btn-danger">Delete</button>
+        </td>
     </tr>
     {% endfor %}
     </tbody>

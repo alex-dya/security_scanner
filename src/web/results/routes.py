@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 
 from web import app, db
 from web.models import TaskResult, Control
+from web.results import exports
+from web.results.forms import ExportForm
 
 
 @app.route('/results', methods=['GET', 'POST'])
@@ -55,3 +57,24 @@ def results_show(result_id):
     )
 
 
+@app.route('/result/export/<int:result_id>', methods=['GET', 'POST'])
+@login_required
+def result_export(result_id):
+    result = TaskResult.query.get(result_id)
+
+    if not result:
+        abort(404)
+
+    if result.owner_id != current_user.id:
+        abort(404)
+
+    form = ExportForm()
+
+    if not form.validate_on_submit():
+        return render_template(
+            'results/export.html',
+            form=form
+        )
+
+    generator = exports.generators[form.format.data]
+    return generator(result)

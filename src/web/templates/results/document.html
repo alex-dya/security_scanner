@@ -1,0 +1,72 @@
+{% extends 'bootstrap/base.html' %}
+{% block title %}
+    {{ config.TITLE }}
+{% endblock %}
+
+{% set
+    status_to_text = {
+        0: 'Not checked',
+        1: 'Compliant',
+        2: 'Not compliant',
+        3: 'Not applicable',
+        4: 'Error'
+    }
+%}
+
+{% set
+    status_to_icon = {
+        0: 'glyphicon-ban-circle',
+        1: 'glyphicon-ok-sign',
+        2: 'glyphicon-remove-sign',
+        3: 'glyphicon-info-sign',
+        4: 'glyphicon-question-sign'
+    }
+%}
+
+{% block styles %}
+{{ super() }}
+<style>
+{% include 'results/_document.css' %}
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="A4" align="center">
+    <div>
+        <h1> {{results.task.name}}</h1>
+        <h2>{{ results.started.strftime('%H:%M:%S %d.%m.%Y') }} </h2>
+    </div>
+</div>
+
+<div class="A4">
+    <h1 class="main-title">
+        Content table
+    </h1>
+    <nav role="navigation" class="table-of-contents">
+    {% for host in results.host_results %}
+        <ul>
+            <li><a href="#host-{{host.id}}">{{host.hostname}}</a> </li>
+                <ul>
+                {% for control in host.controls %}
+                    <li><a href="#control-{{control.id}}">{{ all_controls[control.control_number].name }}</a></li>
+                {% endfor %}
+                </ul>
+        </ul>
+    {% endfor %}
+    </nav>
+</div>
+
+{% for host in results.host_results %}
+    {% for control in host.controls %}
+    <div class="A4" id="control-{{control.id}}">
+        {% set ctrl = all_controls[control.control_number] %}
+        {% if loop.index == 1 %}
+        <h2 id="host-{{host.id}}">{{host.hostname}}</h2>
+        {% endif %}
+        {% include 'results/_control.html' %}
+    </div>
+    {% endfor %}
+{% endfor %}
+{% endblock %}
+
