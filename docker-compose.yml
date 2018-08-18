@@ -3,7 +3,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: dockers/Dockerfile
+      dockerfile: dockers/web/Dockerfile
     ports:
     - "80:5000"
     command: gunicorn -b 0.0.0.0:5000 main:app
@@ -11,10 +11,12 @@ services:
   worker:
     build:
       context: .
-      dockerfile: dockers/Dockerfile
+      dockerfile: dockers/web/Dockerfile
     command: celery -A web.celery worker -l info
   db:
-    image: postgres
+    build:
+      context: .
+      dockerfile: dockers/database/Dockerfile
     environment:
       POSTGRES_PASSWORD: P@ssw0rd
       POSTGRES_DB: scanner
