@@ -1,0 +1,16 @@
+number: 9
+content:
+- language: en
+  name: Ensure cron daemon is enabled
+  description: >-
+    The cron daemon is used to execute batch jobs on the system. While there
+    may not be user jobs that need to be run on the system, the system does have
+    maintenance jobs that may include security monitoring that have to run, and
+    cron is used to execute them.
+- language: ru
+  name: Демон cron должен быть включен.
+  description: >-
+    Демон cron используется для выполнения набора задач на системе по расписанию.
+    Даже если нет пользовательских задач, которые необходимо выполнять на
+    системе, самой системе необходимо поддерживать задачи, которые могут
+    включать мониторинг безопасности. И cron используется для их выполнения.

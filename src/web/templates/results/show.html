@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% macro active_status(loop) -%}
+{%- if loop.index == 1 -%}
+ in active
+{%- endif -%}
+{%- endmacro %}
+
+{% set
+    status_to_text = {
+        0: 'Not checked',
+        1: 'Compliant',
+        2: 'Not compliant',
+        3: 'Not applicable',
+        4: 'Error'
+    }
+%}
+
+{% set
+    status_to_icon = {
+        0: 'glyphicon-ban-circle',
+        1: 'glyphicon-ok-sign',
+        2: 'glyphicon-remove-sign',
+        3: 'glyphicon-info-sign',
+        4: 'glyphicon-question-sign'
+    }
+%}
+
+{% block app_content %}
+    <div class="container">
+        <div class="row">
+            <ul class="nav nav-tabs pull-left">
+                {% for host in result.host_results %}
+                {% if loop.index == 1 %}
+                <li class="active">
+                {% else %}
+                <li>
+                {% endif %}
+                    <a data-togle="tab" href="#host-{{ host.id }}">{{ host.hostname}}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="tab-content col-md-12">
+            {% for host in result.host_results %}
+                <div id="host-{{ host.id }}" class="tab-pane fade {{ active_status(loop) }}">
+                    <div class="col-md-3">
+                        <ul class="nav nav-pills nav-stacked">
+                        {% for control in host.controls %}
+                            {% if loop.index == 1 %}
+                            <li class="active">
+                            {% else %}
+                            <li>
+                            {% endif %}
+                                <a data-toggle="tab" href="#control-{{ control.id }}">
+                                    <i class="glyphicon {{ status_to_icon[control.status.value] }}"></i>
+                                    {{ control.control_number }}:
+                                    {{ all_controls[control.control_number].name }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+
+                    </div>
+                    <div class="tab-content col-md-9">
+                        {% for control in host.controls %}
+                        {% set ctrl = all_controls[control.control_number] %}
+                        <div id="control-{{ control.id }}" class="tab-pane fade {{ active_status(loop) }}" align="left">
+                            {% include 'results/_control.html' %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+$("ul.nav-tabs a").click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+});
+</script>
+{% endblock %}

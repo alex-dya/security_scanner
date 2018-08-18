@@ -172,3 +172,4 @@ fabric.properties
 .idea
 .pytest_cache
 **/.pytest_cache
+*.db

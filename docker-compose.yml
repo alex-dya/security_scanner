@@ -3,6 +3,31 @@ services:
   web:
     build:
       context: .
-      dockerfile: dockers/WebDockerfile
+      dockerfile: dockers/web/Dockerfile
     ports:
-    - "5000:80"
+    - "80:5000"
+    command: gunicorn -b 0.0.0.0:5000 main:app
+
+  worker:
+    build:
+      context: .
+      dockerfile: dockers/web/Dockerfile
+    command: celery -A web.celery worker -l info
+  db:
+    build:
+      context: .
+      dockerfile: dockers/database/Dockerfile
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd
+      POSTGRES_DB: scanner
+    ports:
+    - "5432:5432"
+  broker:
+    image: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_VHOST: scanner
+      RABBITMQ_DEFAULT_USER: scanner
+      RABBITMQ_DEFAULT_PASS: P@ssw0rd
+    ports:
+    - "5672:5672"
+

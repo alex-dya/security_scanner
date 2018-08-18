@@ -1,0 +1,14 @@
+number: 3
+content:
+- language: en
+  name: Ensure separate partition exists for /var
+  description: >-
+    The /var directory is used by daemons and other system services to
+    temporarily store dynamic data. Some directories created by these processes
+    may be world-writable.
+- language: ru
+  name: Удостоверьтесь, что существует отдельный раздел диска для /var
+  description: >-
+    Директория /var обычно используется демонами и другими службами для
+    временного хранения изменяемых данных. Некоторые директории созданные этими
+    процессами могут иметь права на запись для всех пользователей.

@@ -1,0 +1,18 @@
+number: 8
+content:
+- language: en
+  name: Ensure authentication required for single user mode
+  description: >-
+    Single user mode is used for recovery when the system detects an issue
+    during boot or by manual selection from the bootloader. Requiring
+    authentication in single user mode prevents an unauthorized user from
+    rebooting the system into single user to gain root privileges without
+    credentials.
+- language: ru
+  name: Включите аутентификацию для режима single user
+  description: >-
+    Режим single user используется для восстановления, когда системы обнаружила
+    неполадки во время загрузки, или при выборе этого режима в меню загрузчика.
+    Требование аутентификации в режиме single user предотвращает
+    неавторизованным пользователям доступ к режиму single user для получения
+    привилегия root без запроса пароля.

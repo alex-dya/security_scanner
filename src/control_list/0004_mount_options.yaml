@@ -1,0 +1,12 @@
+number: 4
+content:
+- language: en
+  name: Ensure nodev option set on /tmp partition
+  description: >-
+    The nodev mount option specifies that the filesystem cannot contain special
+    devices.
+- language: ru
+  name: Опция nodev должна быть установлена на мониторивание раздела /tmp
+  description: >-
+    Опция монтирования nodev указывает, что эта файловая система не может
+    содержать специальных устройств

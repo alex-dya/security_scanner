@@ -1,0 +1,21 @@
+@page {
+    size: a4 portrait;
+    margin: 27mm 28mm 17mm 12mm;
+    counter-increment: page;
+    @bottom-center {
+        content: 'Page ' counter(page);
+        white-space: pre;
+        color: grey;
+    }
+}
+
+.A4 {
+    width: 100%;
+    height: 100%;
+    page-break-after: always;
+    min-height: 25.3cm;
+    min-width: 17cm;
+    white-space: normal;
+}
+
+

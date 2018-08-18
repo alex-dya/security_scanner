@@ -1,0 +1,18 @@
+<h3>{{ ctrl.name }}</h3>
+<br>
+<div class="panel panel-default">
+    <div class="panel-heading">Status</div>
+    <div class="panel-body">{{ status_to_text[control.status.value] }}</div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Description</div>
+    <div class="panel-body">{{ ctrl.description }}</div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">Result</div>
+    <div class="panel-body">
+        {% autoescape false %}
+        {{ control.result | replace('\n', '<br>') }}
+        {% endautoescape %}
+    </div>
+</div>

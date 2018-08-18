@@ -1,15 +1,17 @@
+from typing import Dict
+
+from scanner.types import BaseTransport
 from . import exceptions
 from .ssh import SSHTransport
 from .unix import UnixTransport
 
 
-_tranports_classes = {
+transports_classes = {
     'ssh': SSHTransport,
     'unix': UnixTransport
 }
 
-_transports = dict()
-
+_transports: Dict[str, BaseTransport] = dict()
 
 config = dict()
 
@@ -18,14 +20,22 @@ def get_transport(name):
     if name in _transports:
         return _transports[name]
 
-    transport_class = _tranports_classes.get(name, None)
+    transport_class = transports_classes.get(name, None)
 
     if transport_class is None:
         return
 
-    transport = transport_class(**config[name])
+    transport = transport_class(config)
     transport.connect()
 
     _transports[name] = transport
 
     return transport
+
+
+def reset_transports():
+    for transport in _transports.values():
+        transport.disconnect()
+
+    _transports.clear()
+

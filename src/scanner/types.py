@@ -42,6 +42,10 @@ def is_item_detected(item: str) -> bool:
     return result
 
 
+def reset_detect() -> None:
+    _detected.clear()
+
+
 class BaseTransport(metaclass=TransportMeta):
     @abc.abstractmethod
     def connect(self) -> None:
@@ -50,6 +54,10 @@ class BaseTransport(metaclass=TransportMeta):
     @property
     @abc.abstractmethod
     def is_connect(self) -> bool:
+        pass
+
+    @abc.abstractmethod
+    def disconnect(self) -> None:
         pass
 
 

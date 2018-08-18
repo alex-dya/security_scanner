@@ -1,0 +1,25 @@
+number: 2
+content:
+- language: en
+  name: Ensure permissions on bootloader config are configured
+  description: >-
+    The grub configuration file contains information on boot settings and
+    passwords for unlocking boot options. The grub configuration is usually
+    grub.conf, grub.cfg, or menu.lst stored in either /boot/grub or /boot/grub2.
+    It is commonly symlinked as /etc/grub.conf as well. Setting the permissions
+    to read and write for root only prevents non-root users from seeing the boot
+    parameters or changing them. Non-root users who read the boot parameters may
+    be able to identify weaknesses in security upon boot and be able to exploit
+    them.
+- language: ru
+  name: Удостоверьтесь, что разрешения на конфиг загрузчика настроены корректно
+  description: >-
+    Конфигурационный файл содержит информацию о настройках загрузки и паролях
+    для разблокировки опций загрузки. Настройки grub - grub.conf, grub.cfg, или
+    menu.lst - обычно храняться либо в каталоге /boot/grub либо /boot/grub2. В
+    основном, он является символической ссылкой на /etc/grub.conf. Настройте
+    права доступа на чтение и запись только пользователю root, для
+    предотвращения просмотра параметров загрузки или их изменения другими
+    пользователями. Не-root пользователи, кто может читать параметры загрузки,
+    могут быть способны обнаружить слабые места в защите во время загрузки
+    системы и проэксплуатировать их
