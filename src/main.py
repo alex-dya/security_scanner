@@ -48,4 +48,4 @@ app.cli.add_command(control_cli)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
