@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% macro active_status(loop) -%}
+{%- if loop.index == 1 -%}
+ in active
+{%- endif -%}
+{%- endmacro %}
+
 {% block app_content %}
     <div class="container">
         <div class="row">
@@ -16,11 +22,9 @@
                 {% endfor %}
             </ul>
         </div>
-        <div class="row">
-            <div class="tab-content col-md-12">
-                <div class="tabbable">
-                {% for host in result.host_results %}
-                <div id="host-{{ host.id }}" class="tab-pane fade{% if loop.index == 1 %} in active{% endif %}">
+        <div class="tab-content col-md-12">
+            {% for host in result.host_results %}
+                <div id="host-{{ host.id }}" class="tab-pane fade {{ active_status(loop) }}">
                     <div class="col-md-3">
                         <ul class="nav nav-pills nav-stacked">
                         {% for control in host.controls %}
@@ -29,7 +33,7 @@
                             {% else %}
                             <li>
                             {% endif %}
-                                <a data-toggle="tab" href="#control-{{ control.id }}">
+                                <a data-toggle="tab" class="text-truncate" href="#control-{{ control.id }}">
                                     {{ control.control_number }}:
                                     {{ all_controls[control.control_number].name }}
                                 </a>
@@ -40,11 +44,7 @@
                     </div>
                     <div class="tab-content col-md-9">
                         {% for control in host.controls %}
-                        {% if loop.index == 1 %}
-                        <div id="control-{{ control.id }}" class="tab-pane fade in active" align="left">
-                        {% else %}
-                        <div id="control-{{ control.id }}" class="tab-pane fade" align="left">
-                        {% endif %}
+                        <div id="control-{{ control.id }}" class="tab-pane fade {{ active_status(loop) }}" align="left">
                             <h3>{{ all_controls[control.control_number].name }}</h3>
                             <br>
                             <div class="panel panel-default">
@@ -53,15 +53,27 @@
                             </div>
                             <div class="panel panel-default">
                                 <div class="panel-heading">Result</div>
-                                <div class="panel-body">{{ control.result }}</div>
+                                <div class="panel-body">
+                                    {% autoescape false %}
+                                    {{ control.result | replace('\n', '<br>') }}
+                                    {% endautoescape %}
+                                </div>
+
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
-                {% endfor %}
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+$("ul.nav-tabs a").click(function (e) {
+    e.preventDefault();
+    $(this).tab('show');
+});
+</script>
 {% endblock %}
