@@ -249,7 +249,11 @@ class TaskResult(db.Model):
     )
     finished = db.Column(db.DateTime)
     host_results = db.relationship(
-        'HostResult', backref='task', lazy='dynamic')
+        'HostResult',
+        backref='task',
+        lazy='dynamic',
+        cascade='all, delete-orphan'
+    )
 
     @property
     def duration(self) -> Optional[datetime]:
@@ -283,7 +287,8 @@ class HostResult(db.Model):
         'ControlResult',
         backref='host_result',
         lazy='dynamic',
-        order_by='ControlResult.control_number'
+        order_by='ControlResult.control_number',
+        cascade='all, delete-orphan'
     )
 
     def __repr__(self):

@@ -1,5 +1,8 @@
 $(document).ready(function () {
     function delete_result() {
+        if (! confirm('Are you sure you want to delete ' + this.id + ' result?')){
+            return;
+        }
         var obj = this;
         $.post(('results/delete/' + this.id), function (data, status) {
             console.log('data:' + data.Message);
