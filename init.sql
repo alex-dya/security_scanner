@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 10.4 (Debian 10.4-2.pgdg90+1)
--- Dumped by pg_dump version 10.4 (Ubuntu 10.4-0ubuntu0.18.04)
+-- Dumped by pg_dump version 10.5 (Ubuntu 10.5-0ubuntu0.18.04)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,99 +15,27 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 SET row_security = off;
 
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_fk2;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_fk;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_result_fk;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_fk;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_fk;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_fk;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_fk;
-ALTER TABLE ONLY public.host_result DROP CONSTRAINT host_result_fk;
-ALTER TABLE ONLY public.control_result DROP CONSTRAINT control_result_fk;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_credential_owner_id_fkey;
-DROP INDEX public.ix_user_username;
-DROP INDEX public.ix_user_email;
-DROP INDEX public.ix_task_name;
-DROP INDEX public.ix_profile_setting_profile_id;
-DROP INDEX public.ix_control_number;
-DROP INDEX public.ix_control_language;
-DROP INDEX public.ix_account_credential_username;
-DROP INDEX public.ix_account_credential_owner_id;
-DROP INDEX public.ix_account_credential_name;
-ALTER TABLE ONLY public."user" DROP CONSTRAINT user_pkey;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_uniq;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_uniq;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_pkey;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_result_pkey;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_pkey;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_uniq;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_pkey;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_uniq;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_pkey;
-ALTER TABLE ONLY public.host_result DROP CONSTRAINT host_result_pkey;
-ALTER TABLE ONLY public.control_result DROP CONSTRAINT control_result_pkey;
-ALTER TABLE ONLY public.control DROP CONSTRAINT control_pkey;
-ALTER TABLE ONLY public.celery_tasksetmeta DROP CONSTRAINT celery_tasksetmeta_taskset_id_key;
-ALTER TABLE ONLY public.celery_tasksetmeta DROP CONSTRAINT celery_tasksetmeta_pkey;
-ALTER TABLE ONLY public.celery_taskmeta DROP CONSTRAINT celery_taskmeta_task_id_key;
-ALTER TABLE ONLY public.celery_taskmeta DROP CONSTRAINT celery_taskmeta_pkey;
-ALTER TABLE ONLY public.alembic_version DROP CONSTRAINT alembic_version_pkc;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_credential_pkey;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_cred_uniq;
-ALTER TABLE public."user" ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task_setting ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.scan_profile ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.profile_setting ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.host_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.control_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.control ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.account_credential ALTER COLUMN id DROP DEFAULT;
-DROP SEQUENCE public.user_id_seq;
-DROP TABLE public."user";
-DROP SEQUENCE public.taskset_id_sequence;
-DROP SEQUENCE public.task_setting_id_seq;
-DROP TABLE public.task_setting;
-DROP SEQUENCE public.task_result_id_seq;
-DROP TABLE public.task_result;
-DROP SEQUENCE public.task_id_sequence;
-DROP SEQUENCE public.task_id_seq;
-DROP TABLE public.task;
-DROP SEQUENCE public.scan_profile_id_seq;
-DROP TABLE public.scan_profile;
-DROP SEQUENCE public.profile_setting_id_seq;
-DROP TABLE public.profile_setting;
-DROP SEQUENCE public.host_result_id_seq;
-DROP TABLE public.host_result;
-DROP SEQUENCE public.control_result_id_seq;
-DROP TABLE public.control_result;
-DROP SEQUENCE public.control_id_seq;
-DROP TABLE public.control;
-DROP TABLE public.celery_tasksetmeta;
-DROP TABLE public.celery_taskmeta;
-DROP TABLE public.alembic_version;
-DROP SEQUENCE public.account_credential_id_seq;
-DROP TABLE public.account_credential;
-DROP TYPE public.taskstatus;
-DROP TYPE public.controlstatus;
-DROP EXTENSION plpgsql;
-DROP SCHEMA public;
+DROP DATABASE scanner;
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: scanner; Type: DATABASE; Schema: -; Owner: postgres
 --
 
-CREATE SCHEMA public;
+CREATE DATABASE scanner WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'en_US.utf8' LC_CTYPE = 'en_US.utf8';
 
 
-ALTER SCHEMA public OWNER TO postgres;
+ALTER DATABASE scanner OWNER TO postgres;
 
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
+\connect scanner
 
-COMMENT ON SCHEMA public IS 'standard public schema';
-
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
