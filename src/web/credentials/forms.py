@@ -19,5 +19,11 @@ class EditCredentialForm(FlaskForm):
     username = StringField(_l('Username'), validators=[DataRequired()])
     password = PasswordField(_l('Password'), validators=[DataRequired()])
     password2 = PasswordField(
-        _l('Repeat Password'), validators=[DataRequired(), EqualTo('password')])
+        _l('Repeat Password'), validators=[
+            DataRequired(),
+            EqualTo(
+                'password',
+                message=_l('Field must be equal to %(other_label)s')
+            )
+        ])
     submit = SubmitField(_l('Save'))

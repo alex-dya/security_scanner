@@ -1,15 +1,25 @@
 $(document).ready(function () {
+    var stop_text = 'Stop';
+    var run_text = 'Run';
+
+    get_translate(stop_text, function (data) {
+        stop_text = data.translate;
+    });
+    get_translate(run_text, function (data) {
+        run_text = data.translate;
+    });
+
     function start_to_stop(obj) {
         obj.toggleClass('startbtn stopbtn');
         obj.toggleClass('btn-info btn-warning');
-        obj.html('Stop');
+        obj.html(stop_text);
         obj.unbind('click').click(stop_function);
     }
 
     function stop_to_start(obj) {
         obj.toggleClass('stopbtn startbtn');
         obj.toggleClass('btn-warning btn-info');
-        obj.html('Run');
+        obj.html(run_text);
         obj.unbind('click').click(start_function);
     }
 

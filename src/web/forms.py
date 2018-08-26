@@ -20,7 +20,12 @@ class RegistrationForm(FlaskForm):
     email = StringField(_l('Email'), validators=[DataRequired(), Email()])
     password = PasswordField(_l('Password'), validators=[DataRequired()])
     password2 = PasswordField(
-        _l('Repeat Password'), validators=[DataRequired(), EqualTo('password')])
+        _l('Repeat Password'), validators=[
+            DataRequired(),
+            EqualTo(
+                'password',
+                message=_l('Field must be equal to %(other_label)s')
+            )])
     language = SelectField(
         _l('Language'),
         choices=[('ru', 'Русский'), ('en', 'English')]

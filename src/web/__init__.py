@@ -1,10 +1,10 @@
 from celery import Celery
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_login import LoginManager, current_user
+from flask import Flask, request, session
+from flask_babel import Babel, lazy_gettext
 from flask_bootstrap import Bootstrap
-from flask_babel import Babel
+from flask_login import LoginManager, current_user
+from flask_migrate import Migrate
+from flask_sqlalchemy import SQLAlchemy
 
 from config import Config
 
@@ -30,16 +30,20 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-login_manager = LoginManager(app)
 bootstrap = Bootstrap(app)
 celery = make_celery(app)
-babel = Babel(app)
+babel: Babel = Babel(app)
+login_manager = LoginManager(app)
+login_manager.localize_callback = lazy_gettext
 
 
 @babel.localeselector
 def get_locale():
     if current_user.is_authenticated:
         return current_user.language
+
+    if 'language' in session:
+        return session['language']
 
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 

@@ -1,0 +1,277 @@
+# Russian translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-08-26 19:25+0300\n"
+"PO-Revision-Date: 2018-08-26 16:36+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: web/credentials/forms.py:19 web/forms.py:12 web/forms.py:19
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: web/credentials/forms.py:20 web/forms.py:13 web/forms.py:21
+#: web/profiles/forms.py:47
+msgid "Password"
+msgstr "Пароль"
+
+#: web/forms.py:14
+msgid "Remember me"
+msgstr "Запомнить меня"
+
+#: web/forms.py:15 web/templates/login.html:6
+msgid "Sign In"
+msgstr "Войти"
+
+#: web/forms.py:20
+msgid "Email"
+msgstr "Email"
+
+#: web/credentials/forms.py:22 web/forms.py:23
+msgid "Repeat Password"
+msgstr "Повтор пароля"
+
+#: web/credentials/forms.py:26 web/forms.py:27
+#, python-format
+msgid "Field must be equal to %(other_label)s"
+msgstr "Поле должно иметь одинаковое значение с полем %(other_label)s"
+
+#: web/forms.py:30
+msgid "Language"
+msgstr "Язык"
+
+#: web/forms.py:33 web/templates/register.html:5
+msgid "Register"
+msgstr "Регистрация"
+
+#: web/forms.py:38
+msgid "Please use a different username."
+msgstr "Пожалуйста, используйте другое имя пользователя"
+
+#: web/forms.py:43
+msgid "Please use a different email address."
+msgstr "Пожалуйста используйт другой email адрес"
+
+#: web/validators.py:27
+#, python-format
+msgid "Field %(text)s must have unique value"
+msgstr "Поле %(text)s должно иметь уникальное значение"
+
+#: web/views.py:35
+msgid "Invalid username or password"
+msgstr "Неправильное имя пользователя или пароль"
+
+#: web/views.py:67
+msgid "Congratulations, you are now a registered user!"
+msgstr "Поздравляем, теперь вы зарегистрированый пользователь!"
+
+#: web/credentials/forms.py:11 web/profiles/forms.py:56 web/tasks/forms.py:30
+msgid "Id"
+msgstr ""
+
+#: web/credentials/forms.py:13 web/profiles/forms.py:58 web/tasks/forms.py:32
+#: web/templates/credentials/credential_list.html:15
+#: web/templates/profiles/profile_list.html:16
+#: web/templates/results/result_list.html:8
+#: web/templates/tasks/task_list.html:33
+msgid "Name"
+msgstr "Название"
+
+#: web/credentials/forms.py:29 web/profiles/forms.py:65 web/tasks/forms.py:38
+msgid "Save"
+msgstr "Сохранить"
+
+#: web/credentials/routes.py:28
+msgid "Create credential"
+msgstr "Создание учетной записи"
+
+#: web/credentials/routes.py:40
+msgid "New account credential was created"
+msgstr "Создана новая учетная запись"
+
+#: web/credentials/routes.py:54
+msgid "The credential id does not exist"
+msgstr "Указанная учетная запись не существует"
+
+#: web/credentials/routes.py:65
+msgid "Edit credential"
+msgstr "Редактирование учетной записи"
+
+#: web/profiles/forms.py:24
+msgid "Port"
+msgstr "Порт"
+
+#: web/profiles/forms.py:29 web/templates/_navbar.html:19
+msgid "Credentials"
+msgstr "Учетные записи"
+
+#: web/profiles/forms.py:43
+msgid "Privilege escalation"
+msgstr "Поднятие привилегий"
+
+#: web/profiles/routes.py:28
+msgid "Create profile"
+msgstr "Создание профиля"
+
+#: web/profiles/routes.py:37
+msgid "Profile was created"
+msgstr "Профиль был создан"
+
+#: web/profiles/routes.py:56
+msgid "Edit profile"
+msgstr "Редактирование профиля"
+
+#: web/profiles/routes.py:62
+msgid "Profile was edited"
+msgstr "Профиль был отредактрован"
+
+#: web/results/forms.py:8
+msgid "Format"
+msgstr "Формат"
+
+#: web/results/forms.py:12 web/templates/results/export.html:5
+#: web/templates/results/result_list.html:24
+msgid "Export"
+msgstr "Экспортировать"
+
+#: web/tasks/forms.py:17 web/templates/tasks/edit_task.html:18
+msgid "Hostname"
+msgstr "Адрес узла"
+
+#: web/tasks/forms.py:20 web/templates/tasks/edit_task.html:19
+msgid "Profile"
+msgstr "Профиль"
+
+#: web/tasks/routes.py:32
+msgid "Create task"
+msgstr "Создание задачи"
+
+#: web/tasks/routes.py:77
+msgid "Edit task"
+msgstr "Редактирование задачи"
+
+#: web/templates/_navbar.html:16
+msgid "Scanning"
+msgstr "Сканирование"
+
+#: web/templates/_navbar.html:22
+msgid "Scan profiles"
+msgstr "Профили сканирования"
+
+#: web/templates/_navbar.html:25
+msgid "Scan results"
+msgstr "Результаты сканирования"
+
+#: web/templates/_navbar.html:43
+msgid "Logout"
+msgstr "Выйти"
+
+#: web/templates/login.html:12
+msgid "New User?"
+msgstr "Новый пользователь?"
+
+#: web/templates/login.html:12
+msgid "Click to Register!"
+msgstr "Нажми для регистрации!"
+
+#: web/templates/register.html:11
+msgid "Back"
+msgstr "Назад"
+
+#: web/templates/credentials/credential_list.html:6
+#: web/templates/profiles/profile_list.html:7
+#: web/templates/tasks/task_list.html:24
+msgid "Create"
+msgstr "Создать"
+
+#: web/templates/credentials/credential_list.html:7
+#: web/templates/profiles/profile_list.html:8
+#: web/templates/results/result_list.html:25
+#: web/templates/tasks/edit_task.html:37 web/templates/tasks/task_list.html:25
+msgid "Delete"
+msgstr "Удалить"
+
+#: web/templates/credentials/credential_list.html:14
+#: web/templates/profiles/profile_list.html:15
+#: web/templates/results/result_list.html:7
+#: web/templates/tasks/edit_task.html:17 web/templates/tasks/task_list.html:32
+msgid "#"
+msgstr "№"
+
+#: web/templates/profiles/edit_profile.html:15
+msgid "Transport settings"
+msgstr "Настройки транспортов"
+
+#: web/templates/results/_control.html:4 web/templates/tasks/task_list.html:34
+msgid "Status"
+msgstr "Статус"
+
+#: web/templates/results/_control.html:8
+msgid "Description"
+msgstr "Описание"
+
+#: web/templates/results/_control.html:12
+msgid "Result"
+msgstr "Результат"
+
+#: web/templates/results/document.html:44
+msgid "Content table"
+msgstr "Содержание"
+
+#: web/templates/results/result_list.html:9
+msgid "Start time"
+msgstr "Время запуска"
+
+#: web/templates/results/result_list.html:10
+msgid "Finish time"
+msgstr "Время заверешения"
+
+#: web/templates/results/result_list.html:11
+msgid "Duration"
+msgstr "Продолжительность"
+
+#: web/templates/results/show.html:12
+msgid "Not checked"
+msgstr "Не проверено"
+
+#: web/templates/results/show.html:13
+msgid "Compliant"
+msgstr "Соотвествует"
+
+#: web/templates/results/show.html:14
+msgid "Not compliant"
+msgstr "Не соответствует"
+
+#: web/templates/results/show.html:15
+msgid "Not applicable"
+msgstr "Не применимо"
+
+#: web/templates/results/show.html:16
+msgid "Error"
+msgstr "Ошибка"
+
+#: web/templates/tasks/edit_task.html:44
+msgid "Add Row"
+msgstr "Добавить строку"
+
+#: web/templates/tasks/task_list.html:47
+msgid "Run"
+msgstr "Запустить"
+
+#: web/templates/tasks/task_list.html:49
+msgid "Stop"
+msgstr "Остановить"
+

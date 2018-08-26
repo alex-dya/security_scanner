@@ -1,6 +1,11 @@
 $(document).ready(function () {
+    var text_begin = 'Are you sure you want to delete result';
+    get_translate(text_begin, function (data) {
+        text_begin = data.translate;
+    });
+
     function delete_result() {
-        if (! confirm('Are you sure you want to delete ' + this.id + ' result?')){
+        if (! confirm(text_begin)){
             return;
         }
         var obj = this;

@@ -22,7 +22,7 @@ def generator(text):
 def generate_pdf(result):
     controls = {
         item.number: item
-        for item in Control.query.filter_by(language=get_locale())
+        for item in Control.query.filter_by(language=get_locale().language)
     }
 
     data = render_template(

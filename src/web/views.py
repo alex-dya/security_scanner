@@ -1,10 +1,10 @@
-from flask import render_template, url_for, redirect, request, flash
-from flask_babel import get_locale
+from flask import (
+    render_template, url_for, redirect, request, flash, jsonify, abort, session)
+from flask_babel import get_locale, lazy_gettext as _l, refresh, _
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
-from test_ssh import scan
-from web import app, forms, db, login_manager
+from web import app, db, login_manager
 from web.forms import RegistrationForm, LoginForm
 from web.models import User
 
@@ -32,7 +32,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
 
         if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
+            flash(_('Invalid username or password'))
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -64,7 +64,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
+        flash(_('Congratulations, you are now a registered user!'))
         return redirect(url_for('login'))
 
     form.language.process_data(get_locale())
@@ -72,10 +72,45 @@ def register():
     return render_template('register.html', form=form)
 
 
+@app.route('/translate', methods=['GET'])
+@login_required
+def translate():
+    text = request.args.get('text')
+
+    if text is None:
+        return abort(401)
+
+    return jsonify(dict(
+        origin=text,
+        locale=get_locale().language,
+        translate=_l(text)
+    ))
+
+
+@app.route('/change_language/<lang>')
+def change_language(lang):
+    return_url = url_for('index')
+
+    if request.referrer:
+        parsed_url = url_parse(request.referrer)
+        return_url = ''.join(parsed_url[2])
+
+    if lang not in app.config['LANGUAGES']:
+        return redirect(return_url)
+
+    if current_user.is_authenticated:
+        current_user.language = lang
+        db.session.commit()
+
+    session['language'] = lang
+    refresh()
+
+    return redirect(return_url)
+
+
 @login_manager.unauthorized_handler
 def unathorized_user():
     return_url = url_for('index')
-    app.logger.debug(f'request.path: {request.path}')
 
     if request.path:
         parsed_url = url_parse(request.path)

@@ -2,6 +2,7 @@ from typing import Mapping
 
 from flask import render_template, redirect, url_for, request, jsonify, json
 from flask_login import login_required, current_user
+from flask_babel import _
 from celery.result import AsyncResult
 from celery.app.control import Control
 
@@ -28,7 +29,7 @@ def create_task():
         return render_template(
             'tasks/edit_task.html',
             form=form,
-            action='Create',
+            action=_('Create task'),
             profiles=json.dumps([
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
@@ -73,7 +74,7 @@ def edit_task(task_id):
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
-            action='Edit'
+            action=_('Edit task')
         )
 
     task.name = form.name.data

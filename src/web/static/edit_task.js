@@ -4,6 +4,11 @@ $(document).ready(function () {
         ++counter;
     });
 
+    var delete_text = 'Delete';
+    get_translate('Delete', function (data) {
+        delete_text = data.translate;
+    });
+
     var json = $('input[name="profiles"]').first().val();
     var profile_list = JSON.parse(json);
 
@@ -22,7 +27,7 @@ $(document).ready(function () {
             cols += '<option value="' + value.id + '">' + value.name + '</option>'
         });
         cols += '</select></td>';
-        cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>';
+        cols += '<td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="' + delete_text +'"></td>';
 
         newRow.append(cols);
         newRow.append("</tr>");
