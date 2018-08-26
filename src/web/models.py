@@ -57,7 +57,7 @@ class AccountCredential(db.Model):
     password = db.Column(db.String(128))
     owner_id = db.Column(
         db.Integer,
-        db.ForeignKey('user.id'),
+        db.ForeignKey('users.id'),
         index=True,
         nullable=False
     )
@@ -76,7 +76,7 @@ class ScanProfile(db.Model):
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            'user.id',
+            'users.id',
             name='scan_profile_fk',
             ondelete='CASCADE'
         ),
@@ -109,10 +109,12 @@ class ScanProfile(db.Model):
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(128), index=True, unique=True)
     password_hash = db.Column(db.String(128))
+    language = db.Column(db.String(2), default='en')
 
     credentials = db.relationship(
         'AccountCredential', backref='owner', lazy='dynamic')
@@ -194,7 +196,7 @@ class Task(db.Model):
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            'user.id',
+            'users.id',
             name='task_fk',
             ondelete='CASCADE'
         ),
@@ -237,7 +239,7 @@ class TaskResult(db.Model):
     owner_id = db.Column(
         db.Integer,
         db.ForeignKey(
-            'user.id',
+            'users.id',
             name='task_fk',
             ondelete='CASCADE'
         ),

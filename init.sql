@@ -1,975 +1,118 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 10.4 (Debian 10.4-2.pgdg90+1)
--- Dumped by pg_dump version 10.4 (Ubuntu 10.4-0ubuntu0.18.04)
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_fk2;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_fk;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_result_fk;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_fk;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_fk;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_fk;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_fk;
-ALTER TABLE ONLY public.host_result DROP CONSTRAINT host_result_fk;
-ALTER TABLE ONLY public.control_result DROP CONSTRAINT control_result_fk;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_credential_owner_id_fkey;
-DROP INDEX public.ix_user_username;
-DROP INDEX public.ix_user_email;
-DROP INDEX public.ix_task_name;
-DROP INDEX public.ix_profile_setting_profile_id;
-DROP INDEX public.ix_control_number;
-DROP INDEX public.ix_control_language;
-DROP INDEX public.ix_account_credential_username;
-DROP INDEX public.ix_account_credential_owner_id;
-DROP INDEX public.ix_account_credential_name;
-ALTER TABLE ONLY public."user" DROP CONSTRAINT user_pkey;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_uniq;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_uniq;
-ALTER TABLE ONLY public.task_setting DROP CONSTRAINT task_setting_pkey;
-ALTER TABLE ONLY public.task_result DROP CONSTRAINT task_result_pkey;
-ALTER TABLE ONLY public.task DROP CONSTRAINT task_pkey;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_uniq;
-ALTER TABLE ONLY public.scan_profile DROP CONSTRAINT scan_profile_pkey;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_uniq;
-ALTER TABLE ONLY public.profile_setting DROP CONSTRAINT profile_setting_pkey;
-ALTER TABLE ONLY public.host_result DROP CONSTRAINT host_result_pkey;
-ALTER TABLE ONLY public.control_result DROP CONSTRAINT control_result_pkey;
-ALTER TABLE ONLY public.control DROP CONSTRAINT control_pkey;
-ALTER TABLE ONLY public.celery_tasksetmeta DROP CONSTRAINT celery_tasksetmeta_taskset_id_key;
-ALTER TABLE ONLY public.celery_tasksetmeta DROP CONSTRAINT celery_tasksetmeta_pkey;
-ALTER TABLE ONLY public.celery_taskmeta DROP CONSTRAINT celery_taskmeta_task_id_key;
-ALTER TABLE ONLY public.celery_taskmeta DROP CONSTRAINT celery_taskmeta_pkey;
-ALTER TABLE ONLY public.alembic_version DROP CONSTRAINT alembic_version_pkc;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_credential_pkey;
-ALTER TABLE ONLY public.account_credential DROP CONSTRAINT account_cred_uniq;
-ALTER TABLE public."user" ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task_setting ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.task ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.scan_profile ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.profile_setting ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.host_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.control_result ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.control ALTER COLUMN id DROP DEFAULT;
-ALTER TABLE public.account_credential ALTER COLUMN id DROP DEFAULT;
-DROP SEQUENCE public.user_id_seq;
-DROP TABLE public."user";
-DROP SEQUENCE public.taskset_id_sequence;
-DROP SEQUENCE public.task_setting_id_seq;
-DROP TABLE public.task_setting;
-DROP SEQUENCE public.task_result_id_seq;
-DROP TABLE public.task_result;
-DROP SEQUENCE public.task_id_sequence;
-DROP SEQUENCE public.task_id_seq;
-DROP TABLE public.task;
-DROP SEQUENCE public.scan_profile_id_seq;
-DROP TABLE public.scan_profile;
-DROP SEQUENCE public.profile_setting_id_seq;
-DROP TABLE public.profile_setting;
-DROP SEQUENCE public.host_result_id_seq;
-DROP TABLE public.host_result;
-DROP SEQUENCE public.control_result_id_seq;
-DROP TABLE public.control_result;
-DROP SEQUENCE public.control_id_seq;
-DROP TABLE public.control;
-DROP TABLE public.celery_tasksetmeta;
-DROP TABLE public.celery_taskmeta;
-DROP TABLE public.alembic_version;
-DROP SEQUENCE public.account_credential_id_seq;
-DROP TABLE public.account_credential;
-DROP TYPE public.taskstatus;
-DROP TYPE public.controlstatus;
-DROP EXTENSION plpgsql;
-DROP SCHEMA public;
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
-
---
--- Name: controlstatus; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.controlstatus AS ENUM (
-    'NotChecked',
-    'Compliance',
-    'NotCompliance',
-    'NotApplicable',
-    'Error'
+CREATE TYPE taskstatus AS ENUM ('Idle', 'Wait', 'Running');
+CREATE TYPE controlstatus AS ENUM ('NotChecked', 'Compliance', 'NotCompliance', 'NotApplicable', 'Error');
+CREATE TABLE users (
+	id SERIAL NOT NULL, 
+	username VARCHAR(64), 
+	email VARCHAR(128), 
+	password_hash VARCHAR(128), 
+	language VARCHAR(2), 
+	PRIMARY KEY (id)
 );
-
-
-ALTER TYPE public.controlstatus OWNER TO postgres;
-
---
--- Name: taskstatus; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.taskstatus AS ENUM (
-    'Idle',
-    'Wait',
-    'Running'
+CREATE UNIQUE INDEX ix_users_username ON users (username);
+CREATE UNIQUE INDEX ix_users_email ON users (email);
+CREATE TABLE control (
+	id SERIAL NOT NULL, 
+	number INTEGER, 
+	language VARCHAR(4) DEFAULT 'en', 
+	name VARCHAR(128) NOT NULL, 
+	description VARCHAR(2048) NOT NULL, 
+	PRIMARY KEY (id)
 );
-
-
-ALTER TYPE public.taskstatus OWNER TO postgres;
-
-SET default_tablespace = '';
-
-SET default_with_oids = false;
-
---
--- Name: account_credential; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.account_credential (
-    id integer NOT NULL,
-    username character varying(64),
-    password character varying(128),
-    owner_id integer NOT NULL,
-    name character varying(64)
+CREATE INDEX ix_control_language ON control (language);
+CREATE INDEX ix_control_number ON control (number);
+CREATE TABLE account_credential (
+	id SERIAL NOT NULL, 
+	name VARCHAR(64), 
+	username VARCHAR(64), 
+	password VARCHAR(128), 
+	owner_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT account_cred_uniq UNIQUE (name, owner_id), 
+	FOREIGN KEY(owner_id) REFERENCES users (id)
 );
-
-
-ALTER TABLE public.account_credential OWNER TO postgres;
-
---
--- Name: account_credential_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.account_credential_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.account_credential_id_seq OWNER TO postgres;
-
---
--- Name: account_credential_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.account_credential_id_seq OWNED BY public.account_credential.id;
-
-
---
--- Name: alembic_version; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.alembic_version (
-    version_num character varying(32) NOT NULL
+CREATE INDEX ix_account_credential_name ON account_credential (name);
+CREATE INDEX ix_account_credential_owner_id ON account_credential (owner_id);
+CREATE INDEX ix_account_credential_username ON account_credential (username);
+CREATE TABLE scan_profile (
+	id SERIAL NOT NULL, 
+	name VARCHAR, 
+	owner_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT scan_profile_uniq UNIQUE (name, owner_id), 
+	CONSTRAINT scan_profile_fk FOREIGN KEY(owner_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.alembic_version OWNER TO postgres;
-
---
--- Name: celery_taskmeta; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.celery_taskmeta (
-    id integer NOT NULL,
-    task_id character varying(155),
-    status character varying(50),
-    result bytea,
-    date_done timestamp without time zone,
-    traceback text
+CREATE TABLE task (
+	id SERIAL NOT NULL, 
+	name VARCHAR(64), 
+	status taskstatus DEFAULT 'Idle' NOT NULL, 
+	uid VARCHAR(128), 
+	owner_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT task_uniq UNIQUE (name, owner_id), 
+	CONSTRAINT task_fk FOREIGN KEY(owner_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.celery_taskmeta OWNER TO postgres;
-
---
--- Name: celery_tasksetmeta; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.celery_tasksetmeta (
-    id integer NOT NULL,
-    taskset_id character varying(155),
-    result bytea,
-    date_done timestamp without time zone
+CREATE INDEX ix_task_name ON task (name);
+CREATE TABLE profile_setting (
+	id SERIAL NOT NULL, 
+	transport VARCHAR NOT NULL, 
+	setting VARCHAR NOT NULL, 
+	value VARCHAR NOT NULL, 
+	profile_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT profile_setting_uniq UNIQUE (transport, setting, profile_id), 
+	CONSTRAINT profile_setting_fk FOREIGN KEY(profile_id) REFERENCES scan_profile (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.celery_tasksetmeta OWNER TO postgres;
-
---
--- Name: control; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.control (
-    id integer NOT NULL,
-    name character varying(128) NOT NULL,
-    description character varying(2048) NOT NULL,
-    language character varying(4) DEFAULT 'en'::character varying,
-    number integer
+CREATE INDEX ix_profile_setting_profile_id ON profile_setting (profile_id);
+CREATE TABLE task_setting (
+	id SERIAL NOT NULL, 
+	hostname VARCHAR(128), 
+	profile_id INTEGER NOT NULL, 
+	task_id INTEGER NOT NULL, 
+	PRIMARY KEY (id), 
+	CONSTRAINT task_setting_uniq UNIQUE (hostname, profile_id, task_id), 
+	CONSTRAINT task_setting_fk FOREIGN KEY(profile_id) REFERENCES scan_profile (id) ON DELETE SET NULL, 
+	CONSTRAINT task_setting_fk2 FOREIGN KEY(task_id) REFERENCES task (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.control OWNER TO postgres;
-
---
--- Name: control_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.control_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.control_id_seq OWNER TO postgres;
-
---
--- Name: control_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.control_id_seq OWNED BY public.control.id;
-
-
---
--- Name: control_result; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.control_result (
-    id integer NOT NULL,
-    status public.controlstatus NOT NULL,
-    result character varying,
-    control_number integer NOT NULL,
-    host_result_id integer NOT NULL
+CREATE TABLE task_result (
+	id SERIAL NOT NULL, 
+	task_id INTEGER NOT NULL, 
+	owner_id INTEGER NOT NULL, 
+	started TIMESTAMP WITHOUT TIME ZONE DEFAULT now(), 
+	finished TIMESTAMP WITHOUT TIME ZONE, 
+	PRIMARY KEY (id), 
+	CONSTRAINT task_result_fk FOREIGN KEY(task_id) REFERENCES task (id) ON DELETE SET NULL, 
+	CONSTRAINT task_fk FOREIGN KEY(owner_id) REFERENCES users (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.control_result OWNER TO postgres;
-
---
--- Name: control_result_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.control_result_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.control_result_id_seq OWNER TO postgres;
-
---
--- Name: control_result_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.control_result_id_seq OWNED BY public.control_result.id;
-
-
---
--- Name: host_result; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.host_result (
-    id integer NOT NULL,
-    task_id integer NOT NULL,
-    config character varying,
-    hostname character varying
+CREATE TABLE host_result (
+	id SERIAL NOT NULL, 
+	task_id INTEGER NOT NULL, 
+	config VARCHAR, 
+	hostname VARCHAR, 
+	PRIMARY KEY (id), 
+	CONSTRAINT host_result_fk FOREIGN KEY(task_id) REFERENCES task_result (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.host_result OWNER TO postgres;
-
---
--- Name: host_result_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.host_result_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.host_result_id_seq OWNER TO postgres;
-
---
--- Name: host_result_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.host_result_id_seq OWNED BY public.host_result.id;
-
-
---
--- Name: profile_setting; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.profile_setting (
-    id integer NOT NULL,
-    transport character varying NOT NULL,
-    setting character varying NOT NULL,
-    value character varying NOT NULL,
-    profile_id integer NOT NULL
+CREATE TABLE control_result (
+	id SERIAL NOT NULL, 
+	host_result_id INTEGER NOT NULL, 
+	control_number INTEGER NOT NULL, 
+	status controlstatus NOT NULL, 
+	result VARCHAR, 
+	PRIMARY KEY (id), 
+	CONSTRAINT control_result_fk FOREIGN KEY(host_result_id) REFERENCES host_result (id) ON DELETE CASCADE
 );
-
-
-ALTER TABLE public.profile_setting OWNER TO postgres;
-
---
--- Name: profile_setting_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.profile_setting_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.profile_setting_id_seq OWNER TO postgres;
-
---
--- Name: profile_setting_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.profile_setting_id_seq OWNED BY public.profile_setting.id;
-
-
---
--- Name: scan_profile; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.scan_profile (
-    id integer NOT NULL,
-    name character varying,
-    owner_id integer NOT NULL
-);
-
-
-ALTER TABLE public.scan_profile OWNER TO postgres;
-
---
--- Name: scan_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.scan_profile_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.scan_profile_id_seq OWNER TO postgres;
-
---
--- Name: scan_profile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.scan_profile_id_seq OWNED BY public.scan_profile.id;
-
-
---
--- Name: task; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.task (
-    id integer NOT NULL,
-    name character varying(64),
-    owner_id integer NOT NULL,
-    status public.taskstatus NOT NULL,
-    uid character varying(128)
-);
-
-
-ALTER TABLE public.task OWNER TO postgres;
-
---
--- Name: task_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.task_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.task_id_seq OWNER TO postgres;
-
---
--- Name: task_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.task_id_seq OWNED BY public.task.id;
-
-
---
--- Name: task_id_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.task_id_sequence
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.task_id_sequence OWNER TO postgres;
-
---
--- Name: task_result; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.task_result (
-    id integer NOT NULL,
-    task_id integer NOT NULL,
-    started timestamp without time zone DEFAULT now(),
-    finished timestamp without time zone,
-    owner_id integer NOT NULL
-);
-
-
-ALTER TABLE public.task_result OWNER TO postgres;
-
---
--- Name: task_result_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.task_result_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.task_result_id_seq OWNER TO postgres;
-
---
--- Name: task_result_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.task_result_id_seq OWNED BY public.task_result.id;
-
-
---
--- Name: task_setting; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.task_setting (
-    id integer NOT NULL,
-    hostname character varying(128),
-    profile_id integer NOT NULL,
-    task_id integer NOT NULL
-);
-
-
-ALTER TABLE public.task_setting OWNER TO postgres;
-
---
--- Name: task_setting_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.task_setting_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.task_setting_id_seq OWNER TO postgres;
-
---
--- Name: task_setting_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.task_setting_id_seq OWNED BY public.task_setting.id;
-
-
---
--- Name: taskset_id_sequence; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.taskset_id_sequence
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.taskset_id_sequence OWNER TO postgres;
-
---
--- Name: user; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."user" (
-    id integer NOT NULL,
-    username character varying(64),
-    email character varying(128),
-    password_hash character varying(128)
-);
-
-
-ALTER TABLE public."user" OWNER TO postgres;
-
---
--- Name: user_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.user_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_id_seq OWNER TO postgres;
-
---
--- Name: user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.user_id_seq OWNED BY public."user".id;
-
-
---
--- Name: account_credential id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.account_credential ALTER COLUMN id SET DEFAULT nextval('public.account_credential_id_seq'::regclass);
-
-
---
--- Name: control id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.control ALTER COLUMN id SET DEFAULT nextval('public.control_id_seq'::regclass);
-
-
---
--- Name: control_result id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.control_result ALTER COLUMN id SET DEFAULT nextval('public.control_result_id_seq'::regclass);
-
-
---
--- Name: host_result id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.host_result ALTER COLUMN id SET DEFAULT nextval('public.host_result_id_seq'::regclass);
-
-
---
--- Name: profile_setting id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.profile_setting ALTER COLUMN id SET DEFAULT nextval('public.profile_setting_id_seq'::regclass);
-
-
---
--- Name: scan_profile id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.scan_profile ALTER COLUMN id SET DEFAULT nextval('public.scan_profile_id_seq'::regclass);
-
-
---
--- Name: task id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task ALTER COLUMN id SET DEFAULT nextval('public.task_id_seq'::regclass);
-
-
---
--- Name: task_result id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_result ALTER COLUMN id SET DEFAULT nextval('public.task_result_id_seq'::regclass);
-
-
---
--- Name: task_setting id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_setting ALTER COLUMN id SET DEFAULT nextval('public.task_setting_id_seq'::regclass);
-
-
---
--- Name: user id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."user" ALTER COLUMN id SET DEFAULT nextval('public.user_id_seq'::regclass);
-
-
---
--- Name: account_credential account_cred_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.account_credential
-    ADD CONSTRAINT account_cred_uniq UNIQUE (name, owner_id);
-
-
---
--- Name: account_credential account_credential_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.account_credential
-    ADD CONSTRAINT account_credential_pkey PRIMARY KEY (id);
-
-
---
--- Name: alembic_version alembic_version_pkc; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.alembic_version
-    ADD CONSTRAINT alembic_version_pkc PRIMARY KEY (version_num);
-
-
---
--- Name: celery_taskmeta celery_taskmeta_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.celery_taskmeta
-    ADD CONSTRAINT celery_taskmeta_pkey PRIMARY KEY (id);
-
-
---
--- Name: celery_taskmeta celery_taskmeta_task_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.celery_taskmeta
-    ADD CONSTRAINT celery_taskmeta_task_id_key UNIQUE (task_id);
-
-
---
--- Name: celery_tasksetmeta celery_tasksetmeta_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.celery_tasksetmeta
-    ADD CONSTRAINT celery_tasksetmeta_pkey PRIMARY KEY (id);
-
-
---
--- Name: celery_tasksetmeta celery_tasksetmeta_taskset_id_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.celery_tasksetmeta
-    ADD CONSTRAINT celery_tasksetmeta_taskset_id_key UNIQUE (taskset_id);
-
-
---
--- Name: control control_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.control
-    ADD CONSTRAINT control_pkey PRIMARY KEY (id);
-
-
---
--- Name: control_result control_result_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.control_result
-    ADD CONSTRAINT control_result_pkey PRIMARY KEY (id);
-
-
---
--- Name: host_result host_result_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.host_result
-    ADD CONSTRAINT host_result_pkey PRIMARY KEY (id);
-
-
---
--- Name: profile_setting profile_setting_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.profile_setting
-    ADD CONSTRAINT profile_setting_pkey PRIMARY KEY (id);
-
-
---
--- Name: profile_setting profile_setting_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.profile_setting
-    ADD CONSTRAINT profile_setting_uniq UNIQUE (transport, setting, profile_id);
-
-
---
--- Name: scan_profile scan_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.scan_profile
-    ADD CONSTRAINT scan_profile_pkey PRIMARY KEY (id);
-
-
---
--- Name: scan_profile scan_profile_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.scan_profile
-    ADD CONSTRAINT scan_profile_uniq UNIQUE (name, owner_id);
-
-
---
--- Name: task task_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task
-    ADD CONSTRAINT task_pkey PRIMARY KEY (id);
-
-
---
--- Name: task_result task_result_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_result
-    ADD CONSTRAINT task_result_pkey PRIMARY KEY (id);
-
-
---
--- Name: task_setting task_setting_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_setting
-    ADD CONSTRAINT task_setting_pkey PRIMARY KEY (id);
-
-
---
--- Name: task_setting task_setting_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_setting
-    ADD CONSTRAINT task_setting_uniq UNIQUE (hostname, profile_id, task_id);
-
-
---
--- Name: task task_uniq; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task
-    ADD CONSTRAINT task_uniq UNIQUE (name, owner_id);
-
-
---
--- Name: user user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."user"
-    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
-
-
---
--- Name: ix_account_credential_name; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_account_credential_name ON public.account_credential USING btree (name);
-
-
---
--- Name: ix_account_credential_owner_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_account_credential_owner_id ON public.account_credential USING btree (owner_id);
-
-
---
--- Name: ix_account_credential_username; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_account_credential_username ON public.account_credential USING btree (username);
-
-
---
--- Name: ix_control_language; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_control_language ON public.control USING btree (language);
-
-
---
--- Name: ix_control_number; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_control_number ON public.control USING btree (number);
-
-
---
--- Name: ix_profile_setting_profile_id; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_profile_setting_profile_id ON public.profile_setting USING btree (profile_id);
-
-
---
--- Name: ix_task_name; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX ix_task_name ON public.task USING btree (name);
-
-
---
--- Name: ix_user_email; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX ix_user_email ON public."user" USING btree (email);
-
-
---
--- Name: ix_user_username; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE UNIQUE INDEX ix_user_username ON public."user" USING btree (username);
-
-
---
--- Name: account_credential account_credential_owner_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.account_credential
-    ADD CONSTRAINT account_credential_owner_id_fkey FOREIGN KEY (owner_id) REFERENCES public."user"(id);
-
-
---
--- Name: control_result control_result_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.control_result
-    ADD CONSTRAINT control_result_fk FOREIGN KEY (host_result_id) REFERENCES public.host_result(id) ON DELETE CASCADE;
-
-
---
--- Name: host_result host_result_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.host_result
-    ADD CONSTRAINT host_result_fk FOREIGN KEY (task_id) REFERENCES public.task_result(id) ON DELETE CASCADE;
-
-
---
--- Name: profile_setting profile_setting_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.profile_setting
-    ADD CONSTRAINT profile_setting_fk FOREIGN KEY (profile_id) REFERENCES public.scan_profile(id) ON DELETE CASCADE;
-
-
---
--- Name: scan_profile scan_profile_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.scan_profile
-    ADD CONSTRAINT scan_profile_fk FOREIGN KEY (owner_id) REFERENCES public."user"(id) ON DELETE CASCADE;
-
-
---
--- Name: task task_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task
-    ADD CONSTRAINT task_fk FOREIGN KEY (owner_id) REFERENCES public."user"(id) ON DELETE CASCADE;
-
-
---
--- Name: task_result task_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_result
-    ADD CONSTRAINT task_fk FOREIGN KEY (owner_id) REFERENCES public."user"(id) ON DELETE CASCADE;
-
-
---
--- Name: task_result task_result_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_result
-    ADD CONSTRAINT task_result_fk FOREIGN KEY (task_id) REFERENCES public.task(id) ON DELETE SET NULL;
-
-
---
--- Name: task_setting task_setting_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_setting
-    ADD CONSTRAINT task_setting_fk FOREIGN KEY (profile_id) REFERENCES public.scan_profile(id) ON DELETE SET NULL;
-
-
---
--- Name: task_setting task_setting_fk2; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.task_setting
-    ADD CONSTRAINT task_setting_fk2 FOREIGN KEY (task_id) REFERENCES public.task(id) ON DELETE CASCADE;
-
-
---
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
---
-
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
---
--- PostgreSQL database dump complete
---
-
+INSERT INTO control (id, number, language, name, description) VALUES (1, 1, 'en', 'Ensure mounting of forbidden filesystems is disabled', 'Removing support for unneeded filesystem types reduces the local attack surface of the server.');
+INSERT INTO control (id, number, language, name, description) VALUES (2, 1, 'ru', 'Удостоверьтесь, что мониторивани запрещенных файловых систем запрещено', 'Отключите поддержку ненужных типов файловых систем для того чтобы уменьшить площадь атаки на сервер.');
+INSERT INTO control (id, number, language, name, description) VALUES (3, 2, 'en', 'Ensure permissions on bootloader config are configured', 'The grub configuration file contains information on boot settings and passwords for unlocking boot options. The grub configuration is usually grub.conf, grub.cfg, or menu.lst stored in either /boot/grub or /boot/grub2. It is commonly symlinked as /etc/grub.conf as well. Setting the permissions to read and write for root only prevents non-root users from seeing the boot parameters or changing them. Non-root users who read the boot parameters may be able to identify weaknesses in security upon boot and be able to exploit them.');
+INSERT INTO control (id, number, language, name, description) VALUES (4, 2, 'ru', 'Удостоверьтесь, что разрешения на конфиг загрузчика настроены корректно', 'Конфигурационный файл содержит информацию о настройках загрузки и паролях для разблокировки опций загрузки. Настройки grub - grub.conf, grub.cfg, или menu.lst - обычно храняться либо в каталоге /boot/grub либо /boot/grub2. В основном, он является символической ссылкой на /etc/grub.conf. Настройте права доступа на чтение и запись только пользователю root, для предотвращения просмотра параметров загрузки или их изменения другими пользователями. Не-root пользователи, кто может читать параметры загрузки, могут быть способны обнаружить слабые места в защите во время загрузки системы и проэксплуатировать их');
+INSERT INTO control (id, number, language, name, description) VALUES (5, 3, 'en', 'Ensure separate partition exists for /var', 'The /var directory is used by daemons and other system services to temporarily store dynamic data. Some directories created by these processes may be world-writable.');
+INSERT INTO control (id, number, language, name, description) VALUES (6, 3, 'ru', 'Удостоверьтесь, что существует отдельный раздел диска для /var', 'Директория /var обычно используется демонами и другими службами для временного хранения изменяемых данных. Некоторые директории созданные этими процессами могут иметь права на запись для всех пользователей.');
+INSERT INTO control (id, number, language, name, description) VALUES (7, 4, 'en', 'Ensure nodev option set on /tmp partition', 'The nodev mount option specifies that the filesystem cannot contain special devices.');
+INSERT INTO control (id, number, language, name, description) VALUES (8, 4, 'ru', 'Опция nodev должна быть установлена на мониторивание раздела /tmp', 'Опция монтирования nodev указывает, что эта файловая система не может содержать специальных устройств');
+INSERT INTO control (id, number, language, name, description) VALUES (9, 6, 'en', 'Ensure root is the only UID 0 account', 'Any account with UID 0 has superuser privileges on the system. This access must be limited to only the default root account and only from the system console. Administrative access must be through an unprivileged account using an approved mechanism. Ensure access to the su command is restricted.');
+INSERT INTO control (id, number, language, name, description) VALUES (10, 6, 'ru', 'Пользователь root должен быть единственным пользователем с UID 0', 'Любой аккаунт с UID 0 имеет права суперпользователя на системе. Этот доступ должен быть ограничен единственным пользователем root в системе и только из системной консоли. Административный доступ для непривилегированных аккаунтов должен осуществляться только через надежные механизмы поднятия привелегий. Доступ для выполнения команды su должен быть ограничен');
+INSERT INTO control (id, number, language, name, description) VALUES (11, 7, 'en', 'Ensure bootloader password is set', 'Setting the boot loader password will require that anyone rebooting the system must enter a password before being able to set command line boot parameters. Requiring a boot password upon execution of the boot loader will prevent an unauthorized user from entering boot parameters or changing the boot partition. This prevents users from weakening security (e.g. turning off SELinux at boot time).');
+INSERT INTO control (id, number, language, name, description) VALUES (12, 7, 'ru', 'Установите пароль на загрузчик системы', 'Установка пароля на загрузчик системы требуется, чтобы любому пользователю, перезагружающему систему, необходимо было ввести пароль перед тем как получить доступ к настройкам параметров загрузочной командной строки. Требование пароля на загрузчике системы запрещает неавторизованному пользователю изменять параметры загрузки или загрузочный раздел. Это предотвратит ослабление защиты пользователем (например, отключение системы защиты SELinux во время загрузки системы).');
+INSERT INTO control (id, number, language, name, description) VALUES (13, 8, 'en', 'Ensure authentication required for single user mode', 'Single user mode is used for recovery when the system detects an issue during boot or by manual selection from the bootloader. Requiring authentication in single user mode prevents an unauthorized user from rebooting the system into single user to gain root privileges without credentials.');
+INSERT INTO control (id, number, language, name, description) VALUES (14, 8, 'ru', 'Включите аутентификацию для режима single user', 'Режим single user используется для восстановления, когда системы обнаружила неполадки во время загрузки, или при выборе этого режима в меню загрузчика. Требование аутентификации в режиме single user предотвращает неавторизованным пользователям доступ к режиму single user для получения привилегия root без запроса пароля.');
+INSERT INTO control (id, number, language, name, description) VALUES (15, 9, 'en', 'Ensure cron daemon is enabled', 'The cron daemon is used to execute batch jobs on the system. While there may not be user jobs that need to be run on the system, the system does have maintenance jobs that may include security monitoring that have to run, and cron is used to execute them.');
+INSERT INTO control (id, number, language, name, description) VALUES (16, 9, 'ru', 'Демон cron должен быть включен.', 'Демон cron используется для выполнения набора задач на системе по расписанию. Даже если нет пользовательских задач, которые необходимо выполнять на системе, самой системе необходимо поддерживать задачи, которые могут включать мониторинг безопасности. И cron используется для их выполнения.');

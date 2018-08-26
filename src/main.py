@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from flask.cli import AppGroup
+from sqlalchemy import insert
 import yaml
 
 from web import app, db
@@ -21,9 +22,7 @@ def make_shell_context():
 control_cli = AppGroup('control')
 
 
-@control_cli.command('init')
-def init_controls():
-    Control.query.delete()
+def get_controls():
     control_path = Path(__file__).parent.joinpath('control_list')
     for file in control_path.glob('*.yaml'):
         if file.name == '__blank__.yaml':
@@ -33,19 +32,53 @@ def init_controls():
             control = yaml.load(f)
 
         for item in control['content']:
-            db.session.add(
-                Control(
-                    number=control['number'],
-                    language=item['language'],
-                    name=item['name'],
-                    description=item['description']
-                )
+            yield Control(
+                number=control['number'],
+                language=item['language'],
+                name=item['name'],
+                description=item['description']
             )
+
+
+@control_cli.command('init')
+def init_controls():
+    Control.query.delete()
+    for control in get_controls():
+        db.session.add(control)
+
     db.session.commit()
 
 
-app.cli.add_command(control_cli)
+@app.cli.command('initsql')
+def init_sql():
+    from sqlalchemy import create_engine
+    from sqlalchemy.dialects import postgresql
 
+    def convert_to_sql(file):
+        def dump(sql, *multiparams, **params):
+            print(f'{str(sql.compile(dialect=postgresql.dialect())).strip()};',
+                  file=file)
+
+        engine = create_engine('postgresql://', strategy='mock', executor=dump)
+        db.metadata.create_all(engine, checkfirst=False)
+        for id_, control in enumerate(get_controls(), 1):
+            print(
+                "INSERT INTO control (id, number, language, name, description)"
+                " VALUES (%(id)s, %(number)s, '%(language)s', "
+                "'%(name)s', '%(description)s');" % dict(
+                    id=id_,
+                    number=control.number,
+                    language=control.language,
+                    name=control.name,
+                    description=control.description
+                ), file=file)
+            # print(dir(Control.query))
+
+    with open('../init.sql', 'w') as f:
+        convert_to_sql(f)
+
+
+app.cli.add_command(control_cli)
 
 if __name__ == '__main__':
     app.run()

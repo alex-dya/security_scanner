@@ -1,4 +1,5 @@
 from flask_login import current_user
+from flask_babel import lazy_gettext as _l
 from wtforms.validators import ValidationError, HostnameValidation
 
 from web import db
@@ -23,7 +24,11 @@ class UniqueRequired:
 
         if item and item != current_item:
             raise ValidationError(
-                f'Field {field.label.text} must have unique value')
+                _l(
+                    'Field %(text)s must have unique value',
+                    text=field.label.text
+                )
+            )
 
 
 class HostnameRequired:
@@ -34,10 +39,10 @@ class HostnameRequired:
 
     def __call__(self, form, field):
         if not field.data:
-            raise ValidationError(self.message)
+            raise ValidationError(_l(self.message))
 
         if not isinstance(field.data, str):
-            raise ValidationError(self.message)
+            raise ValidationError(_l(self.message))
 
         if not self.validator(field.data):
-            raise ValidationError(self.message)
+            raise ValidationError(_l(self.message))

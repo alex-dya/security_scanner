@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_babel import lazy_gettext as _l
 from wtforms import HiddenField, StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, EqualTo
 
@@ -7,16 +8,22 @@ from web.validators import UniqueRequired
 
 
 class EditCredentialForm(FlaskForm):
-    id = HiddenField('Id')
+    id = HiddenField(_l('Id'))
     name = StringField(
-        'Name',
+        _l('Name'),
         validators=[
             DataRequired(),
             UniqueRequired(models.AccountCredential, 'name')
         ]
     )
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField(_l('Username'), validators=[DataRequired()])
+    password = PasswordField(_l('Password'), validators=[DataRequired()])
     password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Save')
+        _l('Repeat Password'), validators=[
+            DataRequired(),
+            EqualTo(
+                'password',
+                message=_l('Field must be equal to %(other_label)s')
+            )
+        ])
+    submit = SubmitField(_l('Save'))

@@ -3,6 +3,7 @@ from typing import Dict
 
 from flask_login import current_user
 from flask_wtf import FlaskForm
+from flask_babel import lazy_gettext as _l
 from wtforms import (
     IntegerField, SelectField, StringField, HiddenField, FormField, SubmitField)
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -20,12 +21,12 @@ def get_credentials():
 
 class SSHSettings(FlaskForm):
     port = IntegerField(
-        'Port',
+        _l('Port'),
         validators=[DataRequired(), NumberRange(min=0, max=65535)],
         default=22
     )
     credential = QuerySelectField(
-        'Credentials',
+        _l('Credentials'),
         get_label='name',
         query_factory=get_credentials
     )
@@ -39,11 +40,11 @@ class SSHSettings(FlaskForm):
 
 
 class UnixSettings(FlaskForm):
-    privilege_escalation = SelectField('Privilege escalation', choices=[
+    privilege_escalation = SelectField(_l('Privilege escalation'), choices=[
         (item.name, item.name)
         for item in RootLogonType
     ], default='NoLogon')
-    root_password = StringField('Password')
+    root_password = StringField(_l('Password'))
 
     def populate(self, settings: Dict[str, Dict[str, str]]) -> None:
         self.privilege_escalation.data = settings['unix'].get(
@@ -52,16 +53,16 @@ class UnixSettings(FlaskForm):
 
 
 class ScanProfileForm(FlaskForm):
-    id = HiddenField('Id')
+    id = HiddenField(_l('Id'))
     name = StringField(
-        'Name',
+        _l('Name'),
         validators=[
             DataRequired(),
             UniqueRequired(models.ScanProfile, 'name')
         ])
     ssh_settings = FormField(SSHSettings)
     unix_settings = FormField(UnixSettings)
-    submit = SubmitField('Save')
+    submit = SubmitField(_l('Save'))
 
     def populate(self, profile: ScanProfile = None) -> None:
         self.id.data = profile.id

@@ -13,23 +13,36 @@
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
                 <li>
-                    <a href="{{ url_for('tasks') }}">Scanning</a>
+                    <a href="{{ url_for('tasks') }}">{{ _('Scanning') }}</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('credentials') }}">Credentials</a>
+                    <a href="{{ url_for('credentials') }}">{{ _('Credentials') }}</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('scan_profiles') }}">Scan profiles</a>
+                    <a href="{{ url_for('scan_profiles') }}">{{ _('Scan profiles') }}</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('results') }}">Scan results</a>
+                    <a href="{{ url_for('results') }}">{{ _('Scan results') }}</a>
                 </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
             {% endif %}
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Language
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for lang in config.LANGUAGES %}
+                        <li><a href="{{ url_for('change_language', lang=lang) }}">{{ lang }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('logout') }}">{{ _('Logout') }}</a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>

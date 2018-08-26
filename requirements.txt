@@ -6,6 +6,7 @@ celery
 cryptography
 defusedxml
 Flask
+Flask-Babel
 Flask-Bootstrap
 Flask-Login
 Flask-Migrate

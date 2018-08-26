@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
+from flask_babel import _
 
 from web.credentials import forms
 from web import app, db
@@ -24,7 +25,7 @@ def create_credential():
         return render_template(
             'credentials/edit_credential.html',
             form=form,
-            action='Create'
+            action=_('Create credential'),
         )
 
     cred = AccountCredential(
@@ -36,7 +37,7 @@ def create_credential():
 
     db.session.add(cred)
     db.session.commit()
-    flash(message='New account credential was created')
+    flash(_('New account credential was created'))
     return redirect(url_for('credentials'))
 
 
@@ -50,7 +51,7 @@ def edit_credential(cred_id):
     cred = AccountCredential.query.filter_by(id=cred_id).first()
 
     if not cred:
-        flash('The credential id does not exist')
+        flash(_('The credential id does not exist'))
         return redirect(url_for('credentials'))
 
     if not form.validate_on_submit():
@@ -61,7 +62,7 @@ def edit_credential(cred_id):
         return render_template(
             'credentials/edit_credential.html',
             form=form,
-            action='Edit'
+            action=_('Edit credential')
         )
 
     cred.name = form.name.data

@@ -6,7 +6,7 @@ services:
       dockerfile: dockers/web/Dockerfile
     ports:
     - "80:5000"
-    command: gunicorn -b 0.0.0.0:5000 main:app
+    command: gunicorn --bind 0.0.0.0:5000 main:app
 
   worker:
     build:

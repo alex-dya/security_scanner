@@ -3,7 +3,7 @@
 {% block app_content %}
 <form action="" method="POST">
 
-<h1>{{ action }} task</h1>
+<h1>{{ action }}</h1>
     {% if form.id.data != '' %}
         {{ form.id()  }}
     {% endif %}
@@ -14,9 +14,9 @@
 <table class="table" id="settings">
     <thead>
         <tr class="header">
-            <th scope="row">#</th>
-            <th scope="row">Hostname</th>
-            <th scope="row">Profile</th>
+            <th scope="row">{{ _('#') }}</th>
+            <th scope="row">{{ _('Hostname') }}</th>
+            <th scope="row">{{ _('Profile') }}</th>
             <th></th>
         </tr>
     </thead>
@@ -34,14 +34,14 @@
             {{ item.profile(class='form-control') }}
             {% if profile_error %}<div class="alert alert-warning">{{ profile_error }}</div>{% endif %}
         </td>
-        <td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="Delete"></td>
+        <td><input type="button" class="ibtnDel btn btn-md btn-danger "  value="{{ _('Delete') }}"></td>
     </tr>
     {% endfor %}
     </tbody>
     <tfoot>
         <tr>
             <td colspan="5" style="text-align: left;">
-                <input type="button" class="btn btn-lg btn-block " id="addrow" value="Add Row" />
+                <input type="button" class="btn btn-lg btn-block " id="addrow" value="{{ _('Add Row') }}" />
             </td>
         </tr>
         <tr>
@@ -54,5 +54,6 @@
 {% endblock %}
 {% block scripts %}
 {{ super() }}
+<script src="{{ url_for('static', filename='translator.js') }}"></script>
 <script src="{{ url_for('static', filename='edit_task.js') }}"></script>
 {% endblock %}

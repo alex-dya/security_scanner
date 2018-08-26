@@ -1,4 +1,5 @@
 from flask_login import current_user
+from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm
 from wtforms import StringField, FieldList, FormField, HiddenField, SubmitField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
@@ -13,10 +14,10 @@ def get_profiles():
 
 
 class TaskSettingForm(FlaskForm):
-    hostname = StringField('Hostname',
+    hostname = StringField(_l('Hostname'),
                            validators=[HostnameRequired(allow_ip=True)])
     profile = QuerySelectField(
-        'Profile',
+        _l('Profile'),
         get_label='name',
         query_factory=get_profiles
     )
@@ -26,15 +27,15 @@ class TaskSettingForm(FlaskForm):
 
 
 class TaskForm(FlaskForm):
-    id = HiddenField('Id')
+    id = HiddenField(_l('Id'))
     name = StringField(
-        'Name',
+        _l('Name'),
         validators=[
             DataRequired(),
             UniqueRequired(models.Task, 'name')
         ])
     settings = FieldList(FormField(TaskSettingForm))
-    submit = SubmitField('Save')
+    submit = SubmitField(_l('Save'))
 
     def populate(self, task):
         self.id.data = task.id

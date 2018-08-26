@@ -1,69 +1,43 @@
 from flask_wtf import FlaskForm
+from flask_babel import lazy_gettext as _l
 from wtforms import (
-    StringField, PasswordField, SubmitField, SelectField, IntegerField,
-    BooleanField)
+    StringField, PasswordField, SubmitField, SelectField, BooleanField)
 from wtforms.validators import (
-    DataRequired, IPAddress, NumberRange, ValidationError, EqualTo, Email)
+    DataRequired, ValidationError, EqualTo, Email)
 
 from web.models import User
 
 
-class StartTaskForm(FlaskForm):
-    username = StringField(
-        'Username',
-        validators=[DataRequired()],
-        default='vmuser'
-    )
-    password = PasswordField(
-        'Password',
-        validators=[DataRequired()],
-        default='P@ssw0rd'
-    )
-    hostname = StringField(
-        'Hostname',
-        validators=[DataRequired(), IPAddress()],
-        default='192.168.56.10'
-    )
-    port = IntegerField(
-        'Port',
-        validators=[DataRequired(), NumberRange(min=0, max=65535)],
-        default=22
-    )
-    root_logon = SelectField(
-        'Escalation method',
-        choices=[('SudoLogon', 'Sudo'), ('SULogon', 'SU'), ('NoLogon', 'No')],
-        validators=[DataRequired()],
-        default='SudoLogon'
-    )
-    root_password = PasswordField(
-        'Root Password',
-        validators=[DataRequired()],
-        default='P@ssw0rd'
-    )
-    submit = SubmitField('Run task')
-
-
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('remember me')
-    submit = SubmitField('Sign In')
+    username = StringField(_l('Username'), validators=[DataRequired()])
+    password = PasswordField(_l('Password'), validators=[DataRequired()])
+    remember_me = BooleanField(_l('Remember me'))
+    submit = SubmitField(_l('Sign In'))
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
-    email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    username = StringField(_l('Username'), validators=[DataRequired()])
+    email = StringField(_l('Email'), validators=[DataRequired(), Email()])
+    password = PasswordField(_l('Password'), validators=[DataRequired()])
     password2 = PasswordField(
-        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+        _l('Repeat Password'), validators=[
+            DataRequired(),
+            EqualTo(
+                'password',
+                message=_l('Field must be equal to %(other_label)s')
+            )])
+    language = SelectField(
+        _l('Language'),
+        choices=[('ru', 'Русский'), ('en', 'English')]
+    )
+    submit = SubmitField(_l('Register'))
 
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError('Please use a different username.')
+            raise ValidationError(_l('Please use a different username.'))
 
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
-            raise ValidationError('Please use a different email address.')
+            raise ValidationError(_l('Please use a different email address.'))

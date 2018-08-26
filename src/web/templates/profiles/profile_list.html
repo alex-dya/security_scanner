@@ -4,16 +4,16 @@
 <form action="{{ url_for('delete_scan_profile') }}" method="POST">
 <div class="row row-horizont">
     <div class="input-group">
-        <a href="{{ url_for('create_scan_profile') }}" class="btn btn-primary">Create</a>
-        <input type="submit" class="btn btn-danger" value="Delete">
+        <a href="{{ url_for('create_scan_profile') }}" class="btn btn-primary">{{ _('Create') }}</a>
+        <input type="submit" class="btn btn-danger" value="{{ _('Delete') }}">
     </div>
 </div>
 <table class="table table-striped">
     <thead>
     <tr>
         <th></th>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
+        <th scope="col">{{ _('#') }}</th>
+        <th scope="col">{{ _('Name') }}</th>
     </tr>
     </thead>
     <tbody>
