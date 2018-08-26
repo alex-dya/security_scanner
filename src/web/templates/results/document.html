@@ -34,14 +34,14 @@
 {% block content %}
 <div class="A4" align="center">
     <div>
-        <h1> {{results.task.name}}</h1>
+        <h1>{{ results.task.name }}</h1>
         <h2>{{ results.started.strftime('%H:%M:%S %d.%m.%Y') }} </h2>
     </div>
 </div>
 
 <div class="A4">
     <h1 class="main-title">
-        Content table
+        {{ _('Content table') }}
     </h1>
     <nav role="navigation" class="table-of-contents">
     {% for host in results.host_results %}

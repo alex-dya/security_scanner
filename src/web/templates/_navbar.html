@@ -25,11 +25,15 @@
                     <a href="{{ url_for('results') }}">Scan results</a>
                 </li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-
-                <li><a href="{{ url_for('logout') }}">Logout</a></li>
-            </ul>
             {% endif %}
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="">ru</a></li>
+                <li><a href="">en</a></li>
+
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                {% endif %}
+            </ul>
         </div>
     </div>
 </nav>

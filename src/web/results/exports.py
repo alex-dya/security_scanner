@@ -1,4 +1,5 @@
 from flask import render_template
+from flask_babel import get_locale
 from flask_weasyprint import render_pdf, HTML
 
 from web.models import Control
@@ -21,7 +22,7 @@ def generator(text):
 def generate_pdf(result):
     controls = {
         item.number: item
-        for item in Control.query.filter_by(language='en')
+        for item in Control.query.filter_by(language=get_locale())
     }
 
     data = render_template(

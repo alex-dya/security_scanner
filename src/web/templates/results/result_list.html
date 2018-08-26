@@ -4,11 +4,11 @@
 <table class="table table-striped">
     <thead>
     <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Start time</th>
-        <th scope="col">Finish time</th>
-        <th scope="col">Duration</th>
+        <th scope="col">{{ _('#') }}</th>
+        <th scope="col">{{ _('Name') }}</th>
+        <th scope="col">{{ _('Start time') }}</th>
+        <th scope="col">{{ _('Finish time') }}</th>
+        <th scope="col">{{ _('Duration') }}</th>
         <th scope="col"></th>
     </tr>
     </thead>
@@ -21,8 +21,8 @@
         <td class="col-md-2">{{ result.finished.strftime('%H:%M:%S %d.%m.%Y') }}</td>
         <td class="col-md-2">{{ result.duration | timedelta_format }}</td>
         <td class="col-md-2">
-            <a href="{{ url_for('result_export', result_id=result.id) }}" class="btn btn-success">Export</a>
-            <button id="{{result.id}}" type="button" class="btn btn-delete btn-danger">Delete</button>
+            <a href="{{ url_for('result_export', result_id=result.id) }}" class="btn btn-success">{{ _('Export') }}</a>
+            <button id="{{result.id}}" type="button" class="btn btn-delete btn-danger">{{ _('Delete') }}</button>
         </td>
     </tr>
     {% endfor %}

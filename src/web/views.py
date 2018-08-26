@@ -1,4 +1,5 @@
 from flask import render_template, url_for, redirect, request, flash
+from flask_babel import get_locale
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -53,36 +54,22 @@ def register():
         return redirect(url_for('index'))
 
     form = RegistrationForm()
+
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            language=form.language.data,
+        )
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
 
+    form.language.process_data(get_locale())
+
     return render_template('register.html', form=form)
-
-
-@app.route('/run_scan', methods=['GET', 'POST'])
-@login_required
-def run_scan():
-    form = forms.StartTaskForm()
-    result = None
-    if form.validate_on_submit():
-        config = dict(
-            unix=dict(
-                login=form.username.data,
-                password=form.password.data,
-                address=form.hostname.data,
-                port=form.port.data,
-                root_logon=form.root_logon.data,
-                root_password=form.root_password.data
-            )
-        )
-        result = scan(config=config)
-
-    return render_template('run_scan.html', form=form, result_list=result)
 
 
 @login_manager.unauthorized_handler

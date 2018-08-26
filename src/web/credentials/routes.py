@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
+from flask_babel import _
 
 from web.credentials import forms
 from web import app, db
@@ -24,7 +25,7 @@ def create_credential():
         return render_template(
             'credentials/edit_credential.html',
             form=form,
-            action='Create'
+            action=_('Create'),
         )
 
     cred = AccountCredential(
@@ -61,7 +62,7 @@ def edit_credential(cred_id):
         return render_template(
             'credentials/edit_credential.html',
             form=form,
-            action='Edit'
+            action=_('Edit')
         )
 
     cred.name = form.name.data

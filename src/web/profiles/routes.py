@@ -1,5 +1,6 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
+from flask_babel import _
 
 import web.profiles
 from web import app, db
@@ -24,7 +25,7 @@ def create_scan_profile():
         return render_template(
             'profiles/edit_profile.html',
             form=form,
-            action='Create',
+            action=_('Create'),
         )
 
     profile = ScanProfile(
@@ -52,7 +53,7 @@ def edit_scan_profile(profile_id):
         return render_template(
             'profiles/edit_profile.html',
             form=form,
-            action='Edit',
+            action=_('Edit'),
         )
 
     form.populate_obj(profile)

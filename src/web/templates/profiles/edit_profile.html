@@ -12,11 +12,11 @@
             {{ wtf.form_field(form.name) }}
         </p>
         <div class="container">
-        <h3>Transport settings</h3>
+        <h3>{{ _('Transport settings') }}</h3>
             <div class="row">
                 <ul class="nav nav-pills nav-stacked col-md-3">
                   <li class="active"><a data-toggle="tab" href="#ssh">SSH</a></li>
-                  <li><a data-toggle="tab" href="#unix">unix</a></li>
+                  <li><a data-toggle="tab" href="#unix">Unix</a></li>
                 </ul>
                 <div class="tab-content col-md-6">
                   <div id="ssh" class="tab-pane fade in active">

@@ -1,7 +1,7 @@
 from flask import render_template, jsonify, abort
 from flask_login import login_required, current_user
 
-from web import app, db
+from web import app, db, get_locale
 from web.models import TaskResult, Control
 from web.results import exports
 from web.results.forms import ExportForm
@@ -47,7 +47,7 @@ def results_show(result_id):
 
     controls = {
         item.number: item
-        for item in Control.query.filter_by(language='en')
+        for item in Control.query.filter_by(language=get_locale())
     }
     return render_template(
         'results/show.html',
