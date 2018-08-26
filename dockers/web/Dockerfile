@@ -18,6 +18,7 @@ RUN chown -R microblog:microblog ./
 USER microblog
 ENV FLASK_APP main.py
 WORKDIR /home/microblog/app
+RUN pybabel compile -d web/translations
 
 
 EXPOSE 5000
