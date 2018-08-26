@@ -12,13 +12,13 @@
             {{ wtf.form_field(form.name) }}
         </p>
         <div class="container">
-        <h3>Настройки транспортов</h3>
+        <h3>Transport settings</h3>
             <div class="row">
                 <ul class="nav nav-pills nav-stacked col-md-3">
                   <li class="active"><a data-toggle="tab" href="#ssh">SSH</a></li>
                   <li><a data-toggle="tab" href="#unix">unix</a></li>
                 </ul>
-                <div class="tab-content col-md-9">
+                <div class="tab-content col-md-6">
                   <div id="ssh" class="tab-pane fade in active">
                       {{ form.ssh_settings.hidden_tag() }}
                       {{ wtf.form_field(form.ssh_settings.port) }}

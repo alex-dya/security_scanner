@@ -10,25 +10,26 @@
             <a class="navbar-brand" href="{{ url_for('index') }}">{{ config.TITLE }}</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
-                {% if current_user.is_authenticated %}
                 <li>
-                    <a href="{{ url_for('tasks') }}">Сканирование</a>
+                    <a href="{{ url_for('tasks') }}">Scanning</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('credentials') }}">Учетные записи</a>
+                    <a href="{{ url_for('credentials') }}">Credentials</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('scan_profiles') }}">Профили сканирования</a>
+                    <a href="{{ url_for('scan_profiles') }}">Scan profiles</a>
                 </li>
                 <li>
-                    <a href="{{ url_for('results') }}">Результаты сканирования</a>
+                    <a href="{{ url_for('results') }}">Scan results</a>
                 </li>
-                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="{{ url_for('logout') }}">Выход</a></li>
+
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
             </ul>
+            {% endif %}
         </div>
     </div>
 </nav>

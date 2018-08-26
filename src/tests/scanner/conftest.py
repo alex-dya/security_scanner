@@ -22,6 +22,9 @@ class DummyUnixTransport(BaseTransport):
     def is_connect(self) -> bool:
         return True
 
+    def disconnect(self):
+        pass
+
     def send_command(self, text: str) -> ExecResult:
         output = next(self._text, None)
 
@@ -39,7 +42,7 @@ class DummyUnixTransport(BaseTransport):
 
 
 def get_transport(name, **kwargs) -> BaseTransport:
-    if name == 'unix':
+    if name in ('unix', 'ssh'):
         return DummyUnixTransport(**kwargs)
 
 

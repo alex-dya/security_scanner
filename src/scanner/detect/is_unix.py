@@ -11,7 +11,7 @@ class UnixDetector(BaseDetector):
     detectors = detectors
 
     def detect(self):
-        transport = get_transport('unix')
+        transport = get_transport('ssh')
         result = transport.send_command('uname -s')
 
         if result.ExitStatus != 0:
