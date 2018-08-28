@@ -1,8 +1,7 @@
 from pathlib import Path
 
-from flask.cli import AppGroup
-from sqlalchemy import insert
 import yaml
+from flask.cli import AppGroup
 
 from web import app, db
 from web.models import User, ScanProfile, ProfileSetting, Task, Control
@@ -72,7 +71,6 @@ def init_sql():
                     name=control.name,
                     description=control.description
                 ), file=file)
-            # print(dir(Control.query))
 
     with open('../init.sql', 'w') as f:
         convert_to_sql(f)

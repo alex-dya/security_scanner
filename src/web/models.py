@@ -3,12 +3,14 @@ from datetime import datetime
 from enum import Enum, auto
 from typing import Dict, List, Optional
 
+from celery.result import AsyncResult
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
+from flask_login import UserMixin, current_user
 
-from web import db, login_manager
+from web import db, login_manager, celery
 from scanner.types import ControlStatus
+from web.functions import run_scan
 
 
 class TaskStatus(Enum):
@@ -220,6 +222,30 @@ class Task(db.Model):
             )
             for item in self.settings
         ]
+
+    def update_status(self, status: TaskStatus):
+        if status == TaskStatus.Wait:
+            if self.status != TaskStatus.Idle:
+                return
+
+            self.status = TaskStatus.Wait
+            run_scan.apply_async(
+                (self.id, current_user.id),
+                ignore_result=True,
+                countdown=1
+            )
+        elif status == TaskStatus.Idle:
+            if self.uid is None:
+                self.status = TaskStatus.Idle
+                return
+
+            if self.status == TaskStatus.Idle:
+                return
+
+            self.status = TaskStatus.Idle
+            celery_task = AsyncResult(self.uid)
+            if celery_task:
+                Control(celery).revoke(self.uid, terminate=True)
 
     def __repr__(self):
         return f'Task(name={self.name})'

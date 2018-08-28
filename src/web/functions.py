@@ -1,5 +1,3 @@
-from time import sleep
-
 from flask import json
 
 from scanner import transports, controls
@@ -23,29 +21,6 @@ def postprocess_task(task_id, result):
     task.uid = None
     result.finish()
     db.session.commit()
-
-
-@celery.task(bind=True)
-def summ(self, task_id, owner_id):
-    total = 15
-    self.update_state(
-        state='PROGRESS',
-        meta={'current': 0, 'total': total}
-    )
-    result = prepare_task(self, task_id, owner_id)
-
-    result = 0
-    for i in range(total):
-        sleep(1)
-        result += i
-        if not self.request.called_directly:
-            app.logger.debug('UPDATE porgress')
-            self.update_state(
-                state='PROGRESS',
-                meta={'current': i+1, 'total': total}
-            )
-
-    postprocess_task(task_id, result)
 
 
 @celery.task(bind=True)

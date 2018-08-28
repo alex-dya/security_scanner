@@ -98,7 +98,11 @@ class BaseDetector(metaclass=BaseDetectorMeta):
         if not self.requirements:
             return []
 
-        if not self.detect():
+        try:
+            if not self.detect():
+                return []
+        except Exception as e:
+            self.logger.error(e)
             return []
 
         detect_item(self.detection_items)
@@ -180,5 +184,7 @@ class BaseContol(metaclass=BaseControlMeta):
 
         try:
             self.check()
-        except RuntimeError as e:
-            self.control.error(f'{e}')
+        except Exception as e:
+            self.logger.error(f'{e}')
+            if self.control.status == ControlStatus.NotChecked:
+                self.control.error(f'{e}')
