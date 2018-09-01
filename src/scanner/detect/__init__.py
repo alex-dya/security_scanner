@@ -2,11 +2,13 @@ import logging
 from collections import deque
 
 from .is_unix import UnixDetector
+from .is_postgres import PostgreSQLQDetector
 from scanner.types import reset_detect
 
 
 _detectors = [
-    UnixDetector
+    UnixDetector,
+    PostgreSQLQDetector,
 ]
 
 LOGGER = logging.getLogger(__name__)

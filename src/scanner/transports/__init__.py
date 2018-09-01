@@ -4,11 +4,13 @@ from scanner.types import BaseTransport
 from . import exceptions
 from .ssh import SSHTransport
 from .unix import UnixTransport
+from .postgres import PostgresTransport
 
 
 transports_classes = {
     'ssh': SSHTransport,
-    'unix': UnixTransport
+    'unix': UnixTransport,
+    'postgres': PostgresTransport
 }
 
 _transports: Dict[str, BaseTransport] = dict()
