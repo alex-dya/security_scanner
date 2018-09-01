@@ -1,5 +1,5 @@
 import logging
-from typing import Callable
+from typing import Callable, Tuple, List
 from os import devnull
 
 import pytest
@@ -7,14 +7,13 @@ import pytest
 from scanner.transports.ssh import ExecResult
 from scanner.types import BaseTransport
 
-
 logging.basicConfig(stream=open(devnull, 'w'))
 
 
 class DummyUnixTransport(BaseTransport):
-    def __init__(self, text: str, *args, **kwargs) -> None:
+    def __init__(self, data: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self._text = iter(text)
+        self._text = iter(data)
 
     def connect(self) -> None:
         pass
@@ -41,9 +40,36 @@ class DummyUnixTransport(BaseTransport):
             f"stat -c '%F|%a|%U|%G|%s|%Y|%n' {filename}")
 
 
+class DummyPostgresTransport(BaseTransport):
+    def __init__(self, data: List[List[Tuple]], *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.data = iter(data)
+
+    def connect(self) -> None:
+        pass
+
+    @property
+    def is_connect(self) -> bool:
+        pass
+
+    def disconnect(self) -> None:
+        pass
+
+    def request(self, request: str):
+        output = next(self.data, None)
+
+        if output is None:
+            raise ExpectedCommandError(f'Expected request({request})')
+
+        return output
+
+
 def get_transport(name, **kwargs) -> BaseTransport:
     if name in ('unix', 'ssh'):
         return DummyUnixTransport(**kwargs)
+
+    if name == 'postgres':
+        return DummyPostgresTransport(**kwargs)
 
 
 class ExpectedCommandError(Exception):

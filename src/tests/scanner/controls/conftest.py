@@ -14,16 +14,16 @@ def pytest_generate_tests(metafunc):
         for i in range(len(metafunc.cls.case_list))
     ]
 
-    argnames = ['text', 'status', 'result']
+    argnames = ['data', 'status', 'result']
     argvalues = []
 
-    for text, status, result in metafunc.cls.case_list:
-        if isinstance(text, str):
-            text = (dedent(text),)
+    for data, status, result in metafunc.cls.case_list:
+        if isinstance(data, str):
+            data = (dedent(data),)
         else:
-            text = tuple(dedent(item) for item in text)
+            data = tuple(dedent(item) for item in data)
 
-        argvalues.append((text, status, result and dedent(result).strip()))
+        argvalues.append((data, status, result and dedent(result).strip()))
 
     metafunc.parametrize(argnames, argvalues, ids=idlist, scope="class")
 
@@ -43,11 +43,11 @@ class BaseUnixControlTest(ABC):
     def not_passed_prerequisite():
         return False
 
-    def test_case(self, monkeypatch, text, status, result, get_transport_patch):
+    def test_case(self, monkeypatch, data, status, result, get_transport_patch):
         monkeypatch.setattr(
             self.origin,
             'get_transport',
-            partial(get_transport_patch, text=text)
+            partial(get_transport_patch, data=data)
         )
         monkeypatch.setattr(
             self.origin.Control, 'prerequisite', lambda self_: True)

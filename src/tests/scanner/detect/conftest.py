@@ -24,13 +24,13 @@ def pytest_generate_tests(metafunc):
         for i in range(len(metafunc.cls.case_list))
     ]
 
-    argnames = ['is_detected', 'text', 'detect_items']
+    argnames = ['is_detected', 'data', 'detect_items']
     argvalues = []
 
     for is_detected, text, detect_items in metafunc.cls.case_list:
         if isinstance(text, str):
             text = (dedent(text),)
-        else:
+        elif isinstance(text[0], str):
             text = tuple(map(dedent, text))
 
         argvalues.append((is_detected, text, detect_items))
@@ -54,11 +54,11 @@ class BaseUnixDetectTest(ABC):
     def origin_class(self) -> type:
         pass
 
-    def test_case(self, monkeypatch, is_detected, text, detect_items, get_transport_patch):
+    def test_case(self, monkeypatch, is_detected, data, detect_items, get_transport_patch):
         monkeypatch.setattr(
             self.origin_module,
             'get_transport',
-            partial(get_transport_patch, text=text)
+            partial(get_transport_patch, data=data)
         )
         types._detected = set(is_detected)
 
