@@ -1,3 +1,11 @@
+{% set
+    menu_items = [
+        ('tasks', _('Scanning')),
+        ('credentials', _('Credentials')),
+        ('profiles', _('Scan profiles')),
+        ('results', _('Scan results')),
+    ]
+%}
 <nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -12,18 +20,11 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {% if current_user.is_authenticated %}
             <ul class="nav navbar-nav">
-                <li>
-                    <a href="{{ url_for('tasks') }}">{{ _('Scanning') }}</a>
+                {% for url, name in menu_items %}
+                <li{% if url == active %} class="active"{% endif %}>
+                    <a href="{{ url_for(url) }}">{{ name }}</a>
                 </li>
-                <li>
-                    <a href="{{ url_for('credentials') }}">{{ _('Credentials') }}</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('scan_profiles') }}">{{ _('Scan profiles') }}</a>
-                </li>
-                <li>
-                    <a href="{{ url_for('results') }}">{{ _('Scan results') }}</a>
-                </li>
+                {% endfor %}
             </ul>
             {% endif %}
             <ul class="nav navbar-nav navbar-right">

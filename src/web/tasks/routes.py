@@ -10,13 +10,16 @@ from web.models import Task, TaskSetting, TaskStatus
 from web.tasks.forms import TaskForm
 from web.functions import run_scan
 
+ACTIVE = 'tasks'
+
 
 @app.route('/task')
 @login_required
 def tasks():
     return render_template(
         'tasks/task_list.html',
-        tasks=current_user.tasks.order_by('name')
+        tasks=current_user.tasks.order_by('name'),
+        active=ACTIVE,
     )
 
 
@@ -33,6 +36,7 @@ def create_task():
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
+            active=ACTIVE,
         )
 
     task = Task(
@@ -73,7 +77,8 @@ def edit_task(task_id):
                 dict(id=item.id, name=item.name)
                 for item in current_user.scan_profiles
             ]),
-            action=_('Edit task')
+            action=_('Edit task'),
+            active=ACTIVE,
         )
 
     task.name = form.name.data
@@ -136,7 +141,7 @@ def task_execute(task_id):
         return jsonify(dict(
             task_id=task.id,
             status=task.status.name,
-            progress=result
+            progress=result,
         ))
     data = request.get_json()
 

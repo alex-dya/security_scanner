@@ -6,6 +6,7 @@ class Config:
     CSRF_ENABLED = True
     SECRET_KEY = 'CHANGE_ME'
     DEBUG = True
+    BOOTSTRAP_SERVE_LOCAL = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
         f'postgresql://postgres:P@ssw0rd@db:5432/scanner'

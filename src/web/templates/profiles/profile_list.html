@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% block app_content %}
 
-<form action="{{ url_for('delete_scan_profile') }}" method="POST">
+<form action="{{ url_for('delete_profile') }}" method="POST">
 <div class="row row-horizont">
     <div class="input-group">
-        <a href="{{ url_for('create_scan_profile') }}" class="btn btn-primary">{{ _('Create') }}</a>
+        <a href="{{ url_for('create_profile') }}" class="btn btn-primary">{{ _('Create') }}</a>
         <input type="submit" class="btn btn-danger" value="{{ _('Delete') }}">
     </div>
 </div>
@@ -21,7 +21,7 @@
     <tr>
         <td><input type="checkbox" name="profile_ids[]" value="{{ profile.id }}"></td>
         <th scope="row">{{ loop.index }}</th>
-        <td><a href="{{ url_for('edit_scan_profile', profile_id=profile.id) }}">{{ profile.name }}</a></td>
+        <td><a href="{{ url_for('edit_profile', profile_id=profile.id) }}">{{ profile.name }}</a></td>
     </tr>
     {% endfor %}
     </tbody>

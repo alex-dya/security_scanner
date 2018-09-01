@@ -6,13 +6,16 @@ from web.models import TaskResult, Control
 from web.results import exports
 from web.results.forms import ExportForm
 
+ACTIVE = 'results'
+
 
 @app.route('/results', methods=['GET', 'POST'])
 @login_required
 def results():
     return render_template(
         'results/result_list.html',
-        results=current_user.results
+        results=current_user.results,
+        active=ACTIVE,
     )
 
 
@@ -52,8 +55,8 @@ def results_show(result_id):
     return render_template(
         'results/show.html',
         result=result,
-        all_controls=controls
-
+        all_controls=controls,
+        active=ACTIVE,
     )
 
 
@@ -73,7 +76,8 @@ def result_export(result_id):
     if not form.validate_on_submit():
         return render_template(
             'results/export.html',
-            form=form
+            form=form,
+            active=ACTIVE,
         )
 
     generator = exports.generators[form.format.data]

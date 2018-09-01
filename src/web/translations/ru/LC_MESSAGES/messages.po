@@ -275,3 +275,5 @@ msgstr "Запустить"
 msgid "Stop"
 msgstr "Остановить"
 
+msgid "Are you sure you want to delete result"
+msgstr "Вы действительно хотите удалить результат"

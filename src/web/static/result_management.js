@@ -5,7 +5,7 @@ $(document).ready(function () {
     });
 
     function delete_result() {
-        if (! confirm(text_begin)){
+        if (! confirm(`${text_begin}?`)){
             return;
         }
         var obj = this;

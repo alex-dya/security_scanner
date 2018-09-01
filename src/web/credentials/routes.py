@@ -7,12 +7,16 @@ from web import app, db
 from web.models import AccountCredential
 
 
+ACTIVE = 'credentials'
+
+
 @app.route('/credentials')
 @login_required
 def credentials():
     return render_template(
         'credentials/credential_list.html',
-        credential_list=current_user.credentials
+        credential_list=current_user.credentials,
+        active=ACTIVE,
     )
 
 
@@ -26,6 +30,7 @@ def create_credential():
             'credentials/edit_credential.html',
             form=form,
             action=_('Create credential'),
+            active=ACTIVE,
         )
 
     cred = AccountCredential(
@@ -62,7 +67,8 @@ def edit_credential(cred_id):
         return render_template(
             'credentials/edit_credential.html',
             form=form,
-            action=_('Edit credential')
+            action=_('Edit credential'),
+            active=ACTIVE,
         )
 
     cred.name = form.name.data
