@@ -32,7 +32,27 @@
 
 {% block scripts %}
 {{ super() }}
-<script src="{{ url_for('static', filename='translator.js') }}"></script>
-<script src="{{ url_for('static', filename='result_management.js') }}"></script>
+<script>
+$(document).ready(function () {
+    function delete_result() {
+        if (! confirm('{{ _("Are you sure you want to delete result?") }}')){
+            return;
+        }
+        var obj = this;
+        $.post(('results/delete/' + this.id), function (data, status) {
+            console.log('data:' + data.Message);
+            $(obj).parents('tr').remove();
+        }).fail(function (data, status) {
+            alert(data.responseText);
+            console.log('FAIL');
+            console.log('data: ' + data.status);
+            console.log('status: ' + status);
+        });
+
+    }
+
+    $(".btn-delete").click(delete_result);
+});
+</script>
 {% endblock %}
 

@@ -1,6 +1,6 @@
 from flask import (
-    render_template, url_for, redirect, request, flash, jsonify, abort, session)
-from flask_babel import get_locale, lazy_gettext as _l, refresh, _
+    render_template, url_for, redirect, request, flash, session)
+from flask_babel import get_locale, refresh, _
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
@@ -70,21 +70,6 @@ def register():
     form.language.process_data(get_locale())
 
     return render_template('register.html', form=form)
-
-
-@app.route('/translate', methods=['GET'])
-@login_required
-def translate():
-    text = request.args.get('text')
-
-    if text is None:
-        return abort(401)
-
-    return jsonify(dict(
-        origin=text,
-        locale=get_locale().language,
-        translate=_l(text)
-    ))
 
 
 @app.route('/change_language/<lang>')

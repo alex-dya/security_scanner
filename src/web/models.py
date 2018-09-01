@@ -3,14 +3,14 @@ from datetime import datetime
 from enum import Enum, auto
 from typing import Dict, List, Optional
 
-from celery.result import AsyncResult
 from celery.app.control import Control as CeleryControl
+from celery.result import AsyncResult
+from flask_login import UserMixin
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin, current_user
 
-from web import db, login_manager, celery
 from scanner.types import ControlStatus
+from web import db, login_manager, celery
 
 
 class TaskStatus(Enum):

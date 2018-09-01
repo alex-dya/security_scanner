@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-08-26 19:25+0300\n"
+"POT-Creation-Date: 2018-09-01 15:35+0300\n"
 "PO-Revision-Date: 2018-08-26 16:36+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -94,19 +94,19 @@ msgstr "Название"
 msgid "Save"
 msgstr "Сохранить"
 
-#: web/credentials/routes.py:28
+#: web/credentials/routes.py:32
 msgid "Create credential"
 msgstr "Создание учетной записи"
 
-#: web/credentials/routes.py:40
+#: web/credentials/routes.py:45
 msgid "New account credential was created"
 msgstr "Создана новая учетная запись"
 
-#: web/credentials/routes.py:54
+#: web/credentials/routes.py:59
 msgid "The credential id does not exist"
 msgstr "Указанная учетная запись не существует"
 
-#: web/credentials/routes.py:65
+#: web/credentials/routes.py:70
 msgid "Edit credential"
 msgstr "Редактирование учетной записи"
 
@@ -114,7 +114,7 @@ msgstr "Редактирование учетной записи"
 msgid "Port"
 msgstr "Порт"
 
-#: web/profiles/forms.py:29 web/templates/_navbar.html:19
+#: web/profiles/forms.py:29 web/templates/_navbar.html:4
 msgid "Credentials"
 msgstr "Учетные записи"
 
@@ -122,19 +122,19 @@ msgstr "Учетные записи"
 msgid "Privilege escalation"
 msgstr "Поднятие привилегий"
 
-#: web/profiles/routes.py:28
+#: web/profiles/routes.py:31
 msgid "Create profile"
 msgstr "Создание профиля"
 
-#: web/profiles/routes.py:37
+#: web/profiles/routes.py:41
 msgid "Profile was created"
 msgstr "Профиль был создан"
 
-#: web/profiles/routes.py:56
+#: web/profiles/routes.py:60
 msgid "Edit profile"
 msgstr "Редактирование профиля"
 
-#: web/profiles/routes.py:62
+#: web/profiles/routes.py:67
 msgid "Profile was edited"
 msgstr "Профиль был отредактрован"
 
@@ -155,27 +155,27 @@ msgstr "Адрес узла"
 msgid "Profile"
 msgstr "Профиль"
 
-#: web/tasks/routes.py:32
+#: web/tasks/routes.py:34
 msgid "Create task"
 msgstr "Создание задачи"
 
-#: web/tasks/routes.py:77
+#: web/tasks/routes.py:80
 msgid "Edit task"
 msgstr "Редактирование задачи"
 
-#: web/templates/_navbar.html:16
+#: web/templates/_navbar.html:3
 msgid "Scanning"
 msgstr "Сканирование"
 
-#: web/templates/_navbar.html:22
+#: web/templates/_navbar.html:5
 msgid "Scan profiles"
 msgstr "Профили сканирования"
 
-#: web/templates/_navbar.html:25
+#: web/templates/_navbar.html:6
 msgid "Scan results"
 msgstr "Результаты сканирования"
 
-#: web/templates/_navbar.html:43
+#: web/templates/_navbar.html:44
 msgid "Logout"
 msgstr "Выйти"
 
@@ -200,7 +200,8 @@ msgstr "Создать"
 #: web/templates/credentials/credential_list.html:7
 #: web/templates/profiles/profile_list.html:8
 #: web/templates/results/result_list.html:25
-#: web/templates/tasks/edit_task.html:37 web/templates/tasks/task_list.html:25
+#: web/templates/tasks/edit_task.html:37 web/templates/tasks/edit_task.html:64
+#: web/templates/tasks/task_list.html:25
 msgid "Delete"
 msgstr "Удалить"
 
@@ -227,6 +228,26 @@ msgstr "Описание"
 msgid "Result"
 msgstr "Результат"
 
+#: web/templates/results/document.html:8 web/templates/results/show.html:12
+msgid "Not checked"
+msgstr "Не проверено"
+
+#: web/templates/results/document.html:9 web/templates/results/show.html:13
+msgid "Compliant"
+msgstr "Соотвествует"
+
+#: web/templates/results/document.html:10 web/templates/results/show.html:14
+msgid "Not compliant"
+msgstr "Не соответствует"
+
+#: web/templates/results/document.html:11 web/templates/results/show.html:15
+msgid "Not applicable"
+msgstr "Не применимо"
+
+#: web/templates/results/document.html:12 web/templates/results/show.html:16
+msgid "Error"
+msgstr "Ошибка"
+
 #: web/templates/results/document.html:44
 msgid "Content table"
 msgstr "Содержание"
@@ -243,37 +264,19 @@ msgstr "Время заверешения"
 msgid "Duration"
 msgstr "Продолжительность"
 
-#: web/templates/results/show.html:12
-msgid "Not checked"
-msgstr "Не проверено"
-
-#: web/templates/results/show.html:13
-msgid "Compliant"
-msgstr "Соотвествует"
-
-#: web/templates/results/show.html:14
-msgid "Not compliant"
-msgstr "Не соответствует"
-
-#: web/templates/results/show.html:15
-msgid "Not applicable"
-msgstr "Не применимо"
-
-#: web/templates/results/show.html:16
-msgid "Error"
-msgstr "Ошибка"
+#: web/templates/results/result_list.html:38
+msgid "Are you sure you want to delete result?"
+msgstr "Вы действительно желаете удалить результат?"
 
 #: web/templates/tasks/edit_task.html:44
 msgid "Add Row"
 msgstr "Добавить строку"
 
-#: web/templates/tasks/task_list.html:47
+#: web/templates/tasks/task_list.html:47 web/templates/tasks/task_list.html:64
 msgid "Run"
 msgstr "Запустить"
 
-#: web/templates/tasks/task_list.html:49
+#: web/templates/tasks/task_list.html:49 web/templates/tasks/task_list.html:63
 msgid "Stop"
 msgstr "Остановить"
 
-msgid "Are you sure you want to delete result"
-msgstr "Вы действительно хотите удалить результат"
