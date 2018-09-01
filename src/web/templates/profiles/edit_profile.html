@@ -17,6 +17,7 @@
                 <ul class="nav nav-pills nav-stacked col-md-3">
                   <li class="active"><a data-toggle="tab" href="#ssh">SSH</a></li>
                   <li><a data-toggle="tab" href="#unix">Unix</a></li>
+                  <li><a data-toggle="tab" href="#postgres">PostgreSQL</a></li>
                 </ul>
                 <div class="tab-content col-md-6">
                   <div id="ssh" class="tab-pane fade in active">
@@ -28,6 +29,12 @@
                       {{ form.unix_settings.hidden_tag() }}
                       {{ wtf.form_field(form.unix_settings.privilege_escalation) }}
                       {{ wtf.form_field(form.unix_settings.root_password) }}
+                  </div>
+                  <div id="postgres" class="tab-pane fade">
+                      {{ form.postgres_settings.hidden_tag() }}
+                      {{ wtf.form_field(form.postgres_settings.port) }}
+                      {{ wtf.form_field(form.postgres_settings.credential) }}
+                      {{ wtf.form_field(form.postgres_settings.dbname) }}
                   </div>
                 </div>
             </div>
