@@ -20,7 +20,7 @@ def pytest_generate_tests(metafunc):
     for data, status, result in metafunc.cls.case_list:
         if isinstance(data, str):
             data = (dedent(data),)
-        else:
+        elif isinstance(data[0], str):
             data = tuple(dedent(item) for item in data)
 
         argvalues.append((data, status, result and dedent(result).strip()))
