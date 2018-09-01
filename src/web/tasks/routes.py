@@ -4,7 +4,6 @@ from flask import render_template, redirect, url_for, request, jsonify, json
 from flask_login import login_required, current_user
 from flask_babel import _
 from celery.result import AsyncResult
-from celery.app.control import Control
 
 from web import app, db, celery
 from web.models import Task, TaskSetting, TaskStatus
@@ -155,31 +154,14 @@ def task_execute(task_id):
             400
         )
 
-    def update_task(task: Task, new_status: TaskStatus):
-        if new_status == TaskStatus.Wait:
-            if task.status != TaskStatus.Idle:
-                return
+    task.update_status(new_status)
 
-            task.status = TaskStatus.Wait
-            run_scan.apply_async(
-                (task.id, current_user.id),
-                ignore_result=True,
-                countdown=1
-            )
-        elif new_status == TaskStatus.Idle:
-            if task.uid is None:
-                task.status = TaskStatus.Idle
-                return
-
-            if task.status == TaskStatus.Idle:
-                return
-
-            task.status = TaskStatus.Idle
-            celery_task = AsyncResult(task.uid)
-            if celery_task:
-                Control(celery).revoke(task.uid, terminate=True)
-
-    update_task(task, new_status)
+    if task.status == TaskStatus.Wait and task.uid is None:
+        run_scan.apply_async(
+            (task.id, current_user.id),
+            ignore_result=True,
+            countdown=1
+        )
 
     db.session.commit()
 

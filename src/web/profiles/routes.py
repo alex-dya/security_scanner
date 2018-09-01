@@ -7,7 +7,7 @@ from web import app, db
 from web.models import ScanProfile
 
 
-@app.route('/scan_profiles')
+@app.route('/profiles')
 @login_required
 def scan_profiles():
     return render_template(
@@ -16,7 +16,7 @@ def scan_profiles():
     )
 
 
-@app.route('/create_scan_profile', methods=['GET', 'POST'])
+@app.route('/profiles/create', methods=['GET', 'POST'])
 @login_required
 def create_scan_profile():
     form = web.profiles.forms.ScanProfileForm()
@@ -38,7 +38,7 @@ def create_scan_profile():
     return redirect(url_for('scan_profiles'))
 
 
-@app.route('/edit_scan_profile/<int:profile_id>', methods=['GET', 'POST'])
+@app.route('/profiles/edit/<int:profile_id>', methods=['GET', 'POST'])
 @login_required
 def edit_scan_profile(profile_id):
     profile = current_user.scan_profiles.filter_by(id=profile_id).first()
@@ -63,7 +63,7 @@ def edit_scan_profile(profile_id):
     return redirect(url_for('scan_profiles'))
 
 
-@app.route('/delete_scan_profile', methods=['POST'])
+@app.route('/profiles/delete', methods=['POST'])
 @login_required
 def delete_scan_profile():
     profiles = request.form.getlist('profile_ids[]')

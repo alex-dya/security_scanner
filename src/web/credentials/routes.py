@@ -16,7 +16,7 @@ def credentials():
     )
 
 
-@app.route('/create_credential', methods=['GET', 'POST'])
+@app.route('/credentials/create', methods=['GET', 'POST'])
 @login_required
 def create_credential():
     form = forms.EditCredentialForm()
@@ -41,7 +41,7 @@ def create_credential():
     return redirect(url_for('credentials'))
 
 
-@app.route('/edit_credential/<int:cred_id>', methods=['GET', 'POST'])
+@app.route('/credentials/edit/<int:cred_id>', methods=['GET', 'POST'])
 @login_required
 def edit_credential(cred_id):
     if not cred_id:
@@ -72,7 +72,7 @@ def edit_credential(cred_id):
     return redirect(url_for('credentials'))
 
 
-@app.route('/delete_credential', methods=['POST'])
+@app.route('/credentials/delete', methods=['POST'])
 @login_required
 def delete_credential():
     creds = request.form.getlist('cred_ids[]')
