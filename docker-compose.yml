@@ -7,12 +7,17 @@ services:
     ports:
     - "80:5000"
     command: gunicorn --bind 0.0.0.0:5000 main:app
-
+    depends_on:
+      - db
+      - broker
   worker:
     build:
       context: .
       dockerfile: dockers/web/Dockerfile
     command: celery -A web.celery worker -l info
+    depends_on:
+      - db
+      - broker
   db:
     build:
       context: .
