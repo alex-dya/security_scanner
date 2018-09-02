@@ -1,14 +1,16 @@
-import paramiko
-import socket
 import io
 import re
-import uuid
+import socket
 import time
+import uuid
 from typing import NamedTuple, AnyStr, List, Dict, Any
+
+import paramiko
 
 from scanner.types import BaseTransport
 from .exceptions import (
-    TransportException, AuthenticationFailure, HostNotResponsible)
+    TransportException, AuthenticationFailure, HostNotResponsible,
+    TransportIsDisabled)
 
 
 class Answer(NamedTuple):
@@ -36,6 +38,10 @@ class SSHTransport(BaseTransport):
     def __init__(self, config: Dict[str, Any], *args, timeout=30, **kwargs):
         super().__init__(*args, **kwargs)
         ssh_config = config.get('ssh', dict())
+
+        if ssh_config.get('enable') != 'True':
+            raise TransportIsDisabled()
+
         self._login = ssh_config.get('username', '')
         self._password = ssh_config.get('password', '')
         self._address = config['hostname']

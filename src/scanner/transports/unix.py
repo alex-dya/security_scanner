@@ -6,7 +6,7 @@ from shlex import quote
 
 
 from .ssh import SSHTransport, Answer, ExecResult
-from scanner.transports.exceptions import RootLogonFailure
+from scanner.transports.exceptions import RootLogonFailure, TransportIsDisabled
 
 
 class RootLogonType(Enum):
@@ -19,6 +19,10 @@ class UnixTransport(SSHTransport):
     def __init__(self, config: Dict[str, Any], *args, **kwargs):
         super().__init__(config, *args, **kwargs)
         unix_config = config.get('unix', dict())
+
+        if unix_config.get('enable') != 'True':
+            raise TransportIsDisabled()
+
         self._root_logon_type = RootLogonType[
             (unix_config.get('privilege_escalation', 'NoLogon'))]
         self._root_password = unix_config.get('root_password', '')

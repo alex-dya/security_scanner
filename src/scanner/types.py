@@ -102,7 +102,7 @@ class BaseDetector(metaclass=BaseDetectorMeta):
             if not self.detect():
                 return []
         except Exception as e:
-            self.logger.error(e)
+            self.logger.error(f'Detect exception: {e}')
             return []
 
         detect_item(self.detection_items)

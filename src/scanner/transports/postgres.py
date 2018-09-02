@@ -4,12 +4,17 @@ import psycopg2
 from typing import Dict, Any, Optional, List, Tuple
 
 from scanner.types import BaseTransport
+from .exceptions import TransportIsDisabled
 
 
 class PostgresTransport(BaseTransport):
     def __init__(self, config: Dict[str, Any], *args, timeout=10, **kwargs):
         super().__init__(*args, **kwargs)
         postgres_config = config.get('postgres', dict())
+
+        if postgres_config.get('enable') != 'True':
+            raise TransportIsDisabled()
+
         self._login = postgres_config.get('username', '')
         self._password = postgres_config.get('password', '')
         self._address = config['hostname']

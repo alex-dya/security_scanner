@@ -29,3 +29,7 @@ class WrongInteractiveAnswer(CommandExecutionFailure):
     def __init__(self, answer, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.answer = answer
+
+
+class TransportIsDisabled(Exception):
+    pass
