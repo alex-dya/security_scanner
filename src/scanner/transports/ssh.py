@@ -53,9 +53,6 @@ class SSHTransport(BaseTransport):
     def __repr__(self):
         return f'SSHTransport(address={self._address}. port={self._port})'
 
-    def __del__(self):
-        self._client.close()
-
     def connect(self):
         try:
             self._client.set_missing_host_key_policy(

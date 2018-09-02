@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2018-09-01 15:35+0300\n"
+"POT-Creation-Date: 2018-09-02 19:54+0300\n"
 "PO-Revision-Date: 2018-08-26 16:36+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgid "Username"
 msgstr "Имя пользователя"
 
 #: web/credentials/forms.py:20 web/forms.py:13 web/forms.py:21
-#: web/profiles/forms.py:47
+#: web/profiles/forms.py:68
 msgid "Password"
 msgstr "Пароль"
 
@@ -65,24 +65,24 @@ msgstr "Пожалуйста, используйте другое имя пол�
 msgid "Please use a different email address."
 msgstr "Пожалуйста используйт другой email адрес"
 
-#: web/validators.py:27
+#: web/validators.py:30
 #, python-format
 msgid "Field %(text)s must have unique value"
 msgstr "Поле %(text)s должно иметь уникальное значение"
 
-#: web/views.py:35
+#: web/views.py:36
 msgid "Invalid username or password"
 msgstr "Неправильное имя пользователя или пароль"
 
-#: web/views.py:67
+#: web/views.py:68
 msgid "Congratulations, you are now a registered user!"
 msgstr "Поздравляем, теперь вы зарегистрированый пользователь!"
 
-#: web/credentials/forms.py:11 web/profiles/forms.py:56 web/tasks/forms.py:30
+#: web/credentials/forms.py:11 web/profiles/forms.py:109 web/tasks/forms.py:30
 msgid "Id"
 msgstr ""
 
-#: web/credentials/forms.py:13 web/profiles/forms.py:58 web/tasks/forms.py:32
+#: web/credentials/forms.py:13 web/profiles/forms.py:111 web/tasks/forms.py:32
 #: web/templates/credentials/credential_list.html:15
 #: web/templates/profiles/profile_list.html:16
 #: web/templates/results/result_list.html:8
@@ -90,51 +90,64 @@ msgstr ""
 msgid "Name"
 msgstr "Название"
 
-#: web/credentials/forms.py:29 web/profiles/forms.py:65 web/tasks/forms.py:38
+#: web/credentials/forms.py:29 web/profiles/forms.py:119 web/tasks/forms.py:38
 msgid "Save"
 msgstr "Сохранить"
 
-#: web/credentials/routes.py:32
+#: web/credentials/routes.py:33
 msgid "Create credential"
 msgstr "Создание учетной записи"
 
-#: web/credentials/routes.py:45
+#: web/credentials/routes.py:46
 msgid "New account credential was created"
 msgstr "Создана новая учетная запись"
 
-#: web/credentials/routes.py:59
+#: web/credentials/routes.py:60
 msgid "The credential id does not exist"
 msgstr "Указанная учетная запись не существует"
 
-#: web/credentials/routes.py:70
+#: web/credentials/routes.py:71
 msgid "Edit credential"
 msgstr "Редактирование учетной записи"
 
-#: web/profiles/forms.py:24
+#: web/profiles/forms.py:31 web/profiles/forms.py:56 web/profiles/forms.py:80
+msgid "Enable"
+msgstr "Включить"
+
+#: web/profiles/forms.py:35 web/profiles/forms.py:84
 msgid "Port"
 msgstr "Порт"
 
-#: web/profiles/forms.py:29 web/templates/_navbar.html:4
+#: web/profiles/forms.py:40 web/profiles/forms.py:93
+#: web/templates/_navbar.html:4
 msgid "Credentials"
 msgstr "Учетные записи"
 
-#: web/profiles/forms.py:43
+#: web/profiles/forms.py:60
 msgid "Privilege escalation"
 msgstr "Поднятие привилегий"
 
-#: web/profiles/routes.py:31
+#: web/profiles/forms.py:89
+msgid "Database name"
+msgstr "Название базы данных"
+
+#: web/profiles/routes.py:30 web/profiles/routes.py:61
+msgid "Please, fill out all necessary fields"
+msgstr "Пожалуйста, заполните все необходимые поля"
+
+#: web/profiles/routes.py:34
 msgid "Create profile"
 msgstr "Создание профиля"
 
-#: web/profiles/routes.py:41
+#: web/profiles/routes.py:44
 msgid "Profile was created"
 msgstr "Профиль был создан"
 
-#: web/profiles/routes.py:60
+#: web/profiles/routes.py:65
 msgid "Edit profile"
 msgstr "Редактирование профиля"
 
-#: web/profiles/routes.py:67
+#: web/profiles/routes.py:72
 msgid "Profile was edited"
 msgstr "Профиль был отредактрован"
 
@@ -224,7 +237,7 @@ msgstr "Статус"
 msgid "Description"
 msgstr "Описание"
 
-#: web/templates/results/_control.html:12
+#: web/templates/results/_control.html:16
 msgid "Result"
 msgstr "Результат"
 
