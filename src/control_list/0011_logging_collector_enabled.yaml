@@ -1,0 +1,27 @@
+number: 11
+content:
+- language: en
+  name: Ensure the logging collector is enabled
+  description: >-
+    The logging collector is a background process that captures log messages
+    sent to stderr and redirects them into log files. The logging_collector
+    setting must be enabled in order for this process to run. It can only be
+    set at server start.
+
+    The logging collector approach is often more useful than logging to syslog,
+    since some types of messages might not appear in syslog output. One common
+    example is dynamic-linker failure message; another may be error messages
+    produced by scripts such as archive_command.
+- language: ru
+  name: Сборщик сообщений журнала должен быть включен
+  description: >-
+    Сборщик сообщений журнала это фоновый процесс, который захватывает сообщения
+    журнала отправленый на stderr и перенаправляет их в файлы журнала. Чтобы
+    этот процесс работал, должна быть включена настройка logging_collector. Она
+    может быть установлена только во время запуска сервера.
+
+    Подход, при котором используется сборщик сообщение журнала, часто,
+    оказывается более полезным чем отправка сообщений в syslog, из-за того, что
+    некоторые типы сообщений могут не появиться в выводе syslog. Например,
+    сообщение о падении dynamic-linker; другой пример, могут быть сообщения об
+    ошибках происходящих во время исполнения скриптов, таких как archive_command.

@@ -6,7 +6,11 @@
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">{{ _('Description') }}</div>
-    <div class="panel-body">{{ ctrl.description }}</div>
+    <div class="panel-body">
+        {% autoescape false %}
+        {{ ctrl.description | replace('\n', '<br>') }}
+        {% endautoescape %}
+    </div>
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">{{ _('Result') }}</div>

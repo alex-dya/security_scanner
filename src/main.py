@@ -1,3 +1,4 @@
+from operator import attrgetter
 from pathlib import Path
 
 import yaml
@@ -15,6 +16,7 @@ def make_shell_context():
         ScanProfile=ScanProfile,
         ProfileSetting=ProfileSetting,
         Task=Task,
+        Control=Control,
     )
 
 
@@ -60,17 +62,13 @@ def init_sql():
 
         engine = create_engine('postgresql://', strategy='mock', executor=dump)
         db.metadata.create_all(engine, checkfirst=False)
-        for id_, control in enumerate(get_controls(), 1):
-            print(
-                "INSERT INTO control (id, number, language, name, description)"
-                " VALUES (%(id)s, %(number)s, '%(language)s', "
-                "'%(name)s', '%(description)s');" % dict(
-                    id=id_,
-                    number=control.number,
-                    language=control.language,
-                    name=control.name,
-                    description=control.description
-                ), file=file)
+        sorted_controls = sorted(get_controls(), key=attrgetter('number', 'language'))
+        for id_, control in enumerate(sorted_controls, 1):
+            print(f"INSERT INTO control (id, number, language, name, "
+                  f"description) VALUES ({id_}, {control.number}, "
+                  f"'{control.language}', E{control.name!r}, "
+                  f"E{control.description!r});",
+                  file=file)
 
     with open('../init.sql', 'w') as f:
         convert_to_sql(f)
