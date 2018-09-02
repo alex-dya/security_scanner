@@ -22,16 +22,25 @@
                 <div class="tab-content col-md-6">
                   <div id="ssh" class="tab-pane fade in active">
                       {{ form.ssh_settings.hidden_tag() }}
+                      <div align="left">
+                      {{ wtf.form_field(form.ssh_settings.enable) }}
+                      </div>
                       {{ wtf.form_field(form.ssh_settings.port) }}
                       {{ wtf.form_field(form.ssh_settings.credential) }}
                   </div>
                   <div id="unix" class="tab-pane fade">
                       {{ form.unix_settings.hidden_tag() }}
+                      <div align="left">
+                      {{ wtf.form_field(form.unix_settings.enable) }}
+                      </div>
                       {{ wtf.form_field(form.unix_settings.privilege_escalation) }}
                       {{ wtf.form_field(form.unix_settings.root_password) }}
                   </div>
                   <div id="postgres" class="tab-pane fade">
                       {{ form.postgres_settings.hidden_tag() }}
+                      <div align="left">
+                      {{ wtf.form_field(form.postgres_settings.enable) }}
+                      </div>
                       {{ wtf.form_field(form.postgres_settings.port) }}
                       {{ wtf.form_field(form.postgres_settings.credential) }}
                       {{ wtf.form_field(form.postgres_settings.dbname) }}
@@ -42,3 +51,4 @@
         <p>{{ form.submit(class="btn btn-primary") }}</p>
     </form>
 {% endblock %}
+

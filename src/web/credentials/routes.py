@@ -2,6 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
 from flask_babel import _
 
+from web.const.flash_category import SUCCESS, WARNING
 from web.credentials import forms
 from web import app, db
 from web.models import AccountCredential
@@ -42,7 +43,7 @@ def create_credential():
 
     db.session.add(cred)
     db.session.commit()
-    flash(_('New account credential was created'))
+    flash(_('New account credential was created'), SUCCESS)
     return redirect(url_for('credentials'))
 
 
@@ -56,7 +57,7 @@ def edit_credential(cred_id):
     cred = AccountCredential.query.filter_by(id=cred_id).first()
 
     if not cred:
-        flash(_('The credential id does not exist'))
+        flash(_('The credential id does not exist'), WARNING)
         return redirect(url_for('credentials'))
 
     if not form.validate_on_submit():

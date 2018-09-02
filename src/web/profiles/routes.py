@@ -4,6 +4,7 @@ from flask_login import login_required, current_user
 
 import web.profiles
 from web import app, db
+from web.const.flash_category import ERROR, SUCCESS
 from web.models import ScanProfile
 
 ACTIVE = 'profiles'
@@ -25,6 +26,8 @@ def create_profile():
     form = web.profiles.forms.ScanProfileForm()
 
     if not form.validate_on_submit():
+        if request.method == 'POST':
+            flash(_('Please, fill out all necessary fields'), ERROR)
         return render_template(
             'profiles/edit_profile.html',
             form=form,
@@ -38,7 +41,7 @@ def create_profile():
     form.populate_obj(profile)
     db.session.add(profile)
     db.session.commit()
-    flash(_('Profile was created'))
+    flash(_('Profile was created'), SUCCESS)
     return redirect(url_for('profiles'))
 
 
@@ -54,6 +57,8 @@ def edit_profile(profile_id):
 
     if not form.validate_on_submit():
         form.populate(profile)
+        if request.method == 'POST':
+            flash(_('Please, fill out all necessary fields'), ERROR)
         return render_template(
             'profiles/edit_profile.html',
             form=form,
@@ -64,7 +69,7 @@ def edit_profile(profile_id):
     form.populate_obj(profile)
 
     db.session.commit()
-    flash(_('Profile was edited'))
+    flash(_('Profile was edited'), SUCCESS)
     return redirect(url_for('profiles'))
 
 

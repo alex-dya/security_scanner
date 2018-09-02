@@ -5,6 +5,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 
 from web import app, db, login_manager
+from web.const.flash_category import ERROR, SUCCESS
 from web.forms import RegistrationForm, LoginForm
 from web.models import User
 
@@ -32,7 +33,7 @@ def login():
         user = User.query.filter_by(username=form.username.data).first()
 
         if user is None or not user.check_password(form.password.data):
-            flash(_('Invalid username or password'))
+            flash(_('Invalid username or password'), ERROR)
             return redirect(url_for('login'))
 
         login_user(user, remember=form.remember_me.data)
@@ -64,7 +65,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash(_('Congratulations, you are now a registered user!'))
+        flash(_('Congratulations, you are now a registered user!'), SUCCESS)
         return redirect(url_for('login'))
 
     form.language.process_data(get_locale())
