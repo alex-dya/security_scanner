@@ -49,8 +49,11 @@ class PostgresTransport(BaseTransport):
     @lru_cache(2048)
     def request(self, request: str) -> List[Tuple]:
         with self._client.cursor() as curr:
+            self.logger.debug(f'Send request: {request!r}')
             curr.execute(request)
-            return curr.fetchall()
+            result = curr.fetchall()
+            self.logger.debug(f'Answer: {result!r}')
+            return result
 
     def __repr__(self) -> str:
         return f'PostgresTransport(hostname="{self._address}" port={self._port})'
