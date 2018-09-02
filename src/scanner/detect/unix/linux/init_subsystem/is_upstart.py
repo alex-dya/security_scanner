@@ -1,7 +1,7 @@
 from scanner.transports import get_transport
 from scanner.const import os
 from scanner.const.linux import init_subsystem
-from scanner.types import BaseDetector
+from scanner.detect.types import BaseDetector
 
 
 class UpstartDetector(BaseDetector):

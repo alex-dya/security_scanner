@@ -3,8 +3,7 @@ from collections import deque
 
 from .is_unix import UnixDetector
 from .is_postgres import PostgreSQLQDetector
-from scanner.types import reset_detect
-
+from scanner.detect.types import reset_detect
 
 _detectors = [
     UnixDetector,

@@ -5,7 +5,7 @@ from os import devnull
 import pytest
 
 from scanner.transports.ssh import ExecResult
-from scanner.types import BaseTransport
+from scanner.transports import BaseTransport
 
 logging.basicConfig(stream=open(devnull, 'w'))
 

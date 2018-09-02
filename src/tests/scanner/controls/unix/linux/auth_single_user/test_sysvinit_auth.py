@@ -1,4 +1,4 @@
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from scanner.controls.unix.linux.auth_single_user import sysvinit_auth
 from tests.scanner.controls.conftest import BaseUnixControlTest
 

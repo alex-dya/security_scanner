@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from functools import partial
 from textwrap import dedent
 
-from scanner.types import ControlStatus
+from scanner import transports
+from scanner.controls.types import ControlStatus
 
 
 def pytest_generate_tests(metafunc):
@@ -45,7 +46,7 @@ class BaseUnixControlTest(ABC):
 
     def test_case(self, monkeypatch, data, status, result, get_transport_patch):
         monkeypatch.setattr(
-            self.origin,
+            self.origin.Control,
             'get_transport',
             partial(get_transport_patch, data=data)
         )

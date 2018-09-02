@@ -3,7 +3,7 @@ from functools import partial
 from textwrap import dedent
 from typing import NamedTuple, Union, Iterable, AnyStr
 
-from scanner import types
+from scanner.detect import types
 
 
 class DetectCase(NamedTuple):

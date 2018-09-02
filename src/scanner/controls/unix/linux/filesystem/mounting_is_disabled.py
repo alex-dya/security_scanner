@@ -1,6 +1,6 @@
 from scanner.const import os
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 from scanner.functions.unix.lsmod_parser import LsmodParser
 
 
@@ -20,7 +20,7 @@ class Control(BaseContol, control_number=1):
         return is_item_detected(os.LINUX)
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
         lsmod_result = transport.send_command('lsmod')
         lsmod = [
             item.Name

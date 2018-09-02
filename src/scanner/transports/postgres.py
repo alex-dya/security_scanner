@@ -3,7 +3,7 @@ from functools import lru_cache
 import psycopg2
 from typing import Dict, Any, Optional, List, Tuple
 
-from scanner.types import BaseTransport
+from scanner.transports import BaseTransport
 from .exceptions import TransportIsDisabled
 
 

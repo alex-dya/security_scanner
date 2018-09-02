@@ -1,11 +1,11 @@
 from scanner.const.linux import init_subsystem
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 from scanner.functions.common import delete_comments
 from scanner.functions.parsers import KeyValueParser
 from scanner.functions.unix.inittab_parser import InittabParser
 from scanner.functions.unix.passwd_parser import PasswdParser
 from scanner.functions.unix.shadow_parser import ShadowParser
-from scanner.transports import get_transport
-from scanner.types import BaseContol, is_item_detected
 
 
 class Control(BaseContol, control_number=8):
@@ -59,7 +59,7 @@ class Control(BaseContol, control_number=8):
             return False
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
 
         passwd = transport.get_file_content('/etc/passwd').Output
         shadow = transport.get_file_content('/etc/shadow').Output

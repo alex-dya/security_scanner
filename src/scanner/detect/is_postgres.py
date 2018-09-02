@@ -1,6 +1,6 @@
 from scanner.const import db
 from scanner.transports import get_transport
-from scanner.types import BaseDetector
+from scanner.detect.types import BaseDetector
 
 
 class PostgreSQLQDetector(BaseDetector):

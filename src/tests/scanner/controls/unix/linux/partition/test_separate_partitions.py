@@ -1,4 +1,4 @@
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from scanner.controls.unix.linux.partitions import separate_partitions
 from tests.scanner.controls.conftest import BaseUnixControlTest
 

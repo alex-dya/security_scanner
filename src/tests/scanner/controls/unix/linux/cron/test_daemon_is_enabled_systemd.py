@@ -1,4 +1,4 @@
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from scanner.controls.unix.linux.cron import daemon_is_enabled_systemd
 from tests.scanner.controls.conftest import BaseUnixControlTest
 

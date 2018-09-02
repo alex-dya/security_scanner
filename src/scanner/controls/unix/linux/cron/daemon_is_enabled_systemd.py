@@ -1,7 +1,7 @@
 from scanner.const import os
 from scanner.const.linux import init_subsystem, systemd
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 from scanner.functions.unix.systemd import SystemdUnitFiles
 
 
@@ -11,7 +11,7 @@ class Control(BaseContol, control_number=9):
                 is_item_detected(init_subsystem.SYSTEMD))
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
         result = transport.send_command(
             'systemctl list-unit-files --plain --no-legend --no-pager')
 

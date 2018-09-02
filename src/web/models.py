@@ -9,7 +9,7 @@ from flask_login import UserMixin
 from sqlalchemy import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from web import db, login_manager, celery
 
 

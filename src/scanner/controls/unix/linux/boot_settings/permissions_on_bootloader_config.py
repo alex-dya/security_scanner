@@ -1,9 +1,9 @@
-from shlex import quote
 from operator import attrgetter
+from shlex import quote
 
 from scanner.const import os, file_type
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 from scanner.functions.unix.stats_parser import StatsParser
 
 
@@ -22,7 +22,7 @@ class Control(BaseContol, control_number=2):
         return is_item_detected(os.LINUX)
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
         stat_result = transport.stat_file(' '.join(map(quote, self.file_paths)))
 
         is_compliance = True

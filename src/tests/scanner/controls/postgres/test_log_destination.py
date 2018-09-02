@@ -1,4 +1,4 @@
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from scanner.controls.postgres import log_destination
 from tests.scanner.controls.conftest import BaseUnixControlTest
 

@@ -1,6 +1,6 @@
 from typing import Dict
 
-from scanner.types import BaseTransport
+from .types import BaseTransport
 from . import exceptions
 from .ssh import SSHTransport
 from .unix import UnixTransport

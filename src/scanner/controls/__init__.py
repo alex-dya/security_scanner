@@ -5,8 +5,7 @@ import logging
 from operator import attrgetter
 from typing import Iterable
 
-from scanner.types import BaseContol
-
+from scanner.controls.types import BaseContol
 
 LOGGER = logging.getLogger(__name__)
 

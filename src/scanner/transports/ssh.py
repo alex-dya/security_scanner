@@ -7,7 +7,7 @@ from typing import NamedTuple, AnyStr, List, Dict, Any
 
 import paramiko
 
-from scanner.types import BaseTransport
+from scanner.transports import BaseTransport
 from .exceptions import (
     TransportException, AuthenticationFailure, HostNotResponsible,
     TransportIsDisabled)

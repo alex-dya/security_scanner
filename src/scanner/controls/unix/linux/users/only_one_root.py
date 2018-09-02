@@ -1,6 +1,6 @@
 from scanner.const import os
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 from scanner.functions.unix.passwd_parser import PasswdParser
 
 
@@ -9,7 +9,7 @@ class Control(BaseContol, control_number=6):
         return is_item_detected(os.LINUX)
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
         result = transport.get_file_content('/etc/passwd')
         root_list = [
             item.Name

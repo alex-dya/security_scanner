@@ -1,4 +1,4 @@
-from scanner.types import ControlStatus
+from scanner.controls.types import ControlStatus
 from scanner.controls.unix.linux.boot_settings import bootloader_password
 from tests.scanner.controls.conftest import BaseUnixControlTest
 

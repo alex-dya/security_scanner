@@ -1,26 +1,10 @@
-from scanner.const import db
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls.postgres.config_checker import SettingChecker
+from scanner.controls import BaseContol
 
 
-class Control(BaseContol, control_number=10):
-    def prerequisite(self):
-        return is_item_detected(db.POSTGRESQL)
-
-    def check(self):
-        transport = get_transport('postgres')
-
-        data = transport.request('show all;')
-        if not data:
-            self.control.not_applicable(result='Configurations is not found')
-            return
-
-        configs = {
-            item[0]: item[1]
-            for item in data
-        }
-
-        result = configs.get('log_destination')
+class Control(SettingChecker, BaseContol, control_number=10):
+    def check_settings(self, settings):
+        result = settings.get('log_destination')
 
         if result is not None and result != 'stderr':
             self.control.compliance(

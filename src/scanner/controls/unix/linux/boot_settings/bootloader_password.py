@@ -1,6 +1,6 @@
 from scanner.const import os
-from scanner.types import BaseContol, is_item_detected
-from scanner.transports import get_transport
+from scanner.controls import BaseContol
+from scanner.detect.types import is_item_detected
 
 
 class Control(BaseContol, control_number=7):
@@ -23,7 +23,7 @@ class Control(BaseContol, control_number=7):
         return is_item_detected(os.LINUX)
 
     def check(self):
-        transport = get_transport('unix')
+        transport = self.get_transport('unix')
 
         boot_configs = {}
         for file in self.file_paths:
