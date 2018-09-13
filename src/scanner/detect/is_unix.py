@@ -12,7 +12,7 @@ class UnixDetector(BaseDetector):
 
     def detect(self):
         transport = get_transport('ssh')
-        result = transport.send_command('uname -s')
+        result = transport.interactive_command('uname -s')
 
         if result.ExitStatus != 0:
             return False
