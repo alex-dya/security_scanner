@@ -1,0 +1,23 @@
+number: 12
+content:
+- language: en
+  name: Ensure the log file destination directory is set correctly
+  description: >-
+    The log_directory setting specifies the destination directory for log files.
+    It can be specified as relative to the cluster data directory or as an
+    absolute path.
+
+    If log_directory is not set, it is interpreted as the absolute path '/' and
+    PostgreSQL will attempt to write its logs there (and typically fail due to
+    a lack of permissions to that directory).
+- language: ru
+  name: Каталог для хранения файлов журнала должна быть установлена правильно
+  description: >-
+    Настройка log_directory указывает каталог назначения для файлов журнала.
+    Она может принимать значение как относительного пути из каталого с данными,
+    так и абсолютного пути.
+
+    Если log_directory не установлена, то ее значение принимается за абсолютный
+    путь '/' и PostgreSQL будет пытаться записывать свои события в корневую
+    директорию (и обычно эти попытки будут безуспешны, из-за разрешений на
+    запись в эту директорию)
