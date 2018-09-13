@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, tzinfo
 
 import attr
 
@@ -14,7 +14,7 @@ class StatsRecord:
     GroupOwner: str = attr.ib()
     Size: int = attr.ib(converter=int)
     ModifyDateTime: datetime = attr.ib(
-        converter=lambda x: datetime.fromtimestamp(int(x)))
+        converter=lambda x: datetime.utcfromtimestamp(int(x)))
     Name: str = attr.ib()
 
 

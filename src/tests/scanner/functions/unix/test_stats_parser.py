@@ -17,7 +17,7 @@ def test_simple_case():
     assert item.Owner == 'user'
     assert item.GroupOwner == 'user'
     assert item.Size == 0
-    assert item.ModifyDateTime == datetime(2018, 7, 15, 22, 21, 3)
+    assert item.ModifyDateTime == datetime(2018, 7, 15, 19, 21, 3)
 
 
 def test_case_multiline():
@@ -34,14 +34,14 @@ def test_case_multiline():
     assert item.Owner == 'user'
     assert item.GroupOwner == 'group'
     assert item.Size == 72
-    assert item.ModifyDateTime == datetime(2018, 3, 6, 21, 42, 48)
+    assert item.ModifyDateTime == datetime(2018, 3, 6, 18, 42, 48)
     item = stats_list[1]
     assert item.Type == file_type.DIRECTORY
     assert item.Permissions == 0o755
     assert item.Owner == 'user'
     assert item.GroupOwner == 'group'
     assert item.Size == 176
-    assert item.ModifyDateTime == datetime(2018, 6, 24, 21, 48, 31)
+    assert item.ModifyDateTime == datetime(2018, 6, 24, 18, 48, 31)
 
 
 @pytest.mark.parametrize(
@@ -54,7 +54,7 @@ def test_case_multiline():
                 'root',
                 'tty',
                 0,
-                datetime(2018, 7, 12, 23, 53, 4),
+                datetime(2018, 7, 12, 20, 53, 4),
                 'vcs3',
             )
         ),
@@ -67,7 +67,7 @@ def test_case_multiline():
                 'root',
                 'root',
                 15,
-                datetime(2018, 7, 12, 23, 53),
+                datetime(2018, 7, 12, 20, 53),
                 'stderr'
             )
         ),
@@ -79,7 +79,7 @@ def test_case_multiline():
                 'root',
                 'disk',
                 0,
-                datetime(2018, 7, 12, 23, 53, 3),
+                datetime(2018, 7, 12, 20, 53, 3),
                 'sda'
             )
         ),
@@ -91,7 +91,7 @@ def test_case_multiline():
                 'root',
                 'root',
                 0,
-                datetime(2018, 7, 12, 23, 53, 2),
+                datetime(2018, 7, 12, 20, 53, 2),
                 '/run/systemd/notify'
             )
         )

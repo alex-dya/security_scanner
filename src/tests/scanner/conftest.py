@@ -24,6 +24,9 @@ class DummyUnixTransport(BaseTransport):
     def disconnect(self):
         pass
 
+    def interactive_command(self, text):
+        return self.send_command(text)
+
     def send_command(self, text: str) -> ExecResult:
         output = next(self._text, None)
 
