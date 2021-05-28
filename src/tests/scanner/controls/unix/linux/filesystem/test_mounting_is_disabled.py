@@ -14,7 +14,9 @@ class TestMountingIsDisabled(BaseUnixControlTest):
                 ''',
                 'install /bin/true',
                 'install /bin/true',
-                'install /bin/true',
+                
+                '''insmod /lib/modules/4.9.0-6-amd64/kernel/fs/freevxfs/freevxfs.ko'
+                'install /bin/true''',
                 'install /bin/true',
                 'install /bin/true',
                 'install /bin/true',
