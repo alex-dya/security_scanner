@@ -13,7 +13,7 @@ class LinuxDetector(BaseDetector):
     def detect(self):
         transport = get_transport('unix')
         command = 'uname -s'
-        result = transport.interactive_command(command)
+        result = transport.send_command(command)
 
         if result.ExitStatus != 0:
             self.logger.error(f'Wrong execution {command!r}: {result.Output}')

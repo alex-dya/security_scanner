@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: dockers/web/Dockerfile
-    command: celery -A web.celery worker -l debug
+    command: celery -A web.celery worker -l info
     depends_on:
       - db
       - broker
