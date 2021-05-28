@@ -38,7 +38,7 @@ class Control(BaseContol, control_number=1):
 
             modprobe_status = transport.send_command(f'modprobe -n -v {fs}')
 
-            if modprobe_status.Output != 'install /bin/true':
+            if 'install /bin/true' not in modprobe_status.Output:
                 is_compliance = False
                 results.append(f'{fs} is not disabled')
                 continue

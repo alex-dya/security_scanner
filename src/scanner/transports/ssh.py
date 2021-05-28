@@ -142,7 +142,7 @@ class SSHTransport(BaseTransport):
                 break
             else:
                 # get rid of 'coloring and formatting' special characters
-                line = re.compile(r'(\x9B|\x1B\[)[0-9]*[ -/]*[@-~]').\
+                line = re.compile(r'(\x9B|\x1B\[)[0-9]*[ -/]*').\
                     sub('', line).replace('\b', '').replace('\r', '').strip()
 
                 shell_out.append(line)
@@ -158,7 +158,7 @@ class SSHTransport(BaseTransport):
             shell_error.pop(0)
 
         join_str = '\n'.join
-
+        self.logger.debug('Out: {}'.format(shell_out))
         return ExecResult(
             Output=join_str(shell_out),
             Error=join_str(shell_error),
