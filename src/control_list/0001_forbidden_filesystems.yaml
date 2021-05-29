@@ -6,7 +6,7 @@ content:
     Removing support for unneeded filesystem types reduces the local
     attack surface of the server.
 - language: ru
-  name: Удостоверьтесь, что мониторивани запрещенных файловых систем запрещено
+  name: Убедитесь, что монтирование запрещенных файловых систем отключено 
   description: >-
     Отключите поддержку ненужных типов файловых систем для того чтобы уменьшить
     площадь атаки на сервер.
