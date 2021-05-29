@@ -14,15 +14,42 @@ class TestMountingIsDisabled(BaseUnixControlTest):
                 ''',
                 'install /bin/true',
                 'install /bin/true',
-                
-                '''insmod /lib/modules/4.9.0-6-amd64/kernel/fs/freevxfs/freevxfs.ko'
-                'install /bin/true''',
                 'install /bin/true',
                 'install /bin/true',
                 'install /bin/true',
                 'install /bin/true',
                 'install /bin/true',
-
+                'install /bin/true',
+            ),
+            ControlStatus.Compliance,
+            '''
+            cramfs is disabled
+            freevxfs is disabled
+            jffs2 is disabled
+            hfs is disabled
+            hfsplus is disabled
+            squashfs is disabled
+            udf is disabled
+            vfat is disabled
+            '''
+        ),
+        (
+            (
+                ''' 
+                Module                  Size  Used by
+                fuse                   98304  1
+                ''',
+                'install /bin/true',
+                'install /bin/true',
+                '''
+                insmod /lib/modules/4.9.0-6-amd64/kernel/fs/freevxfs/freevxfs.ko
+                install /bin/true
+                ''',
+                'install /bin/true',
+                'install /bin/true',
+                'install /bin/true',
+                'install /bin/true',
+                'install /bin/true',
             ),
             ControlStatus.Compliance,
             '''

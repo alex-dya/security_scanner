@@ -7,7 +7,6 @@ import pytest
 from scanner.transports.ssh import ExecResult
 from scanner.types import BaseTransport
 
-
 logging.basicConfig(stream=open(devnull, 'w'))
 
 
@@ -32,7 +31,9 @@ class DummyUnixTransport(BaseTransport):
             raise ExpectedCommandError(f'Expected send_command({text})')
 
         return ExecResult(Output=output, Error='', ExitStatus=0)
-    interactive_command= send_command
+
+    interactive_command = send_command
+
     def get_file_content(self, filename: str) -> ExecResult:
         return self.send_command(f'cat {filename}')
 
