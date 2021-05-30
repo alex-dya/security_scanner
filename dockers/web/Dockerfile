@@ -1,4 +1,4 @@
-FROM python:3.6-stretch
+FROM python:3.9-buster
 
 RUN apt-get install -y libssl-dev libffi-dev gcc
 RUN apt-get install -y libpq-dev libcairo2 libcairo2 \
