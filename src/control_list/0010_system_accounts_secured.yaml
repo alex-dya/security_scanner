@@ -1,0 +1,12 @@
+number: 10
+content:
+- language: en
+  name: Ensure system accounts are secured
+  description: >-
+    There are a number of accounts provided with most distributions that are used to manage
+    applications and are not intended to provide an interactive shell.
+- language: ru
+  name: Убедитесь, что системные учетные записи защищены.
+  description: >-
+    В большинстве дистрибутивов имеется ряд учетных записей, которые используются для управления
+    приложениями и не предназначены для предоставления интерактивной оболочки.
