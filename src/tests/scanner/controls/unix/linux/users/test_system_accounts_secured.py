@@ -1,5 +1,5 @@
-from scanner.types import ControlStatus
 from scanner.controls.unix.linux.users import system_accounts_secured
+from scanner.types import ControlStatus
 from tests.scanner.controls.conftest import BaseUnixControlTest
 
 
