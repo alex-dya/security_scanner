@@ -1,0 +1,10 @@
+number: 11
+content:
+- language: en
+  name: Ensure auditd service is enabled.
+  description: >-
+    Turn on the auditd daemon to record system events.
+- language: ru
+  name: Убедитесь, что служба auditd включена.
+  description: >-
+    Включите демон auditd для записи системных событий.

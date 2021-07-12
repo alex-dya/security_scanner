@@ -9,7 +9,7 @@ class Config:
     BOOTSTRAP_SERVE_LOCAL = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         'DATABASE_URL',
-        f'postgresql://postgres:Passw0rd@db:5432/scanner'
+        f'postgresql://postgres:Passw0rd@127.0.0.1:5432/scanner'
     )
     LANGUAGES = ['en', 'ru']
 
